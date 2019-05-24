@@ -1,8 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import steps from "./modules/steps.js";
-import players from "./modules/players.js";
-import marbles from "./modules/marbles.js";
+import steps from "./modules/steps.ts";
+import players from "./modules/players.ts";
+import marbles from "./modules/marbles.ts";
 
 Vue.use(Vuex);
 
@@ -13,7 +13,7 @@ const store = new Vuex.Store({
   modules: {
     steps,
     players,
-    marbles
+    marbles,
   }
 });
 

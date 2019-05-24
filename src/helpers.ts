@@ -1,5 +1,6 @@
-import store from "@/store/index.js";
-// import GameConstants from "./game-constants.js";
+import store from "@/store/index.ts";
+
+interface Person {}
 
 export function generateSteps() {
   let steps = [];
@@ -71,11 +72,7 @@ function _getStepType(index) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function getPositionInPathFromAnotherPlayerSight(
-  playerFrom,
-  playerTo,
-  positionInPath
-) {
+function getPositionInPathFromAnotherPlayerSight(playerFrom, playerTo, positionInPath) {
   if (positionInPath >= 40) {
     // isn't in playerTo's path
     return NaN;
@@ -107,9 +104,7 @@ export function getAvailableActions({ player, diceResult }) {
   }
 
   // inGame actions
-  const playerMarblesInGame = store.getters["marbles/listInGameByPlayer"](
-    player
-  );
+  const playerMarblesInGame = store.getters["marbles/listInGameByPlayer"](player);
   console.log("playerMarblesInGame", playerMarblesInGame);
   return availableActions;
 }

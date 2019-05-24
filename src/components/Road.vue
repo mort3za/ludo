@@ -16,7 +16,7 @@
 
 <script>
 import Step from "@/components/Step.vue";
-import { generateSteps } from "@/helpers.js";
+import { generateSteps } from "@/helpers.ts";
 export default {
   name: "road",
   data() {

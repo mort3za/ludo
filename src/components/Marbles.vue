@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import store from "@/store/index.js";
+import store from "@/store/index.ts";
 import Marble from "@/components/Marble.vue";
 export default {
   name: "marbles",
