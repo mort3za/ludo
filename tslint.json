@@ -1,7 +1,8 @@
 {
   "defaultSeverity": "warning",
   "extends": [
-    "tslint:recommended"
+    "tslint:latest",
+    "tslint-config-prettier"
   ],
   "linterOptions": {
     "exclude": [
@@ -9,9 +10,6 @@
     ]
   },
   "rules": {
-    "semicolon": [true, "never"],
-    "quotemark": [true, "single"],
-    "indent": [true, "spaces", 2],
     "interface-name": false,
     "ordered-imports": false,
     "object-literal-sort-keys": false,

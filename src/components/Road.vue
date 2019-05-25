@@ -17,17 +17,20 @@
 <script>
 import Step from "@/components/Step.vue";
 import { generateSteps } from "@/helpers.ts";
-export default {
-  name: "road",
+import { Vue, Component } from "vue-property-decorator";
+
+@Component({
+  components: {
+    Step
+  }
+})
+export default class Road extends Vue {
   data() {
     return {
       steps: generateSteps()
     };
-  },
-  components: {
-    Step
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>

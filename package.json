@@ -7,14 +7,15 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "tslint-check": "tslint-config-prettier-check ./tslint.json"
   },
   "dependencies": {
     "bootstrap": "^4.3.1",
-    "lodash-es": "^4.17.11",
-    "sass-rem": "^2.0.1",
     "core-js": "^2.6.5",
+    "lodash-es": "^4.17.11",
     "register-service-worker": "^1.6.2",
+    "sass-rem": "^2.0.1",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-property-decorator": "^8.1.0",
@@ -33,6 +34,7 @@
     "sass": "^1.18.0",
     "sass-loader": "^7.1.0",
     "ts-jest": "^23.0.0",
+    "tslint-config-prettier": "^1.18.0",
     "typescript": "^3.4.3",
     "vue-template-compiler": "^2.5.21"
   }

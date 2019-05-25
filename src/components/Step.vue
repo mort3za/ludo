@@ -3,8 +3,9 @@
 </template>
 
 <script>
-export default {
-  name: "step",
+import { Vue, Component } from "vue-property-decorator";
+
+@Component({
   props: {
     row: {
       type: Number,
@@ -19,7 +20,8 @@ export default {
       required: true
     }
   }
-};
+})
+export default class Step extends Vue {}
 </script>
 
 <style lang="scss" scoped>

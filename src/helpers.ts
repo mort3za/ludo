@@ -1,6 +1,9 @@
-import store from "@/store/index.ts";
+import store from "@/store/index";
 
-interface Person {}
+interface Position {
+  row: number;
+  column: number;
+}
 
 export function generateSteps() {
   let steps = [];
@@ -81,7 +84,12 @@ function getPositionInPathFromAnotherPlayerSight(playerFrom, playerTo, positionI
   return positionInPath + sideDifference * 10;
 }
 
-function getDistance(position1, position2) {}
+function getDistance(position1: Position, position2: Position) {
+  const allSteps = store.getters["steps/allSteps"];
+  const index1 = allSteps.findIndex(step => step[0] === position1.row && step[1] === position1.column);
+  const index2 = allSteps.findIndex(step => step[0] === position2.row && step[1] === position2.column);
+  return index2 - index1
+}
 
 function analyzeDiceResult(diceResult) {
   const isSix = diceResult === 6;

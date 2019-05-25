@@ -1,10 +1,10 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import steps from "./modules/steps.ts";
-import players from "./modules/players.ts";
-import marbles from "./modules/marbles.ts";
+import Vue from 'vue'
+import Vuex from 'vuex'
+import steps from './modules/steps'
+import players from './modules/players'
+import marbles from './modules/marbles'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {},
@@ -14,7 +14,7 @@ const store = new Vuex.Store({
     steps,
     players,
     marbles,
-  }
-});
+  },
+})
 
-export default store;
+export default store

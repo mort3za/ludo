@@ -7,21 +7,22 @@
 <script>
 import store from "@/store/index.ts";
 import Marble from "@/components/Marble.vue";
-export default {
-  name: "marbles",
+import { Vue, Component } from "vue-property-decorator";
+
+@Component({
   components: {
     Marble
-  },
-  computed: {
-    items() {
-      const list = store.getters["marbles/list"];
-      list.map(item => {
-        item.player = store.getters["players/itemBySide"](item.side);
-      });
-      return list;
-    }
   }
-};
+})
+export default class Marbles extends Vue {
+  get items() {
+    const list = store.getters["marbles/list"];
+    list.map(item => {
+      item.player = store.getters["players/itemBySide"](item.side);
+    });
+    return list;
+  }
+}
 </script>
 
 <style lang="scss" scoped>

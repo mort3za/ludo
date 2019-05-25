@@ -3,42 +3,42 @@
 </template>
 
 <script>
-export default {
-  name: "marble",
+import { Vue, Component } from "vue-property-decorator";
+
+@Component({
   props: {
     model: {
       type: Object,
       required: true
     }
-  },
-  computed: {
-    isAtEnd() {
-      // TODO:
-    },
-    isInGame() {
-      // TODO:
-    }
-  },
-  methods: {
-    moveToPosition({ row, column }) {
-      // TODO:
-    },
-    goToGame() {
-      // TODO:
-    },
-    goOutOfGame() {
-      // TODO:
-    },
-    getStyle() {
-      return {
-        transform: `
+  }
+})
+export default class Marble extends Vue {
+  get isAtEnd() {
+    // TODO:
+  }
+  get isInGame() {
+    // TODO:
+  }
+
+  moveToPosition({ row, column }) {
+    // TODO:
+  }
+  goToGame() {
+    // TODO:
+  }
+  goOutOfGame() {
+    // TODO:
+  }
+  getStyle() {
+    return {
+      transform: `
         translateX(${(this.model.column - 1) * 44 + "px"})
         translateY(${(this.model.row - 1) * 44 + "px"})
         `
-      };
-    }
+    };
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
