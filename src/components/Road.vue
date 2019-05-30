@@ -16,7 +16,7 @@
 
 <script>
 import Step from "@/components/Step.vue";
-import { generateSteps } from "@/helpers.ts";
+import { generateSteps } from "@/helpers";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component({

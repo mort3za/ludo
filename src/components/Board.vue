@@ -8,10 +8,10 @@
 </template>
 
 <script>
-import store from "@/store/index.ts";
+import store from "@/store/index";
 import Road from "@/components/Road.vue";
 import Marbles from "@/components/Marbles.vue";
-import { getAvailableActions, prepareMoveMarble } from "@/helpers.ts";
+import { getAvailableActions, prepareMoveMarble } from "@/functions/move-actions";
 import { Vue, Component } from "vue-property-decorator";
 
 const PLAYING_STATUS = {

@@ -4,14 +4,14 @@ export default {
     list: []
   },
   mutations: {
-    updateIsInGame(state, { id, isInGame }) {
-      const index = state.list.findIndex(_item => _item.id === id);
+    updateIsInGame(state, { id, isInGame }: Player) {
+      const index = state.list.findIndex((item: Player) => item.id === id);
       state.list[index].isInGame = isInGame;
     },
     reset(state) {
       state.list = [];
     },
-    add(state, player) {
+    add(state, player: Player) {
       state.list.push(player);
     }
   },
@@ -19,17 +19,17 @@ export default {
     updateIsInGame({ commit }, payload) {
       commit("updateIsInGame", payload);
     },
-    updateIsInGameAll({ commit, getters }, { isInGame }) {
+    updateIsInGameAll({ commit, getters }, { isInGame }: Player) {
       const playersList = getters.list;
-      playersList.forEach(_player => {
-        const player = { ..._player, isInGame };
+      playersList.forEach((p: Player) => {
+        const player = { ...p, isInGame };
         commit("updateIsInGame", player);
       });
     },
     reset({ commit }) {
       commit("reset");
     },
-    add({ commit, getters }, { isAI, isInGame = true, color }) {
+    add({ commit, getters }, { isAI, isInGame = true, color }: Player) {
       // get length of list of players
       const playersCount = getters.list.length;
       const player = {
@@ -47,14 +47,14 @@ export default {
     list(state) {
       return state.list;
     },
-    itemById: state => id => {
-      return state.list.find(item => item.id === id);
+    itemById: state => (id: number) => {
+      return state.list.find((p: Player) => p.id === id);
     },
-    itemBySide: state => side => {
-      return state.list.find(item => item.side === side);
+    itemBySide: state => (side: number) => {
+      return state.list.find((p: Player) => p.side === side);
     },
     listInGame(state) {
-      return state.list.filter(item => item.isInGame === true);
+      return state.list.filter((p: Player) => p.isInGame === true);
     }
   }
 };

@@ -1,10 +1,5 @@
 import store from "@/store/index";
 
-interface Position {
-  row: number;
-  column: number;
-}
-
 export function generateSteps() {
   let steps = [];
   for (let i = 1; i <= 14; i++) {
@@ -72,72 +67,4 @@ function _getStepType(index) {
   } else if (index === 1) {
     return "startpoint";
   }
-}
-
-// eslint-disable-next-line no-unused-vars
-function getPositionInPathFromAnotherPlayerSight(playerFrom, playerTo, positionInPath) {
-  if (positionInPath >= 40) {
-    // isn't in playerTo's path
-    return NaN;
-  }
-  const sideDifference = (4 - (playerTo.side - playerFrom.side)) % 4;
-  return positionInPath + sideDifference * 10;
-}
-
-function getDistance(position1: Position, position2: Position) {
-  const allSteps = store.getters["steps/allSteps"];
-  const index1 = allSteps.findIndex(step => step[0] === position1.row && step[1] === position1.column);
-  const index2 = allSteps.findIndex(step => step[0] === position2.row && step[1] === position2.column);
-  return index2 - index1
-}
-
-function analyzeDiceResult(diceResult) {
-  const isSix = diceResult === 6;
-  return {
-    canMoveBench: isSix,
-    hasReward: isSix
-  };
-}
-
-export function getAvailableActions({ player, diceResult }) {
-  let availableActions = [];
-  const diceAnalization = analyzeDiceResult(diceResult);
-
-  // bench action
-  if (diceAnalization.canMoveBench) {
-    availableActions.push({
-      from: -1,
-      to: 0
-    });
-  }
-
-  // inGame actions
-  const playerMarblesInGame = store.getters["marbles/listInGameByPlayer"](player);
-  console.log("playerMarblesInGame", playerMarblesInGame);
-  return availableActions;
-}
-
-function getPositionInPath(marble, player) {
-  const sidePath = store.getters["steps/allPaths"]({ side: player.side });
-  // console.log("sidePath", sidePath);
-  sidePath.forEach(step => {
-    console.log("step, marble", step, marble);
-    if (step[0] === marble.row && step[1] === marble.column) {
-      return step;
-    }
-  });
-  return null;
-}
-
-export function prepareMoveMarble({ player, diceResult }) {
-  console.log("prepareMoveMarble --- side:", player.side);
-  const marbles = store.getters["marbles/list"];
-  const playerMarbles = store.getters["marbles/listByPlayer"](player);
-  // const playerPath = store.getters["steps/allPaths"]({ side: player.side });
-
-  console.log("marbles", marbles);
-  console.log("playerMarbles", playerMarbles);
-  return {
-    // shouldWaitForAction
-  };
 }

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import store from "@/store/index.ts";
+import store from "@/store/index";
 import Marble from "@/components/Marble.vue";
 import { Vue, Component } from "vue-property-decorator";
 
