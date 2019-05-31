@@ -10,21 +10,21 @@ export function getDistance(position1: PositionInBoard, position2: PositionInBoa
   const index1 = playerPath.findIndex((step: StepPlace) =>
     isSameStep({ row: step[0], column: step[1] }, position1)
   );
-  
+
   const index2 = playerPath.findIndex((step: StepPlace) =>
-  isSameStep({ row: step[0], column: step[1] }, position2)
+    isSameStep({ row: step[0], column: step[1] }, position2)
   );
   return index2 - index1;
 }
 
-export function getPositionOfStep(step: StepPlace) {
+export function getPositionOfStep(step: StepPlace): PositionInBoard {
   return {
     row: step[0],
     column: step[1]
   };
 }
 
-export function getPositionOfMarble(marble: Marble) {
+export function getPositionOfMarble(marble: Marble): PositionInBoard {
   return {
     row: marble.row,
     column: marble.column
@@ -33,13 +33,13 @@ export function getPositionOfMarble(marble: Marble) {
 
 export function getPositionAfterMove({
   position,
-  diceResult,
+  amount,
   player
 }: {
   position: PositionInBoard;
-  diceResult: number;
+  amount: number;
   player: Player;
-}) {
+}): PositionInBoard {
   const playerPath = store.getters["steps/allPaths"](player);
   const positionIndex = playerPath.findIndex((step: StepPlace) => {
     return step[0] === position.row && step[1] === position.column;
@@ -47,8 +47,9 @@ export function getPositionAfterMove({
   // console.log("playerPath", playerPath);
   // console.log("positionIndex", positionIndex);
 
-  if (playerPath.length >= positionIndex + diceResult) {
-    return playerPath[positionIndex + diceResult];
+  if (playerPath.length >= positionIndex + amount) {
+    const step = playerPath[positionIndex + amount];
+    return getPositionOfStep(step);
   }
   throw Error("Out of path range");
 }

@@ -1,6 +1,6 @@
 import store from "@/store/index";
 import { analyzeResult } from "./dice";
-import { MoveAction, DiceAnalization, Player, Marble } from "@/types/types";
+import { MoveAction, DiceAnalization, Player, Marble, PositionInBoard } from "@/types/types";
 import { getDistance, getPositionOfMarble, getPositionAfterMove, getPositionOfStep } from "./path";
 
 export function getAvailableActions({ player, diceResult }: { player: Player; diceResult: number }) {
@@ -30,27 +30,31 @@ function _getBenchActions(diceAnalization: DiceAnalization, player: Player): Mov
   return availableActions;
 }
 
-function _getInGameActions(diceAnalization: DiceAnalization, player: Player): MoveAction {
+function _getInGameActions(diceAnalization: DiceAnalization, player: Player): MoveAction[] {
   const availableActions: MoveAction[] = [];
   const playerMarblesInGame = store.getters["marbles/listInGameByPlayer"](player);
 
   playerMarblesInGame.forEach((marble: Marble) => {
-    const marblePosition = getPositionOfMarble(marble);
-    const lastStepPosition = getPositionOfStep(store.getters["steps/sideLastpoint"](player));
+    const marblePosition: PositionInBoard = getPositionOfMarble(marble);
+    const lastStepPosition: PositionInBoard = getPositionOfStep(store.getters["steps/sideLastpoint"](player));
 
-    const distance = getDistance(marblePosition, lastStepPosition, player);
+    const distance: number = getDistance(marblePosition, lastStepPosition, player);
     console.log("distance", distance);
 
-    if (distance <= diceAnalization.value) {
-      // const action = getPositionAfterMove({
-      //   position: marblePosition,
-      //   diceResult: diceAnalization.value,
-      //   player
-      // });
-      // console.log('action::::', action);
-      // availableActions.push(action);
+    if (diceAnalization.value <= distance) {
+      const action: MoveAction = {
+        from: marblePosition,
+        to: getPositionAfterMove({
+          position: marblePosition,
+          amount: diceAnalization.value,
+          player
+        })
+      };
+      availableActions.push(action);
     }
   });
+  console.log("availableActions", availableActions);
+
   return availableActions;
 }
 

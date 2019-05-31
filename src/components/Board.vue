@@ -97,7 +97,7 @@ export default class BoardComponent extends Vue {
       player: this.playerTurn,
       diceResult
     });
-    console.log("availableActions", availableActions);
+    // console.log("availableActions", availableActions);
     prepareMoveMarble({
       player: this.playerTurn,
       diceResult: this.diceResult
