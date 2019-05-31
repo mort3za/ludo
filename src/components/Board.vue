@@ -92,9 +92,10 @@ export default class BoardComponent extends Vue {
 
   playTurn() {
     const diceResult = this.getDice();
+    
     const availableActions = getAvailableActions({
       player: this.playerTurn,
-      diceResult: this.diceResult
+      diceResult
     });
     console.log("availableActions", availableActions);
     prepareMoveMarble({
@@ -105,9 +106,12 @@ export default class BoardComponent extends Vue {
     //   store.dispatch("marbles/moveTo", { id: 1, row: 5, column: 10 });
     // }, 1000);
   }
-  getDice() {
-    return Math.ceil(Math.random() * 6);
+
+  getDice(): number {
+    const result = Math.ceil(Math.random() * 6);
+    return result;
   }
+
   setStatus(status) {
     this.status = status;
   }

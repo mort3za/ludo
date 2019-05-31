@@ -38,7 +38,7 @@ export default {
       [10, 6, 1, [StepType.ENDPOINT]],
       [9, 6, 1, [StepType.ENDPOINT]],
       [8, 6, 1, [StepType.ENDPOINT]],
-      [7, 6, 1, [StepType.ENDPOINT]],
+      [7, 6, 1, [StepType.ENDPOINT, StepType.LASTPOINT]],
 
       // side 2
       [1, 1, 2, [StepType.BENCH]],
@@ -58,7 +58,7 @@ export default {
       [6, 2, 2, [StepType.ENDPOINT]],
       [6, 3, 2, [StepType.ENDPOINT]],
       [6, 4, 2, [StepType.ENDPOINT]],
-      [6, 5, 2, [StepType.ENDPOINT]],
+      [6, 5, 2, [StepType.ENDPOINT, StepType.LASTPOINT]],
 
       // side 3
       [1, 10, 3, [StepType.BENCH]],
@@ -78,7 +78,7 @@ export default {
       [2, 6, 3, [StepType.ENDPOINT]],
       [3, 6, 3, [StepType.ENDPOINT]],
       [4, 6, 3, [StepType.ENDPOINT]],
-      [5, 6, 3, [StepType.ENDPOINT]],
+      [5, 6, 3, [StepType.ENDPOINT, StepType.LASTPOINT]],
 
       // side 4
       [10, 10, 4, [StepType.BENCH]],
@@ -98,7 +98,7 @@ export default {
       [6, 10, 4, [StepType.ENDPOINT]],
       [6, 9, 4, [StepType.ENDPOINT]],
       [6, 8, 4, [StepType.ENDPOINT]],
-      [6, 7, 4, [StepType.ENDPOINT]]
+      [6, 7, 4, [StepType.ENDPOINT, StepType.LASTPOINT]]
     ]
   },
   getters: {
@@ -110,6 +110,9 @@ export default {
     },
     sideEndpoints: state => ({ side }: Player) => {
       return state.list.filter((step: StepPlace) => step[2] === side && step[3].includes(StepType.ENDPOINT));
+    },
+    sideLastpoint: state => ({ side }: Player) => {
+      return state.list.find((step: StepPlace) => step[2] === side && step[3].includes(StepType.LASTPOINT));
     },
     sideSteps: (state, getters) => ({ side }: Player) => {
       return [...getters.sideCommons({ side }), ...getters.sideEndpoints({ side })];

@@ -1,19 +1,60 @@
 import store from "@/store/index";
-import { StepPlace, PositionInBoard } from "@/types/types";
+import { StepPlace, PositionInBoard, Marble, Player } from "@/types/types";
 
-export function getDistance(position1: PositionInBoard, position2: PositionInBoard): number {
-  const allSteps = store.getters["steps/allSteps"];
-  const index1 = allSteps.findIndex(
-    (step: StepPlace) => step[0] === position1.row && step[1] === position1.column
+export function isSameStep(position1: PositionInBoard, position2: PositionInBoard) {
+  return position1.row === position2.row && position1.column === position2.column;
+}
+
+export function getDistance(position1: PositionInBoard, position2: PositionInBoard, player: Player): number {
+  const playerPath = store.getters["steps/allPaths"](player);
+  const index1 = playerPath.findIndex((step: StepPlace) =>
+    isSameStep({ row: step[0], column: step[1] }, position1)
   );
-  const index2 = allSteps.findIndex(
-    (step: StepPlace) => step[0] === position2.row && step[1] === position2.column
+  
+  const index2 = playerPath.findIndex((step: StepPlace) =>
+  isSameStep({ row: step[0], column: step[1] }, position2)
   );
   return index2 - index1;
 }
 
+export function getPositionOfStep(step: StepPlace) {
+  return {
+    row: step[0],
+    column: step[1]
+  };
+}
+
+export function getPositionOfMarble(marble: Marble) {
+  return {
+    row: marble.row,
+    column: marble.column
+  };
+}
+
+export function getPositionAfterMove({
+  position,
+  diceResult,
+  player
+}: {
+  position: PositionInBoard;
+  diceResult: number;
+  player: Player;
+}) {
+  const playerPath = store.getters["steps/allPaths"](player);
+  const positionIndex = playerPath.findIndex((step: StepPlace) => {
+    return step[0] === position.row && step[1] === position.column;
+  });
+  // console.log("playerPath", playerPath);
+  // console.log("positionIndex", positionIndex);
+
+  if (playerPath.length >= positionIndex + diceResult) {
+    return playerPath[positionIndex + diceResult];
+  }
+  throw Error("Out of path range");
+}
+
 // export function getPositionInPath(marble, player) {
-//   const sidePath = store.getters["steps/allPaths"]({ side: player.side });
+//   const sidePath = store.getters["steps/allPaths"](player);
 //   // console.log("sidePath", sidePath);
 //   sidePath.forEach(step => {
 //     console.log("step, marble", step, marble);
