@@ -1,4 +1,6 @@
-const initialList = [
+import { Player, Marble, PositionInBoard } from "@/types/types";
+
+const initialList: Marble[] = [
   // side 1
   // FIXME: isInGame => false please
   { id: 1, row: 11, column: 1, side: 1, isInGame: true, isAtEnd: false },
@@ -29,14 +31,14 @@ export default {
     initialList
   },
   mutations: {
-    updateIsInGame(state, { id, isInGame }) {
-      const index = state.list.findIndex(_item => _item.id === id);
+    updateIsInGame(state, { id, isInGame }: Marble) {
+      const index = state.list.findIndex((m: Marble) => m.id === id);
       state.list[index].isInGame = isInGame;
     },
-    moveTo(state, { id, row, column }) {
-      const index = state.list.findIndex(_item => _item.id === id);
-      state.list[index].row = row;
-      state.list[index].column = column;
+    moveTo(state, { marble, destination }: { marble: Marble; destination: PositionInBoard }) {
+      const index = state.list.findIndex((m: Marble) => m.id === marble.id);
+      state.list[index].row = destination.row;
+      state.list[index].column = destination.column;
     },
     reset(state) {
       state.list = [...initialList];
@@ -57,20 +59,20 @@ export default {
     list(state) {
       return state.list;
     },
-    listByPlayer: (state, getters) => player => {
-      return getters.list.filter(item => item.side === player.side);
+    listByPlayer: (state, getters) => (player: Player) => {
+      return getters.list.filter((m: Marble) => m.side === player.side);
     },
     listInGame(state, getters) {
-      return getters.list.filter(item => item.isInGame === true);
+      return getters.list.filter((m: Marble) => m.isInGame === true);
     },
     listInBench(state, getters) {
-      return getters.list.filter(item => item.isInGame === false);
+      return getters.list.filter((m: Marble) => m.isInGame === false);
     },
-    listInGameByPlayer: (state, getters) => player => {
-      return getters.list.filter(item => item.side === player.side && item.isInGame === true);
+    listInGameByPlayer: (state, getters) => (player: Player) => {
+      return getters.list.filter((m: Marble) => m.side === player.side && m.isInGame === true);
     },
-    listInBenchByPlayer: (state, getters) => player => {
-      return getters.list.filter(item => item.side === player.side && item.isInGame === false);
+    listInBenchByPlayer: (state, getters) => (player: Player) => {
+      return getters.list.filter((m: Marble) => m.side === player.side && m.isInGame === false);
     }
   }
 };

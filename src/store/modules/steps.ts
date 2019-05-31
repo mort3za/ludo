@@ -14,11 +14,7 @@ bench 1          |          bench 4
 Every step is in [row, column, side, step type] format
 */
 
-enum StepType {
-  BENCH = 0,
-  COMMON = 1,
-  ENDPOINT = 2
-}
+import { StepType, Player, StepPlace } from "@/types/types";
 
 export default {
   namespaced: true,

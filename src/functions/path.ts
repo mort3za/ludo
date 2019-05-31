@@ -1,4 +1,5 @@
 import store from "@/store/index";
+import { StepPlace, PositionInBoard } from "@/types/types";
 
 export function getDistance(position1: PositionInBoard, position2: PositionInBoard): number {
   const allSteps = store.getters["steps/allSteps"];

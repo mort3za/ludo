@@ -1,5 +1,6 @@
 import store from "@/store/index";
 import { analyzeResult } from "./dice";
+import { MoveAction, DiceAnalization, Player } from "@/types/types";
 
 export function getAvailableActions({ player, diceResult }: { player: Player; diceResult: number }) {
   const availableActions: MoveAction[] = [];

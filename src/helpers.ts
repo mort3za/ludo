@@ -1,4 +1,3 @@
-// tslint:disable-next-line
 import store from "@/store/index";
 
 export function generateSteps() {

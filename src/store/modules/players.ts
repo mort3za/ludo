@@ -1,3 +1,5 @@
+import { Player } from '@/types/types';
+
 export default {
   namespaced: true,
   state: {
@@ -16,8 +18,8 @@ export default {
     }
   },
   actions: {
-    updateIsInGame({ commit }, payload) {
-      commit("updateIsInGame", payload);
+    updateIsInGame({ commit }, player: Player) {
+      commit("updateIsInGame", player);
     },
     updateIsInGameAll({ commit, getters }, { isInGame }: Player) {
       const playersList = getters.list;
