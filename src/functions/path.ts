@@ -1,9 +1,7 @@
 import store from "@/store/index";
 import { StepPlace, PositionInBoard, Marble, Player } from "@/types/types";
+import { isSameStep, getPositionOfStep } from '@/helpers';
 
-export function isSameStep(position1: PositionInBoard, position2: PositionInBoard) {
-  return position1.row === position2.row && position1.column === position2.column;
-}
 
 export function getDistance(position1: PositionInBoard, position2: PositionInBoard, player: Player): number {
   const playerPath = store.getters["steps/allPaths"](player);
@@ -15,20 +13,6 @@ export function getDistance(position1: PositionInBoard, position2: PositionInBoa
     isSameStep({ row: step[0], column: step[1] }, position2)
   );
   return index2 - index1;
-}
-
-export function getPositionOfStep(step: StepPlace): PositionInBoard {
-  return {
-    row: step[0],
-    column: step[1]
-  };
-}
-
-export function getPositionOfMarble(marble: Marble): PositionInBoard {
-  return {
-    row: marble.row,
-    column: marble.column
-  };
 }
 
 export function getPositionAfterMove({

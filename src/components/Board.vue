@@ -13,7 +13,9 @@ import Road from "@/components/Road.vue";
 import Marbles from "@/components/Marbles.vue";
 import {
   getAvailableActions,
-  prepareMoveMarble
+  prepareMoveMarble,
+  chooseAction,
+  hasMultipleAvailableActions
 } from "@/functions/move-actions";
 import { Vue, Component } from "vue-property-decorator";
 import { Player } from "@/types/types";
@@ -92,12 +94,22 @@ export default class BoardComponent extends Vue {
 
   playTurn() {
     const diceResult = this.getDice();
-    
+
     const availableActions = getAvailableActions({
       player: this.playerTurn,
       diceResult
     });
-    // console.log("availableActions", availableActions);
+    console.log("availableActions", availableActions);
+
+    // TODO: if is AI, move. If isn't AI wait onclick marble
+    if (
+      this.playerTurn.isAI ||
+      !hasMultipleAvailableActions(availableActions)
+    ) {
+      const moveAction = chooseAction(availableActions);
+      store.dispatch("marbles/moveToByAction", moveAction);
+    }
+
     prepareMoveMarble({
       player: this.playerTurn,
       diceResult: this.diceResult

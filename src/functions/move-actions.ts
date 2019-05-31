@@ -1,7 +1,8 @@
 import store from "@/store/index";
 import { analyzeResult } from "./dice";
-import { MoveAction, DiceAnalization, Player, Marble, PositionInBoard } from "@/types/types";
-import { getDistance, getPositionOfMarble, getPositionAfterMove, getPositionOfStep } from "./path";
+import { MoveAction, DiceAnalization, Player, Marble, PositionInBoard, MoveType } from "@/types/types";
+import { getDistance, getPositionAfterMove } from "./path";
+import { getPositionOfMarble, getPositionOfStep } from '@/helpers';
 
 export function getAvailableActions({ player, diceResult }: { player: Player; diceResult: number }) {
   const availableActions: MoveAction[] = [];
@@ -9,9 +10,13 @@ export function getAvailableActions({ player, diceResult }: { player: Player; di
 
   availableActions.push(..._getBenchActions(diceAnalization, player));
   availableActions.push(..._getInGameActions(diceAnalization, player));
-  console.log("availableActions", availableActions);
 
   return availableActions;
+}
+
+export function chooseAction(actions: MoveAction[]): MoveAction {
+  // TODO: implement logic
+  return actions[0];
 }
 
 function _getBenchActions(diceAnalization: DiceAnalization, player: Player): MoveAction[] {
@@ -27,7 +32,8 @@ function _getBenchActions(diceAnalization: DiceAnalization, player: Player): Mov
     playerMarblesInBench.forEach((marble: Marble) => {
       const action: MoveAction = {
         from: getPositionOfMarble(marble),
-        to: getPositionOfStep(sideStartpointStep)
+        to: getPositionOfStep(sideStartpointStep),
+        type: MoveType.BENCH
       };
       availableActions.push(action);
     });
@@ -53,7 +59,8 @@ function _getInGameActions(diceAnalization: DiceAnalization, player: Player): Mo
           position: marblePosition,
           amount: diceAnalization.value,
           player
-        })
+        }),
+        type: MoveType.IN_GAME
       };
       availableActions.push(action);
     }
@@ -72,4 +79,11 @@ export function prepareMoveMarble({ player, diceResult }: { player: Player; dice
   return {
     // shouldWaitForAction
   };
+}
+
+export function hasMultipleAvailableActions(actions: MoveAction[]): boolean {
+  const benchMoveCount = actions.filter(action => action.type === MoveType.BENCH).length;
+  const inGameMoveAcount = actions.filter(action => action.type === MoveType.IN_GAME).length;
+  const total = inGameMoveAcount + (benchMoveCount > 0 ? 1 : 0);
+  return total > 1;
 }

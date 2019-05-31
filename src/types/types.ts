@@ -15,6 +15,7 @@ export interface Player {
 export interface MoveAction {
   from: PositionInBoard;
   to: PositionInBoard;
+  type: MoveType
 }
 
 type Row = number; // between 0 and 10
@@ -46,4 +47,9 @@ export interface Marble {
   side: Side;
   isInGame: boolean;
   isAtEnd: boolean;
+}
+
+export enum MoveType {
+  BENCH = 0,
+  IN_GAME = 2
 }
