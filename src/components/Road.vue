@@ -3,11 +3,11 @@
     <div class="grid">
       <template v-for="step in steps">
         <Step
-          :style="{'grid-row-start': step.row, 'grid-column-start': step.column}"
-          :type="step.type"
-          :row="step.row"
-          :column="step.column"
-          :key="`${step.side}-${step.row}-${step.column}`"
+          :style="{'grid-row-start': step[0], 'grid-column-start': step[1]}"
+          :types="step[3]"
+          :row="step[0]"
+          :column="step[1]"
+          :key="`${step[0]}-${step[1]}-${step[2]}`"
         />
       </template>
     </div>
@@ -15,8 +15,8 @@
 </template>
 
 <script>
+import store from "@/store/index";
 import Step from "@/components/Step.vue";
-import { generateSteps } from "@/helpers";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component({
@@ -27,8 +27,8 @@ import { Vue, Component } from "vue-property-decorator";
 export default class Road extends Vue {
   data() {
     return {
-      steps: generateSteps()
-    };
+      steps: store.getters["steps/allSteps"]
+    }
   }
 }
 </script>

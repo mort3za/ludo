@@ -23,10 +23,12 @@ type Side = number;
 export enum StepType {
   BENCH = 0,
   COMMON = 1,
-  ENDPOINT = 2
+  ENDPOINT = 2,
+  STARTPOINT = 3,
+  SAFEZONE = 4
 }
 
-export type StepPlace = [Row, Column, Side, StepType];
+export type StepPlace = [Row, Column, Side, StepType[]];
 
 export interface DiceAnalization {
   canMoveBench: boolean;

@@ -15,8 +15,8 @@ import { Vue, Component } from "vue-property-decorator";
       type: Number,
       required: true
     },
-    type: {
-      type: String,
+    types: {
+      type: Array[Number],
       required: true
     }
   }
@@ -46,6 +46,8 @@ export default class Step extends Vue {}
   border: rem(2px) solid $brand-4;
 }
 
+// .is-bench {}
+// .is-startpoint {}
+// .is-common {}
 // .is-endpoint {}
-// .is-normal {}
 </style>
