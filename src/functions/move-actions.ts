@@ -9,6 +9,7 @@ export function getAvailableActions({ player, diceResult }: { player: Player; di
 
   availableActions.push(..._getBenchActions(diceAnalization, player));
   availableActions.push(..._getInGameActions(diceAnalization, player));
+  console.log("availableActions", availableActions);
 
   return availableActions;
 }
@@ -17,15 +18,19 @@ function _getBenchActions(diceAnalization: DiceAnalization, player: Player): Mov
   const availableActions: MoveAction[] = [];
   const playerMarblesInBench = store.getters["marbles/listInBenchByPlayer"](player);
   const hasAnyBenchMarbles = playerMarblesInBench.length > 0;
+
   if (!hasAnyBenchMarbles) {
     return availableActions;
   }
   if (diceAnalization.canMoveBench) {
-    const action: MoveAction = {
-      from: { row: -1, column: -1 },
-      to: { row: 0, column: 0 }
-    };
-    availableActions.push(action);
+    const sideStartpointStep = store.getters["steps/sideStartpoint"](player);
+    playerMarblesInBench.forEach((marble: Marble) => {
+      const action: MoveAction = {
+        from: getPositionOfMarble(marble),
+        to: getPositionOfStep(sideStartpointStep)
+      };
+      availableActions.push(action);
+    });
   }
   return availableActions;
 }
@@ -53,8 +58,6 @@ function _getInGameActions(diceAnalization: DiceAnalization, player: Player): Mo
       availableActions.push(action);
     }
   });
-  console.log("availableActions", availableActions);
-
   return availableActions;
 }
 

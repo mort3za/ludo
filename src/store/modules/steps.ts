@@ -114,6 +114,9 @@ export default {
     sideLastpoint: state => ({ side }: Player) => {
       return state.list.find((step: StepPlace) => step[2] === side && step[3].includes(StepType.LASTPOINT));
     },
+    sideStartpoint: state => ({ side }: Player) => {
+      return state.list.find((step: StepPlace) => step[2] === side && step[3].includes(StepType.STARTPOINT));
+    },
     sideSteps: (state, getters) => ({ side }: Player) => {
       return [...getters.sideCommons({ side }), ...getters.sideEndpoints({ side })];
     },

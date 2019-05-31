@@ -42,7 +42,7 @@ export default {
       state.list[index].row = destination.row;
       state.list[index].column = destination.column;
     },
-    reset(state) {
+    reset(state) {      
       state.list = [...initialList];
     }
   },
