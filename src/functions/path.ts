@@ -1,9 +1,13 @@
 import store from "@/store/index";
 
-export function getDistance(position1: Position, position2: Position) {
+export function getDistance(position1: PositionInBoard, position2: PositionInBoard): number {
   const allSteps = store.getters["steps/allSteps"];
-  const index1 = allSteps.findIndex(step => step[0] === position1.row && step[1] === position1.column);
-  const index2 = allSteps.findIndex(step => step[0] === position2.row && step[1] === position2.column);
+  const index1 = allSteps.findIndex(
+    (step: StepPlace) => step[0] === position1.row && step[1] === position1.column
+  );
+  const index2 = allSteps.findIndex(
+    (step: StepPlace) => step[0] === position2.row && step[1] === position2.column
+  );
   return index2 - index1;
 }
 

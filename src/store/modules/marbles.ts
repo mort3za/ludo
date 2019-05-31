@@ -63,10 +63,14 @@ export default {
     listInGame(state, getters) {
       return getters.list.filter(item => item.isInGame === true);
     },
+    listInBench(state, getters) {
+      return getters.list.filter(item => item.isInGame === false);
+    },
     listInGameByPlayer: (state, getters) => player => {
-      return getters.list.filter(
-        item => item.side === player.side && item.isInGame === true
-      );
+      return getters.list.filter(item => item.side === player.side && item.isInGame === true);
+    },
+    listInBenchByPlayer: (state, getters) => player => {
+      return getters.list.filter(item => item.side === player.side && item.isInGame === false);
     }
   }
 };

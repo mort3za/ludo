@@ -1,4 +1,3 @@
-// tslint:disable-next-line
 import store from "@/store/index";
 import { analyzeResult } from "./dice";
 
@@ -6,7 +5,19 @@ export function getAvailableActions({ player, diceResult }: { player: Player; di
   const availableActions: MoveAction[] = [];
   const diceAnalization = analyzeResult(diceResult);
 
-  // bench action
+  availableActions.push(..._getBenchActions(diceAnalization, player));
+  availableActions.push(..._getInGameActions(diceAnalization, player));
+
+  return availableActions;
+}
+
+function _getBenchActions(diceAnalization: DiceAnalization, player: Player): MoveAction[] {
+  const availableActions: MoveAction[] = [];
+  const playerMarblesInBench = store.getters["marbles/listInBenchByPlayer"](player);
+  const hasAnyBenchMarbles = playerMarblesInBench.length > 0;
+  if (!hasAnyBenchMarbles) {
+    return availableActions;
+  }
   if (diceAnalization.canMoveBench) {
     const action: MoveAction = {
       from: { row: -1, column: -1 },
@@ -14,10 +25,15 @@ export function getAvailableActions({ player, diceResult }: { player: Player; di
     };
     availableActions.push(action);
   }
+  return availableActions;
+}
 
-  // inGame actions
+function _getInGameActions(diceAnalization: DiceAnalization, player: Player): MoveAction {
+  const availableActions: MoveAction = [];
   const playerMarblesInGame = store.getters["marbles/listInGameByPlayer"](player);
-  console.log("playerMarblesInGame", playerMarblesInGame);
+  // playerMarblesInGame.forEach(marble => {
+
+  // });
   return availableActions;
 }
 

@@ -1,7 +1,8 @@
+// tslint:disable-next-line
 import store from "@/store/index";
 
 export function generateSteps() {
-  let steps = [];
+  const steps = [];
   for (let i = 1; i <= 14; i++) {
     const type = _getStepType(i);
     steps.push({
@@ -59,7 +60,7 @@ export function generateSteps() {
   return steps;
 }
 
-function _getStepType(index) {
+function _getStepType(index: number) {
   if (index >= 2 && index <= 10) {
     return "normal";
   } else if (index > 10) {
