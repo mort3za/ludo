@@ -7,12 +7,16 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
 import store from "@/store/index";
 import Road from "@/components/Road.vue";
 import Marbles from "@/components/Marbles.vue";
-import { getAvailableActions, prepareMoveMarble } from "@/functions/move-actions";
+import {
+  getAvailableActions,
+  prepareMoveMarble
+} from "@/functions/move-actions";
 import { Vue, Component } from "vue-property-decorator";
+import { Player } from "@/types/types";
 
 const PLAYING_STATUS = {
   LOADING: 1,
@@ -27,12 +31,18 @@ const PLAYING_STATUS = {
   },
   props: {}
 })
-export default class Board extends Vue {
-  data() {
+export default class BoardComponent extends Vue {
+  data(): {
+    players: Player[];
+    status: null;
+    playerTurn: Player | null;
+    diceResult: number | null;
+  } {
     return {
       players: [],
       status: null,
-      playerTurn: null
+      playerTurn: null,
+      diceResult: null
     };
   }
 
@@ -57,7 +67,6 @@ export default class Board extends Vue {
     this.setStatus(PLAYING_STATUS.WAITING_FOR_ACTION);
   }
   addPlayers() {
-    // FIXME: isInGame: true => temporary
     store.dispatch("players/add", { isAI: false, color: "red" });
     store.dispatch("players/add", { isAI: true, color: "green" });
     store.dispatch("players/add", { isAI: true, color: "blue" });
@@ -67,11 +76,12 @@ export default class Board extends Vue {
   }
   setPlayerTurn() {
     if (!this.playerTurn) {
+      // TODO: make it random
       this.playerTurn = this.playersInGame[0];
       return;
     }
     const currentPlayerTurnIndex = this.playersInGame.findIndex(
-      item => item.id === this.playerTurn.id
+      (player: Player) => player.id === this.playerTurn.id
     );
     const currentIsLast =
       currentPlayerTurnIndex + 1 === this.playersInGame.length;
@@ -81,7 +91,7 @@ export default class Board extends Vue {
   }
 
   playTurn() {
-    const diceResult = this.getDice(this.playerTurn);
+    const diceResult = this.getDice();
     const availableActions = getAvailableActions({
       player: this.playerTurn,
       diceResult: this.diceResult

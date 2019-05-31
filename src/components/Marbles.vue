@@ -1,24 +1,25 @@
 <template>
   <div class="marbles">
-    <Marble :model="item" v-for="item in items" :key="item.id"/>
+    <Marble :model="item" v-for="item in list" :key="item.id"/>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import store from "@/store/index";
-import Marble from "@/components/Marble.vue";
+import MarbleComponent from "@/components/Marble.vue";
 import { Vue, Component } from "vue-property-decorator";
+import { Marble } from '../types/types';
 
 @Component({
   components: {
-    Marble
+    Marble: MarbleComponent
   }
 })
-export default class Marbles extends Vue {
-  get items() {
+export default class MarblesComponent extends Vue {
+  get list() {
     const list = store.getters["marbles/list"];
-    list.map(item => {
-      item.player = store.getters["players/itemBySide"](item.side);
+    list.map((marble: Marble) => {
+      marble.player = store.getters["players/itemBySide"](marble.side);
     });
     return list;
   }

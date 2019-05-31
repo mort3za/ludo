@@ -2,34 +2,19 @@
   <span :class="`is-side-${model.side}`" class="marble d-block" :style="getStyle()"></span>
 </template>
 
-<script>
+<script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { Marble, PositionInBoard } from "@/types/types";
 
 @Component({
   props: {
     model: {
-      type: Object,
+      type: Object as () => Marble,
       required: true
     }
   }
 })
-export default class Marble extends Vue {
-  get isAtEnd() {
-    // TODO:
-  }
-  get isInGame() {
-    // TODO:
-  }
-
-  moveToPosition({ row, column }) {
-    // TODO:
-  }
-  goToGame() {
-    // TODO:
-  }
-  goOutOfGame() {
-    // TODO:
-  }
+export default class MarbleComponent extends Vue {
   getStyle() {
     return {
       transform: `

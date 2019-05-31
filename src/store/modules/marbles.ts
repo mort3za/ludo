@@ -2,9 +2,8 @@ import { Player, Marble, PositionInBoard } from "@/types/types";
 
 const initialList: Marble[] = [
   // side 1
-  // FIXME: isInGame => false please
-  { id: 1, row: 11, column: 1, side: 1, isInGame: true, isAtEnd: false },
-  { id: 2, row: 11, column: 2, side: 1, isInGame: true, isAtEnd: false },
+  { id: 1, row: 11, column: 1, side: 1, isInGame: false, isAtEnd: false },
+  { id: 2, row: 11, column: 2, side: 1, isInGame: false, isAtEnd: false },
   { id: 3, row: 10, column: 1, side: 1, isInGame: false, isAtEnd: false },
   { id: 4, row: 10, column: 2, side: 1, isInGame: false, isAtEnd: false },
   // side 2

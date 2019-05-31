@@ -2,8 +2,9 @@
   <span class="d-flex step justify-content-center align-content-center font-size-sm"></span>
 </template>
 
-<script>
+<script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
+import { StepType } from '../types/types';
 
 @Component({
   props: {
@@ -16,12 +17,12 @@ import { Vue, Component } from "vue-property-decorator";
       required: true
     },
     types: {
-      type: Array[Number],
+      type: Array as () => StepType[],
       required: true
     }
   }
 })
-export default class Step extends Vue {}
+export default class StepComponent extends Vue {}
 </script>
 
 <style lang="scss" scoped>

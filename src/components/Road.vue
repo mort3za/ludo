@@ -14,20 +14,21 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import store from "@/store/index";
 import Step from "@/components/Step.vue";
 import { Vue, Component } from "vue-property-decorator";
+import {StepPlace} from "@/types/types"
 
 @Component({
   components: {
     Step
   }
 })
-export default class Road extends Vue {
+export default class RoadComponent extends Vue {
   data() {
     return {
-      steps: store.getters["steps/allSteps"]
+      steps: store.getters["steps/allSteps"] as StepPlace[]
     }
   }
 }
