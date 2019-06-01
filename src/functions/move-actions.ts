@@ -2,9 +2,18 @@ import store from "@/store/index";
 import { analyzeResult } from "./dice";
 import { MoveAction, DiceAnalization, Player, Marble, PositionInBoard, MoveType } from "@/types/types";
 import { getDistance, getPositionAfterMove } from "./path";
-import { getPositionOfMarble, getPositionOfStep } from '@/helpers';
+import { getPositionOfMarble, getPositionOfStep } from "@/helpers";
 
-export function getAvailableActions({ player, diceResult }: { player: Player; diceResult: number }) {
+/**
+ * Find all available moves
+ */
+export function getAvailableActions({
+  player,
+  diceResult
+}: {
+  player: Player;
+  diceResult: number;
+}): MoveAction[] {
   const availableActions: MoveAction[] = [];
   const diceAnalization = analyzeResult(diceResult);
 
@@ -14,6 +23,9 @@ export function getAvailableActions({ player, diceResult }: { player: Player; di
   return availableActions;
 }
 
+/**
+ * Choose best action through available actions
+ */
 export function chooseAction(actions: MoveAction[]): MoveAction {
   // TODO: implement logic
   return actions[0];
@@ -33,7 +45,8 @@ function _getBenchActions(diceAnalization: DiceAnalization, player: Player): Mov
       const action: MoveAction = {
         from: getPositionOfMarble(marble),
         to: getPositionOfStep(sideStartpointStep),
-        type: MoveType.BENCH
+        type: MoveType.BENCH,
+        marble
       };
       availableActions.push(action);
     });
@@ -60,25 +73,13 @@ function _getInGameActions(diceAnalization: DiceAnalization, player: Player): Mo
           amount: diceAnalization.value,
           player
         }),
-        type: MoveType.IN_GAME
+        type: MoveType.IN_GAME,
+        marble
       };
       availableActions.push(action);
     }
   });
   return availableActions;
-}
-
-export function prepareMoveMarble({ player, diceResult }: { player: Player; diceResult: number }) {
-  // console.log("prepareMoveMarble --- side:", player.side);
-  const marbles = store.getters["marbles/list"];
-  const playerMarbles = store.getters["marbles/listByPlayer"](player);
-  // const playerPath = store.getters["steps/allPaths"]({ side: player.side });
-
-  // console.log("marbles", marbles);
-  // console.log("playerMarbles", playerMarbles);
-  return {
-    // shouldWaitForAction
-  };
 }
 
 export function hasMultipleAvailableActions(actions: MoveAction[]): boolean {

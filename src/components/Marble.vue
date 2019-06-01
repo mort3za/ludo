@@ -1,5 +1,7 @@
 <template>
-  <span :class="`is-side-${model.side}`" class="marble d-block" :style="getStyle()"></span>
+  <span class="marble-w" :style="getStyle()">
+    <span class="marble d-block" :class="[`is-side-${model.side}`, {moveable: model.moveable}]"></span>
+  </span>
 </template>
 
 <script lang="ts">
@@ -27,6 +29,10 @@ export default class MarbleComponent extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.marble-w {
+  position: absolute;
+  transition: transform 1s ease;
+}
 .marble {
   width: rem(40px);
   height: rem(40px);
@@ -34,8 +40,7 @@ export default class MarbleComponent extends Vue {
   box-shadow: rem(2px 2px 2px) $gray-60;
   background: $light url("../assets/img/flower.svg") no-repeat center;
   background-size: rem(32px);
-  position: absolute;
-  transition: transform 1s ease;
+  // will-change: transform;
 }
 .is-side-1 {
   background-color: $brand-1;
@@ -48,5 +53,28 @@ export default class MarbleComponent extends Vue {
 }
 .is-side-4 {
   background-color: $brand-4;
+}
+
+.moveable {
+  animation: 1s moving infinite reverse linear;
+}
+
+$move-amount: rem(4px);
+@keyframes moving {
+  0% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY($move-amount);
+  }
+  50% {
+    transform: translateY(0);
+  }
+  75% {
+    transform: translateY(-$move-amount);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 </style>

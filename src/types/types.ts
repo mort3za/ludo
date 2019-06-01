@@ -15,7 +15,8 @@ export interface Player {
 export interface MoveAction {
   from: PositionInBoard;
   to: PositionInBoard;
-  type: MoveType
+  type: MoveType,
+  marble: Marble
 }
 
 type Row = number; // between 0 and 10
@@ -38,15 +39,14 @@ export interface DiceAnalization {
   hasReward: boolean;
 }
 
-type MarbleId = number;
-
 export interface Marble {
-  id: MarbleId;
+  id: number;
   row: Row;
   column: Column;
   side: Side;
   isInGame: boolean;
   isAtEnd: boolean;
+  moveable: boolean;
 }
 
 export enum MoveType {

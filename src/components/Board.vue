@@ -14,12 +14,11 @@ import Road from "@/components/Road.vue";
 import Marbles from "@/components/Marbles.vue";
 import {
   getAvailableActions,
-  prepareMoveMarble,
   chooseAction,
   hasMultipleAvailableActions
 } from "@/functions/move-actions";
 import { Vue, Component } from "vue-property-decorator";
-import { Player, MoveAction } from "@/types/types";
+import { Player, MoveAction, Marble } from "@/types/types";
 
 const PLAYING_STATUS = {
   LOADING: 1,
@@ -99,7 +98,7 @@ export default class BoardComponent extends Vue {
     if (this.shouldAutoMove(availableActions)) {
       this.autoMove(availableActions);
     } else {
-      this.waitForMove(this.diceResult);
+      this.waitForMove(this.diceResult, availableActions);
     }
   }
 
@@ -114,11 +113,13 @@ export default class BoardComponent extends Vue {
     store.dispatch("marbles/moveToByAction", moveAction);
   }
 
-  waitForMove(diceResult: number): void {
-    prepareMoveMarble({
-      player: this.playerTurn,
-      diceResult
-    });
+  waitForMove(diceResult: number, availableActions: MoveAction[]): void {
+    const marbles: Marble[] = availableActions.map(action => action.marble);
+    store.dispatch("marbles/setItemsMoveable", marbles);
+
+    const playerMarbles = store.getters["marbles/listByPlayer"](
+      this.playerTurn
+    );
   }
 
   getAvailableActions(diceResult: number): MoveAction[] {
