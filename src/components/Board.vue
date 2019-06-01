@@ -4,6 +4,7 @@
       <Road class="road"/>
       <Marbles class="marbles"/>
     </div>
+    <div class="mt-4">dice: {{diceResult}}</div>
   </section>
 </template>
 
@@ -18,7 +19,7 @@ import {
   hasMultipleAvailableActions
 } from "@/functions/move-actions";
 import { Vue, Component } from "vue-property-decorator";
-import { Player } from "@/types/types";
+import { Player, MoveAction } from "@/types/types";
 
 const PLAYING_STATUS = {
   LOADING: 1,
@@ -93,30 +94,38 @@ export default class BoardComponent extends Vue {
   }
 
   playTurn() {
-    const diceResult = this.getDice();
+    this.diceResult = this.getDice();
+    const availableActions = this.getAvailableActions(this.diceResult);
+    if (this.shouldAutoMove(availableActions)) {
+      this.autoMove(availableActions);
+    } else {
+      this.waitForMove(this.diceResult);
+    }
+  }
 
-    const availableActions = getAvailableActions({
+  shouldAutoMove(availableActions: MoveAction[]): boolean {
+    return (
+      this.playerTurn.isAI || !hasMultipleAvailableActions(availableActions)
+    );
+  }
+
+  autoMove(availableActions: MoveAction[]): void {
+    const moveAction = chooseAction(availableActions);
+    store.dispatch("marbles/moveToByAction", moveAction);
+  }
+
+  waitForMove(diceResult: number): void {
+    prepareMoveMarble({
       player: this.playerTurn,
       diceResult
     });
-    console.log("availableActions", availableActions);
+  }
 
-    // TODO: if is AI, move. If isn't AI wait onclick marble
-    if (
-      this.playerTurn.isAI ||
-      !hasMultipleAvailableActions(availableActions)
-    ) {
-      const moveAction = chooseAction(availableActions);
-      store.dispatch("marbles/moveToByAction", moveAction);
-    }
-
-    prepareMoveMarble({
+  getAvailableActions(diceResult: number): MoveAction[] {
+    return getAvailableActions({
       player: this.playerTurn,
-      diceResult: this.diceResult
+      diceResult
     });
-    // setTimeout(() => {
-    //   store.dispatch("marbles/moveTo", { id: 1, row: 5, column: 10 });
-    // }, 1000);
   }
 
   getDice(): number {

@@ -5,9 +5,8 @@ const initialList: Marble[] = [
   // side 1
   // FIXME: is in game to false
   { id: 1, row: 5, column: 5, side: 1, isInGame: true, isAtEnd: false },
-  { id: 2, row: 2, column: 5, side: 1, isInGame: false, isAtEnd: false },
   // { id: 1, row: 11, column: 1, side: 1, isInGame: false, isAtEnd: false },
-  // { id: 2, row: 11, column: 2, side: 1, isInGame: false, isAtEnd: false },
+  { id: 2, row: 11, column: 2, side: 1, isInGame: false, isAtEnd: false },
   { id: 3, row: 10, column: 1, side: 1, isInGame: false, isAtEnd: false },
   { id: 4, row: 10, column: 2, side: 1, isInGame: false, isAtEnd: false },
   // side 2
@@ -38,11 +37,11 @@ export default {
       const index = state.list.findIndex((m: Marble) => m.id === id);
       state.list[index].isInGame = isInGame;
     },
-    moveToByMarble(state, { marble, destination }: { marble: Marble; destination: PositionInBoard }) {
-      const index = state.list.findIndex((m: Marble) => m.id === marble.id);
-      state.list[index].row = destination.row;
-      state.list[index].column = destination.column;
-    },
+    // moveToByMarble(state, { marble, destination }: { marble: Marble; destination: PositionInBoard }) {
+    //   const index = state.list.findIndex((m: Marble) => m.id === marble.id);
+    //   state.list[index].row = destination.row;
+    //   state.list[index].column = destination.column;
+    // },
     moveToByAction(state, action: MoveAction) {
       const index = state.list.findIndex((m: Marble) => isSameStep(getPositionOfMarble(m), action.from));
       state.list[index].row = action.to.row;
@@ -56,9 +55,9 @@ export default {
     updateIsInGame({ commit }, payload) {
       commit("updateIsInGame", payload);
     },
-    moveToByMarble({ commit }, payload) {
-      commit("moveToByMarble", payload);
-    },
+    // moveToByMarble({ commit }, payload) {
+    //   commit("moveToByMarble", payload);
+    // },
     moveToByAction({ commit }, action: MoveAction) {
       commit("moveToByAction", action);
     },
