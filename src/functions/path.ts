@@ -16,17 +16,17 @@ export function getDistance(position1: PositionInBoard, position2: PositionInBoa
 }
 
 export function getPositionAfterMove({
-  position,
+  from,
   amount,
   player
 }: {
-  position: PositionInBoard;
+  from: PositionInBoard;
   amount: number;
   player: Player;
 }): PositionInBoard {
   const playerPath = store.getters["steps/allPaths"](player);
   const positionIndex = playerPath.findIndex((step: StepPlace) => {
-    return step[0] === position.row && step[1] === position.column;
+    return step[0] === from.row && step[1] === from.column;
   });
   // console.log("playerPath", playerPath);
   // console.log("positionIndex", positionIndex);

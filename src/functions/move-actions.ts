@@ -69,7 +69,7 @@ function _getInGameActions(diceAnalization: DiceAnalization, player: Player): Mo
       const action: MoveAction = {
         from: marblePosition,
         to: getPositionAfterMove({
-          position: marblePosition,
+          from: marblePosition,
           amount: diceAnalization.value,
           player
         }),
@@ -87,4 +87,8 @@ export function hasMultipleAvailableActions(actions: MoveAction[]): boolean {
   const inGameMoveAcount = actions.filter(action => action.type === MoveType.IN_GAME).length;
   const total = inGameMoveAcount + (benchMoveCount > 0 ? 1 : 0);
   return total > 1;
+}
+
+export function canMove(marble: Marble, player: Player) {
+  return marble.side === player.side && marble.isMoveable === true;
 }

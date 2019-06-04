@@ -1,6 +1,6 @@
 <template>
   <div class="marbles">
-    <Marble :model="item" v-for="item in list" :key="item.id"/>
+    <Marble v-on:clickmarble="onClickMarble" :model="item" v-for="item in list" :key="item.id"/>
   </div>
 </template>
 
@@ -19,9 +19,13 @@ export default class MarblesComponent extends Vue {
   get list() {
     const list = store.getters["marbles/list"];
     list.map((marble: Marble) => {
-      marble.player = store.getters["players/itemBySide"](marble.side);
+      marble.side = (store.getters["players/itemBySide"](marble.side)).side;
     });
     return list;
+  }
+
+  onClickMarble(marble: Marble) {
+    this.$emit('clickmarble', marble)
   }
 }
 </script>

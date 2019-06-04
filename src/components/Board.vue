@@ -2,7 +2,7 @@
   <section class="board m-3 p-3">
     <div class="board-inner">
       <Road class="road"/>
-      <Marbles class="marbles"/>
+      <Marbles v-on:clickmarble="onClickMarble" class="marbles"/>
     </div>
     <div class="mt-4">dice: {{diceResult}}</div>
   </section>
@@ -15,16 +15,18 @@ import Marbles from "@/components/Marbles.vue";
 import {
   getAvailableActions,
   chooseAction,
-  hasMultipleAvailableActions
+  hasMultipleAvailableActions,
+  canMove
 } from "@/functions/move-actions";
 import { Vue, Component } from "vue-property-decorator";
 import { Player, MoveAction, Marble } from "@/types/types";
+import { createMoveAction } from "../helpers";
 
-const PLAYING_STATUS = {
-  LOADING: 1,
-  DICING: 2,
-  WAITING_FOR_ACTION: 3
-};
+// const PLAYING_STATUS = {
+//   LOADING: 1,
+//   DICING: 2,
+//   WAITING_FOR_ACTION: 3
+// };
 
 @Component({
   components: {
@@ -36,13 +38,11 @@ const PLAYING_STATUS = {
 export default class BoardComponent extends Vue {
   data(): {
     players: Player[];
-    status: null;
     playerTurn: Player | null;
     diceResult: number | null;
   } {
     return {
       players: [],
-      status: null,
       playerTurn: null,
       diceResult: null
     };
@@ -63,10 +63,8 @@ export default class BoardComponent extends Vue {
     this.playTurn();
   }
   resetGame() {
-    this.setStatus(PLAYING_STATUS.LOADING);
     store.dispatch("marbles/reset");
     store.dispatch("players/reset");
-    this.setStatus(PLAYING_STATUS.WAITING_FOR_ACTION);
   }
   addPlayers() {
     store.dispatch("players/add", { isAI: false, color: "red" });
@@ -110,7 +108,22 @@ export default class BoardComponent extends Vue {
 
   autoMove(availableActions: MoveAction[]): void {
     const moveAction = chooseAction(availableActions);
+    this.move(moveAction);
+  }
+
+  move(moveAction: MoveAction) {
     store.dispatch("marbles/moveToByAction", moveAction);
+  }
+
+  onClickMarble(marble: Marble) {
+    if (!canMove(marble, this.playerTurn)) return;
+    const moveAction = createMoveAction({
+      player: this.playerTurn,
+      marble,
+      diceResult: this.diceResult
+    });
+    this.move(moveAction);
+    console.log("in board onclick", marble);
   }
 
   waitForMove(diceResult: number, availableActions: MoveAction[]): void {
@@ -132,10 +145,6 @@ export default class BoardComponent extends Vue {
   getDice(): number {
     const result = Math.ceil(Math.random() * 6);
     return result;
-  }
-
-  setStatus(status) {
-    this.status = status;
   }
 }
 </script>

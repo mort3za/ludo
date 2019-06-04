@@ -46,7 +46,7 @@ export interface Marble {
   side: Side;
   isInGame: boolean;
   isAtEnd: boolean;
-  moveable: boolean;
+  isMoveable: boolean;
 }
 
 export enum MoveType {

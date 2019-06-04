@@ -1,6 +1,6 @@
 <template>
-  <span class="marble-w" :style="getStyle()">
-    <span class="marble d-block" :class="[`is-side-${model.side}`, {moveable: model.moveable}]"></span>
+  <span @click="onClickMarble" class="marble-w" :style="getStyle()">
+    <span class="marble d-block" :class="[`is-side-${model.side}`, {moveable: model.isMoveable}]"></span>
   </span>
 </template>
 
@@ -24,6 +24,10 @@ export default class MarbleComponent extends Vue {
         translateY(${(this.model.row - 1) * 44 + "px"})
         `
     };
+  }
+
+  onClickMarble() {
+    this.$emit("clickmarble", this.model);
   }
 }
 </script>
