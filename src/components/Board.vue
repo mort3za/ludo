@@ -21,6 +21,7 @@ import {
 import { Vue, Component } from "vue-property-decorator";
 import { Player, MoveAction, Marble } from "@/types/types";
 import { createMoveAction } from "../helpers";
+import { analyzeResult } from "../functions/dice";
 
 // const PLAYING_STATUS = {
 //   LOADING: 1,
@@ -80,6 +81,7 @@ export default class BoardComponent extends Vue {
       this.playerTurn = this.playersInGame[0];
       return;
     }
+
     const currentPlayerTurnIndex = this.playersInGame.findIndex(
       (player: Player) => player.id === this.playerTurn.id
     );
@@ -87,32 +89,25 @@ export default class BoardComponent extends Vue {
       currentPlayerTurnIndex + 1 === this.playersInGame.length;
     this.playerTurn = currentIsLast
       ? this.playersInGame[0]
-      : this.playersInGame[currentPlayerTurnIndex + 1];
+      : this.playersInGame[currentPlayerTurnIndex + 1];    
   }
 
   playTurn() {
     this.diceResult = this.getDice();
+    this.diceAnalization = analyzeResult(this.diceResult);
+    this.analyzeAvailableActions();
+  }
+
+  analyzeAvailableActions() {
     const availableActions = this.getAvailableActions(this.diceResult);
+    
     if (this.shouldAutoMove(availableActions)) {
       this.autoMove(availableActions);
+    } else if (availableActions.length === 0) {
+      this.playTurn();
     } else {
-      this.waitForMove(this.diceResult, availableActions);
+      this.setMovableMarbles(this.diceResult, availableActions);
     }
-  }
-
-  shouldAutoMove(availableActions: MoveAction[]): boolean {
-    return (
-      this.playerTurn.isAI || !hasMultipleAvailableActions(availableActions)
-    );
-  }
-
-  autoMove(availableActions: MoveAction[]): void {
-    const moveAction = chooseAction(availableActions);
-    this.move(moveAction);
-  }
-
-  move(moveAction: MoveAction) {
-    store.dispatch("marbles/moveToByAction", moveAction);
   }
 
   onClickMarble(marble: Marble) {
@@ -123,16 +118,33 @@ export default class BoardComponent extends Vue {
       diceResult: this.diceResult
     });
     this.move(moveAction);
-    console.log("in board onclick", marble);
+    this.playTurn();
+
+    if (this.diceAnalization.hasReward) {
+      this.analyzeAvailableActions();
+    } else {
+      this.playTurn();
+    }
   }
 
-  waitForMove(diceResult: number, availableActions: MoveAction[]): void {
+  setMovableMarbles(diceResult: number, availableActions: MoveAction[]): void {
     const marbles: Marble[] = availableActions.map(action => action.marble);
     store.dispatch("marbles/setItemsMoveable", marbles);
+  }
 
-    const playerMarbles = store.getters["marbles/listByPlayer"](
-      this.playerTurn
+  shouldAutoMove(availableActions: MoveAction[]): boolean {
+    return (
+      this.playerTurn.isAI || !hasMultipleAvailableActions(availableActions)
     );
+  }
+
+  autoMove(availableActions: MoveAction[]): void {
+    const moveAction = chooseAction(availableActions);    
+    this.move(moveAction);
+  }
+
+  move(moveAction: MoveAction) {
+    store.dispatch("marbles/moveToByAction", moveAction);
   }
 
   getAvailableActions(diceResult: number): MoveAction[] {
