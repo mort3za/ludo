@@ -63,7 +63,7 @@ function _getInGameActions(diceAnalization: DiceAnalization, player: Player): Mo
     const lastStepPosition: PositionInBoard = getPositionOfStep(store.getters["steps/sideLastpoint"](player));
 
     const distance: number = getDistance(marblePosition, lastStepPosition, player);
-    console.log("distance", distance);
+    // console.log("distance", distance);
 
     if (diceAnalization.value <= distance) {
       const action: MoveAction = {

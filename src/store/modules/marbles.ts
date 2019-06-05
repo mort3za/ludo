@@ -34,62 +34,62 @@ export default {
     initialList
   },
   mutations: {
-    updateIsInGame(state, { id, isInGame }: Marble) {
-      const index = state.list.findIndex((m: Marble) => m.id === id);
-      state.list[index].isInGame = isInGame;
+    update(state: any, marble: Marble) {
+      const index = state.list.findIndex((m: Marble) => m.id === marble.id);
+      state.list[index] = marble;
     },
     // moveToByMarble(state, { marble, destination }: { marble: Marble; destination: PositionInBoard }) {
     //   const index = state.list.findIndex((m: Marble) => m.id === marble.id);
     //   state.list[index].row = destination.row;
     //   state.list[index].column = destination.column;
     // },
-    moveToByAction(state, action: MoveAction) {
+    moveToByAction(state: any, action: MoveAction) {
       const index = state.list.findIndex((m: Marble) => isSameStep(getPositionOfMarble(m), action.from));
       state.list[index].row = action.to.row;
       state.list[index].column = action.to.column;
     },
-    reset(state) {
+    reset(state: any) {
       state.list = [...initialList];
     },
-    setItemMoveable(state, marble: Marble) {
-      const targetMarble = state.list.find((m: Marble) => m.id === marble.id);      
+    setItemMoveable(state: any, marble: Marble) {
+      const targetMarble = state.list.find((m: Marble) => m.id === marble.id);
       targetMarble.isMoveable = true;
     }
   },
   actions: {
-    updateIsInGame({ commit }, payload) {
-      commit("updateIsInGame", payload);
+    update({ commit }: { commit: any }, marble: Marble) {
+      commit("update", marble);
     },
-    // moveToByMarble({ commit }, payload) {
+    // moveToByMarble({ commit }: {commit: any}, payload) {
     //   commit("moveToByMarble", payload);
     // },
-    moveToByAction({ commit }, action: MoveAction) {
+    moveToByAction({ commit }: { commit: any }, action: MoveAction) {
       commit("moveToByAction", action);
     },
-    reset({ commit }) {
+    reset({ commit }: { commit: any }) {
       commit("reset");
     },
-    setItemsMoveable({ commit }, marbles: Marble[] = []) {
+    setItemsMoveable({ commit }: { commit: any }, marbles: Marble[] = []) {
       marbles.forEach(marble => commit("setItemMoveable", marble));
     }
   },
   getters: {
-    list(state) {
+    list(state: any) {
       return state.list;
     },
-    listByPlayer: (state, getters) => (player: Player) => {
+    listByPlayer: (state: any, getters: any) => (player: Player) => {
       return getters.list.filter((m: Marble) => m.side === player.side);
     },
-    listInGame(state, getters) {
+    listInGame(state: any, getters: any) {
       return getters.list.filter((m: Marble) => m.isInGame === true);
     },
-    listInBench(state, getters) {
+    listInBench(state: any, getters: any) {
       return getters.list.filter((m: Marble) => m.isInGame === false);
     },
-    listInGameByPlayer: (state, getters) => (player: Player) => {
+    listInGameByPlayer: (state: any, getters: any) => (player: Player) => {
       return getters.list.filter((m: Marble) => m.side === player.side && m.isInGame === true);
     },
-    listInBenchByPlayer: (state, getters) => (player: Player) => {
+    listInBenchByPlayer: (state: any, getters: any) => (player: Player) => {
       return getters.list.filter((m: Marble) => m.side === player.side && m.isInGame === false);
     }
   }

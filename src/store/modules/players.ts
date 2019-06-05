@@ -1,4 +1,5 @@
-import { Player } from '@/types/types';
+import { Player } from "@/types/types";
+import Vue from "vue";
 
 export default {
   namespaced: true,
@@ -6,57 +7,58 @@ export default {
     list: []
   },
   mutations: {
-    updateIsInGame(state, { id, isInGame }: Player) {
-      const index = state.list.findIndex((item: Player) => item.id === id);
-      state.list[index].isInGame = isInGame;
+    update(state: any, player: Player) {
+      const index = state.list.findIndex((p: Player) => p.id === player.id);
+      Vue.set(state.list, index, player);
     },
-    reset(state) {
+    reset(state: any) {
       state.list = [];
     },
-    add(state, player: Player) {
+    add(state: any, player: Player) {
       state.list.push(player);
     }
   },
   actions: {
-    updateIsInGame({ commit }, player: Player) {
-      commit("updateIsInGame", player);
+    update({ commit }: { commit: any }, player: Player) {
+      commit("update", player);
     },
-    updateIsInGameAll({ commit, getters }, { isInGame }: Player) {
+    updateAll({ commit, getters }: { commit: any; getters: any }, player: Player) {
       const playersList = getters.list;
       playersList.forEach((p: Player) => {
-        const player = { ...p, isInGame };
-        commit("updateIsInGame", player);
+        const updated = { ...p, ...player };
+        commit("update", updated);
       });
     },
-    reset({ commit }) {
+    reset({ commit }: { commit: any }) {
       commit("reset");
     },
-    add({ commit, getters }, { isAI, isInGame = true, color }: Player) {
+    add({ commit, getters }: { commit: any; getters: any }, player: Player) {
       // get length of list of players
       const playersCount = getters.list.length;
-      const player = {
+      const newPlayer = {
         id: playersCount + 1,
         side: playersCount + 1,
-        color,
         name: `Player ${playersCount + 1}`,
-        isInGame,
-        isAI
+        ...player
       };
-      commit("add", player);
+      commit("add", newPlayer);
     }
   },
   getters: {
-    list(state) {
+    list(state: any) {
       return state.list;
     },
-    itemById: state => (id: number) => {
+    itemById: (state: any) => (id: number) => {
       return state.list.find((p: Player) => p.id === id);
     },
-    itemBySide: state => (side: number) => {
+    itemBySide: (state: any) => (side: number) => {
       return state.list.find((p: Player) => p.side === side);
     },
-    listInGame(state) {
-      return state.list.filter((p: Player) => p.isInGame === true);
+    listInGame(state: any) {
+      return state.list.filter((p: Player) => p.isInGame);
+    },
+    active(state: any) {
+      return state.list.find((p: Player) => p.isActive);
     }
   }
 };

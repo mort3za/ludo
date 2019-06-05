@@ -1,11 +1,23 @@
 <template>
-  <section class="board m-3 p-3">
-    <div class="board-inner">
-      <Road class="road"/>
-      <Marbles v-on:clickmarble="onClickMarble" class="marbles"/>
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+        <section class="board m-3 p-3">
+          <div class="board-inner">
+            <Road class="road"/>
+            <Marbles v-on:clickmarble="onClickMarble" class="marbles"/>
+          </div>
+        </section>
+      </div>
+      <div class="col-6">
+        <div class="mt-4">player: {{activePlayer.id}}</div>
+        <div
+          class="mt-4"
+          :style="{'background': diceResult === 6 ? 'green':'white'}"
+        >dice result: {{diceResult}}</div>
+      </div>
     </div>
-    <div class="mt-4">dice: {{diceResult}}</div>
-  </section>
+  </div>
 </template>
 
 <script lang="ts">
@@ -20,8 +32,10 @@ import {
 } from "@/functions/move-actions";
 import { Vue, Component } from "vue-property-decorator";
 import { Player, MoveAction, Marble } from "@/types/types";
-import { createMoveAction } from "../helpers";
+import { createMoveAction, wait } from "../helpers";
 import { analyzeResult } from "../functions/dice";
+
+const WAITING_TIME_BETWEEN_EVERY_TURN = 1000;
 
 // const PLAYING_STATUS = {
 //   LOADING: 1,
@@ -37,18 +51,6 @@ import { analyzeResult } from "../functions/dice";
   props: {}
 })
 export default class BoardComponent extends Vue {
-  data(): {
-    players: Player[];
-    playerTurn: Player | null;
-    diceResult: number | null;
-  } {
-    return {
-      players: [],
-      playerTurn: null,
-      diceResult: null
-    };
-  }
-
   mounted() {
     this.startGame();
   }
@@ -56,11 +58,22 @@ export default class BoardComponent extends Vue {
   get playersInGame() {
     return store.getters["players/listInGame"];
   }
+  get allPlayers() {
+    return store.getters["players/list"];
+  }
+  get activePlayer() {
+    return store.getters["players/active"] || {};
+  }
+  get diceResult() {
+    return store.getters["diceResult"];
+  }
+  get diceAnalization() {
+    return analyzeResult(this.diceResult);
+  }
 
   startGame() {
     this.resetGame();
     this.addPlayers();
-    this.setPlayerTurn();
     this.playTurn();
   }
   resetGame() {
@@ -68,95 +81,137 @@ export default class BoardComponent extends Vue {
     store.dispatch("players/reset");
   }
   addPlayers() {
-    store.dispatch("players/add", { isAI: false, color: "red" });
-    store.dispatch("players/add", { isAI: true, color: "green" });
-    store.dispatch("players/add", { isAI: true, color: "blue" });
-    store.dispatch("players/add", { isAI: true, color: "yellow" });
-    store.dispatch("players/updateIsInGameAll", { isInGame: true });
-    this.players = store.getters["players/list"];
+    store.dispatch("players/add", {
+      isAI: false,
+      color: "red",
+      isActive: true
+    });
+    store.dispatch("players/add", {
+      isAI: true,
+      color: "green",
+      isActive: false
+    });
+    store.dispatch("players/add", {
+      isAI: true,
+      color: "blue",
+      isActive: false
+    });
+    store.dispatch("players/add", {
+      isAI: true,
+      color: "yellow",
+      isActive: false
+    });
+    store.dispatch("players/updateAll", { isInGame: true });
   }
-  setPlayerTurn() {
-    if (!this.playerTurn) {
-      // TODO: make it random
-      this.playerTurn = this.playersInGame[0];
+  changeTurn() {
+    const currentActivePlayerIndex = this.allPlayers.findIndex(
+      (p: Player) => p.id === this.activePlayer.id
+    );
+    const currentActivePlayer = this.allPlayers[currentActivePlayerIndex];
+    const newActivePlayerIndex =
+      (currentActivePlayerIndex + 1) % this.allPlayers.length;
+    const newActivePlayer = this.allPlayers[newActivePlayerIndex];
+
+    store.dispatch("players/update", {
+      ...currentActivePlayer,
+      isActive: false
+    });
+    store.dispatch("players/update", { ...newActivePlayer, isActive: true });
+  }
+
+  shouldChangeTurn(): boolean {
+    console.log(this.diceAnalization);
+    if (this.diceAnalization.hasReward) {
+      return false;
+    }
+    if (!this.diceAnalization.value) {
+      return true;
+    }
+    return true;
+  }
+
+  shouldFinishGame() {
+    // TODO:
+    return false;
+  }
+
+  setActivePlayer(player: Player) {
+    store.dispatch("players/updatePlayer", { ...player, isActive: true });
+  }
+
+  async playTurn() {
+    await wait(WAITING_TIME_BETWEEN_EVERY_TURN);
+    if (this.shouldFinishGame()) {
+      // show results & finish game
       return;
     }
-
-    const currentPlayerTurnIndex = this.playersInGame.findIndex(
-      (player: Player) => player.id === this.playerTurn.id
-    );
-    const currentIsLast =
-      currentPlayerTurnIndex + 1 === this.playersInGame.length;
-    this.playerTurn = currentIsLast
-      ? this.playersInGame[0]
-      : this.playersInGame[currentPlayerTurnIndex + 1];    
-  }
-
-  playTurn() {
-    this.diceResult = this.getDice();
-    this.diceAnalization = analyzeResult(this.diceResult);
+    if (this.shouldChangeTurn()) {
+      this.changeTurn();
+    }
+    this.turnDice();
     this.analyzeAvailableActions();
   }
 
   analyzeAvailableActions() {
-    const availableActions = this.getAvailableActions(this.diceResult);
-    
-    if (this.shouldAutoMove(availableActions)) {
+    const availableActions = this.getAvailableActions();
+    if (availableActions.length === 0) {
+      console.log("---- no action ----");
+      this.playTurn();
+    } else if (this.shouldAutoMove(availableActions)) {
+      console.log("auto move");
       this.autoMove(availableActions);
-    } else if (availableActions.length === 0) {
       this.playTurn();
     } else {
-      this.setMovableMarbles(this.diceResult, availableActions);
+      console.log("wait for move");
+      this.setMovableMarbles(availableActions);
     }
   }
 
   onClickMarble(marble: Marble) {
-    if (!canMove(marble, this.playerTurn)) return;
+    if (!canMove(marble, this.activePlayer)) return;
     const moveAction = createMoveAction({
-      player: this.playerTurn,
+      player: this.activePlayer,
       marble,
       diceResult: this.diceResult
     });
-    this.move(moveAction);
-    this.playTurn();
-
-    if (this.diceAnalization.hasReward) {
-      this.analyzeAvailableActions();
-    } else {
+    this.move(moveAction).then(() => {
       this.playTurn();
-    }
+    });
   }
 
-  setMovableMarbles(diceResult: number, availableActions: MoveAction[]): void {
+  setMovableMarbles(availableActions: MoveAction[]): void {
     const marbles: Marble[] = availableActions.map(action => action.marble);
     store.dispatch("marbles/setItemsMoveable", marbles);
   }
 
   shouldAutoMove(availableActions: MoveAction[]): boolean {
     return (
-      this.playerTurn.isAI || !hasMultipleAvailableActions(availableActions)
+      this.activePlayer.isAI || !hasMultipleAvailableActions(availableActions)
     );
   }
 
   autoMove(availableActions: MoveAction[]): void {
-    const moveAction = chooseAction(availableActions);    
+    const moveAction = chooseAction(availableActions);
     this.move(moveAction);
   }
 
-  move(moveAction: MoveAction) {
-    store.dispatch("marbles/moveToByAction", moveAction);
-  }
-
-  getAvailableActions(diceResult: number): MoveAction[] {
-    return getAvailableActions({
-      player: this.playerTurn,
-      diceResult
+  async move(moveAction: MoveAction): Promise<void> {
+    return new Promise((resolve, reject) => {
+      store.dispatch("marbles/moveToByAction", moveAction);
+      resolve();
     });
   }
 
-  getDice(): number {
+  getAvailableActions(): MoveAction[] {
+    return getAvailableActions({
+      player: this.activePlayer,
+      diceResult: this.diceResult
+    });
+  }
+
+  turnDice(): void {
     const result = Math.ceil(Math.random() * 6);
-    return result;
+    store.dispatch("updateDice", result);
   }
 }
 </script>

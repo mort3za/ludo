@@ -60,25 +60,18 @@ export default class MarbleComponent extends Vue {
 }
 
 .moveable {
-  animation: 1s moving infinite reverse linear;
+  // animation: 1s moving infinite reverse linear;
+  border: rem(4px) solid $dark;
 }
 
 $move-amount: rem(4px);
+
 @keyframes moving {
   0% {
     transform: translateY(0);
   }
-  25% {
-    transform: translateY($move-amount);
-  }
   50% {
-    transform: translateY(0);
-  }
-  75% {
-    transform: translateY(-$move-amount);
-  }
-  100% {
-    transform: translateY(0);
+    transform: translateY(- $move-amount);
   }
 }
 </style>

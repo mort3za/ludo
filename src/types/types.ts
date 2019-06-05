@@ -10,6 +10,7 @@ export interface Player {
   name: string;
   isInGame: boolean;
   isAI: boolean;
+  isActive: boolean;
 }
 
 export interface MoveAction {
