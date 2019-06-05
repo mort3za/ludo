@@ -1,5 +1,6 @@
 import { Player, Marble, PositionInBoard, MoveAction } from "@/types/types";
 import { isSameStep, getPositionOfMarble } from "@/helpers";
+import Vue from "vue";
 
 const initialList: Marble[] = [
   // side 1
@@ -36,7 +37,7 @@ export default {
   mutations: {
     update(state: any, marble: Marble) {
       const index = state.list.findIndex((m: Marble) => m.id === marble.id);
-      state.list[index] = marble;
+      Vue.set(state.list, index, marble);
     },
     // moveToByMarble(state, { marble, destination }: { marble: Marble; destination: PositionInBoard }) {
     //   const index = state.list.findIndex((m: Marble) => m.id === marble.id);
@@ -70,7 +71,10 @@ export default {
       commit("reset");
     },
     setItemsMoveable({ commit }: { commit: any }, marbles: Marble[] = []) {
-      marbles.forEach(marble => commit("setItemMoveable", marble));
+      marbles.forEach((m: Marble) => commit("update", { ...m, isMoveable: true }));
+    },
+    unsetMovableAll({ commit, getters }: { commit: any; getters: any }) {
+      getters.list.forEach((m: Marble) => commit("update", { ...m, isMoveable: false }));
     }
   },
   getters: {

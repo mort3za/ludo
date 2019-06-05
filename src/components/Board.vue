@@ -71,7 +71,7 @@ export default class BoardComponent extends Vue {
     return analyzeResult(this.diceResult);
   }
 
-  startGame() {
+  startGame(): void {
     this.resetGame();
     this.addPlayers();
     this.playTurn();
@@ -80,7 +80,7 @@ export default class BoardComponent extends Vue {
     store.dispatch("marbles/reset");
     store.dispatch("players/reset");
   }
-  addPlayers() {
+  addPlayers(): void {
     store.dispatch("players/add", {
       isAI: false,
       color: "red",
@@ -103,7 +103,7 @@ export default class BoardComponent extends Vue {
     });
     store.dispatch("players/updateAll", { isInGame: true });
   }
-  changeTurn() {
+  changeTurn(): void {
     const currentActivePlayerIndex = this.allPlayers.findIndex(
       (p: Player) => p.id === this.activePlayer.id
     );
@@ -120,7 +120,6 @@ export default class BoardComponent extends Vue {
   }
 
   shouldChangeTurn(): boolean {
-    console.log(this.diceAnalization);
     if (this.diceAnalization.hasReward) {
       return false;
     }
@@ -130,17 +129,17 @@ export default class BoardComponent extends Vue {
     return true;
   }
 
-  shouldFinishGame() {
+  shouldFinishGame(): boolean {
     // TODO:
     return false;
   }
 
-  setActivePlayer(player: Player) {
+  setActivePlayer(player: Player): void {
     store.dispatch("players/updatePlayer", { ...player, isActive: true });
   }
 
-  async playTurn() {
-    await wait(WAITING_TIME_BETWEEN_EVERY_TURN);
+  async playTurn(): Promise<void> {
+    this.unsetMovableMarbles();
     if (this.shouldFinishGame()) {
       // show results & finish game
       return;
@@ -149,11 +148,23 @@ export default class BoardComponent extends Vue {
       this.changeTurn();
     }
     this.turnDice();
-    this.analyzeAvailableActions();
+    // TODO: sleep before ai action, after no-ai actions
+    if (this.activePlayer.isAI) {
+      await this.sleepBetweenTurns();
+      this.performActionsOfPlayerAI();
+    } else {
+      this.performActionsOfPlayerNoAI();
+    }
   }
 
-  analyzeAvailableActions() {
+  async sleepBetweenTurns(): Promise<void> {
+    await wait(WAITING_TIME_BETWEEN_EVERY_TURN);
+  }
+
+  performActionsOfPlayerAI(): void {
     const availableActions = this.getAvailableActions();
+    console.log("availableActions", availableActions);
+
     if (availableActions.length === 0) {
       console.log("---- no action ----");
       this.playTurn();
@@ -161,20 +172,25 @@ export default class BoardComponent extends Vue {
       console.log("auto move");
       this.autoMove(availableActions);
       this.playTurn();
-    } else {
-      console.log("wait for move");
-      this.setMovableMarbles(availableActions);
     }
   }
 
-  onClickMarble(marble: Marble) {
+  performActionsOfPlayerNoAI(): void {
+    const availableActions = this.getAvailableActions();
+    console.log("availableActions", availableActions);
+
+    console.log("wait for move");
+    this.setMovableMarbles(availableActions);
+  }
+
+  onClickMarble(marble: Marble): void {
     if (!canMove(marble, this.activePlayer)) return;
     const moveAction = createMoveAction({
       player: this.activePlayer,
       marble,
       diceResult: this.diceResult
     });
-    this.move(moveAction).then(() => {
+    this.move(moveAction).then(async () => {
       this.playTurn();
     });
   }
@@ -182,6 +198,10 @@ export default class BoardComponent extends Vue {
   setMovableMarbles(availableActions: MoveAction[]): void {
     const marbles: Marble[] = availableActions.map(action => action.marble);
     store.dispatch("marbles/setItemsMoveable", marbles);
+  }
+  unsetMovableMarbles(): void {
+    if (this.activePlayer.isAI) return;
+    store.dispatch("marbles/unsetMovableAll");
   }
 
   shouldAutoMove(availableActions: MoveAction[]): boolean {
