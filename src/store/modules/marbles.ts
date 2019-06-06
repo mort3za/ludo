@@ -40,13 +40,6 @@ export default {
       const index = state.list.findIndex((m: Marble) => m.id === marble.id);
       Vue.set(state.list, index, marble);
     },
-    moveToByAction(state: any, action: MoveAction) {
-      const index = state.list.findIndex(
-        (m: Marble) => m.side === action.marble.side && isSameStep(getPositionOfMarble(m), action.from)
-      );
-      state.list[index].row = action.to.row;
-      state.list[index].column = action.to.column;
-    },
     reset(state: any) {
       state.list = [...initialList];
     },
@@ -58,9 +51,6 @@ export default {
   actions: {
     update({ commit }: { commit: any }, marble: Marble) {
       commit("update", marble);
-    },
-    moveToByAction({ commit }: { commit: any }, action: MoveAction) {
-      commit("moveToByAction", action);
     },
     reset({ commit }: { commit: any }) {
       commit("reset");

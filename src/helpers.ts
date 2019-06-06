@@ -1,5 +1,7 @@
 import { PositionInBoard, Marble, StepPlace, Player, MoveAction, MoveType } from "./types/types";
 import { getPositionAfterMove } from "./functions/path";
+import store from "@/store/index";
+import marbles from "./store/modules/marbles";
 
 export function isSameStep(position1: PositionInBoard, position2: PositionInBoard) {
   return position1.row === position2.row && position1.column === position2.column;
@@ -62,4 +64,27 @@ export async function wait(time: number) {
       resolve();
     }, time);
   });
+}
+
+export function isPositionAtEnd(position: PositionInBoard, player: Player) {
+  const playerEndPoints = store.getters["steps/sideEndpoints"](player);
+  console.log("playerEndPoints", playerEndPoints);
+  return playerEndPoints.some((endPointStep: StepPlace) => {
+    return isSameStep(position, getPositionOfStep(endPointStep));
+  });
+}
+
+/**
+ * set isAtEnd attribute of marble based on current position of marble
+ */
+export async function updateMarbleIsAtEnd(marble: Marble, player: Player) {
+  const isAtEnd = isPositionAtEnd(getPositionOfMarble(marble), player);
+  await store.dispatch("marbles/update", {
+    ...marble,
+    isAtEnd
+  });
+}
+
+export async function performOnGameOverActions(player: Player) {
+  // TODO:
 }

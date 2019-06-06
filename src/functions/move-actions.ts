@@ -2,7 +2,12 @@ import store from "@/store/index";
 import { analyzeResult } from "./dice";
 import { MoveAction, DiceAnalization, Player, Marble, PositionInBoard, MoveType } from "@/types/types";
 import { getDistance, getPositionAfterMove } from "./path";
-import { getPositionOfMarble, getPositionOfStep } from "@/helpers";
+import {
+  getPositionOfMarble,
+  getPositionOfStep,
+  updateMarbleIsAtEnd,
+  performOnGameOverActions
+} from "@/helpers";
 
 /**
  * Find all available moves
@@ -91,4 +96,11 @@ export function hasMultipleAvailableActions(actions: MoveAction[]): boolean {
 
 export function canMove(marble: Marble, player: Player) {
   return marble.side === player.side && marble.isMoveable === true;
+}
+
+export async function performAfterMoveActions(moveAction: MoveAction, player: Player) {
+  // TODO: set isAtEnd, check isGameOver, kick out other marbles
+  await updateMarbleIsAtEnd(moveAction.marble, player);
+  await performOnGameOverActions(player);
+
 }

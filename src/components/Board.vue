@@ -183,8 +183,8 @@ export default class BoardComponent extends Vue {
       marble,
       diceResult: this.diceResult
     });
-    await this.move(moveAction);
-    await performAfterMoveActions(moveAction, this.activePlayer);
+    const updatedMoveAction = await this.move(moveAction);
+    await performAfterMoveActions(updatedMoveAction, this.activePlayer);
     this.playTurn();
   }
 
@@ -205,22 +205,24 @@ export default class BoardComponent extends Vue {
 
   async autoMove(availableActions: MoveAction[]) {
     const moveAction = chooseAction(availableActions);
-    await this.move(moveAction);
-    await performAfterMoveActions(moveAction, this.activePlayer);
+    const updatedMoveAction = await this.move(moveAction);
+    await performAfterMoveActions(updatedMoveAction, this.activePlayer);
   }
 
-  async move(moveAction: MoveAction) {
-    const updatedAction = {
+  async move(moveAction: MoveAction): Promise<MoveAction> {
+    const updatedMarble = {
+      ...moveAction.marble,
+      isInGame: true,
+      row: moveAction.to.row,
+      column: moveAction.to.column
+    };
+    await store.dispatch("marbles/update", updatedMarble);
+    const updatedMoveAction = {
       ...moveAction,
-      marble: {
-        ...moveAction.marble,
-        isInGame: true,
-        row: moveAction.to.row,
-        column: moveAction.to.column
-      }
-    }
-    await store.dispatch("marbles/moveToByAction", updatedAction);
+      marble: updatedMarble
+    };
     console.log("* move done *", moveAction);
+    return updatedMoveAction;
   }
 
   getAvailableActions(): MoveAction[] {
