@@ -135,7 +135,7 @@ export default class BoardComponent extends Vue {
     store.dispatch("players/updatePlayer", { ...player, isActive: true });
   }
 
-  async playTurn(): Promise<void> {
+  async playTurn() {
     console.log("-------------------------------------------------- play turn");
     this.unsetMovableMarbles();
     if (this.shouldFinishGame()) {
@@ -149,17 +149,17 @@ export default class BoardComponent extends Vue {
 
     await this.sleepBetweenTurns();
     if (this.activePlayer.isAI) {
-      this.performActionsOfPlayerAI();
+      await this.performActionsOfPlayerAI();
     } else {
       this.performActionsOfPlayerNoAI();
     }
   }
 
-  async sleepBetweenTurns(): Promise<void> {
+  async sleepBetweenTurns() {
     await wait(WAITING_TIME_BETWEEN_EVERY_TURN);
   }
 
-  performActionsOfPlayerAI(): void {
+  async performActionsOfPlayerAI() {
     const availableActions = this.getAvailableActions();
 
     if (availableActions.length === 0) {
@@ -167,7 +167,7 @@ export default class BoardComponent extends Vue {
       this.playTurn();
     } else if (this.shouldAutoMove(availableActions)) {
       console.log("auto move");
-      this.autoMove(availableActions);
+      await this.autoMove(availableActions);
       this.playTurn();
     }
   }
@@ -183,16 +183,16 @@ export default class BoardComponent extends Vue {
     }
   }
 
-  onClickMarble(marble: Marble): void {
+  async onClickMarble(marble: Marble) {
     if (!canMove(marble, this.activePlayer)) return;
     const moveAction = createMoveAction({
       player: this.activePlayer,
       marble,
       diceResult: this.diceResult
     });
-    this.move(moveAction).then(async () => {
-      this.playTurn();
-    });
+    await this.move(moveAction);
+    await this.performAfterMoveActions();
+    this.playTurn();
   }
 
   setMovableMarbles(availableActions: MoveAction[]): void {
@@ -210,21 +210,23 @@ export default class BoardComponent extends Vue {
     );
   }
 
-  autoMove(availableActions: MoveAction[]): void {
+  async autoMove(availableActions: MoveAction[]) {
     const moveAction = chooseAction(availableActions);
-    this.move(moveAction);
+    await this.move(moveAction);
+    await this.performAfterMoveActions();
   }
 
-  async move(moveAction: MoveAction): Promise<void> {
-    return new Promise((resolve, reject) => {
-      store.dispatch("marbles/moveToByAction", moveAction);
-      store.dispatch("marbles/update", {
-        ...moveAction.marble,
-        isInGame: true
-      });
-      // TODO: set isAtEnd, check isGameOver, kick out other marbles
-      resolve();
+  async move(moveAction: MoveAction) {
+    await store.dispatch("marbles/moveToByAction", moveAction);
+    await store.dispatch("marbles/update", {
+      ...moveAction.marble,
+      isInGame: true
     });
+    console.log('* move done *', moveAction);
+  }
+
+  async performAfterMoveActions() {
+    // TODO: set isAtEnd, check isGameOver, kick out other marbles
   }
 
   getAvailableActions(): MoveAction[] {
@@ -237,7 +239,7 @@ export default class BoardComponent extends Vue {
   turnDice(): void {
     const result = Math.ceil(Math.random() * 6);
     store.dispatch("updateDice", result);
-    console.log("dice:", result);
+    console.log("dice:", result, "player:", this.activePlayer.id);
   }
 }
 </script>
