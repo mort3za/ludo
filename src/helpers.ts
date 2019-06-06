@@ -32,15 +32,25 @@ export function createMoveAction({
   marble: Marble;
   diceResult: number;
 }): MoveAction {
+  const type = getMoveActionType(marble);
   const from = getPositionOfMarble(marble);
-  const to = getPositionAfterMove({
-    from,
-    amount: diceResult,
-    player
-  });
+  let to;
+  if (type === MoveType.BENCH) {
+    to = getPositionAfterMove({
+      from,
+      amount: 1,
+      player
+    });
+  } else {
+    to = getPositionAfterMove({
+      from,
+      amount: diceResult,
+      player
+    });
+  }
   return {
     marble,
-    type: getMoveActionType(marble),
+    type,
     from,
     to
   };
