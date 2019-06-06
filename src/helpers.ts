@@ -88,3 +88,12 @@ export async function updateMarbleIsAtEnd(marble: Marble, player: Player) {
 export async function performOnGameOverActions(player: Player) {
   // TODO:
 }
+
+export async function kickoutOtherMarbles(marble: Marble, player: Player) {
+  const otherMarblesAtStepPlace = store.getters["marbles/listOtherPlayersMarblesByPosition"](player, getPositionOfMarble(marble))
+  const marblesListInitial = store.getters["marbles/listInitial"]
+  for (const m1 of otherMarblesAtStepPlace) {
+    const marbleInitial = marblesListInitial.find((m2: Marble) => m1.id === m2.id)
+    await store.dispatch("marbles/update", marbleInitial);
+  }
+}
