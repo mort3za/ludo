@@ -13,8 +13,9 @@ const initialList: Marble[] = [
   { id: 4, row: 10, column: 2, side: 1, isInGame: false, isAtEnd: false, isMoveable: false },
   // side 2
   { id: 5, row: 5, column: 5, side: 2, isInGame: true, isAtEnd: false, isMoveable: false },
+  { id: 6, row: 5, column: 5, side: 2, isInGame: true, isAtEnd: false, isMoveable: false },
   // { id: 5, row: 1, column: 1, side: 2, isInGame: false, isAtEnd: false, isMoveable: false },
-  { id: 6, row: 1, column: 2, side: 2, isInGame: false, isAtEnd: false, isMoveable: false },
+  // { id: 6, row: 1, column: 2, side: 2, isInGame: false, isAtEnd: false, isMoveable: false },
   { id: 7, row: 2, column: 1, side: 2, isInGame: false, isAtEnd: false, isMoveable: false },
   { id: 8, row: 2, column: 2, side: 2, isInGame: false, isAtEnd: false, isMoveable: false },
   // side 3

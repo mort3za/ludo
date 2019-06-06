@@ -27,8 +27,10 @@ export default class MarblesComponent extends Vue {
     const upgradedList = list.map((m1: Marble) => {
       let count = 1;
       if (!m1.isInGame) {
+        m1.countOnPlace = count;
         return m1;
       }
+      
       list.forEach((m2: Marble) => {
         const isSameMarble = m1.id === m2.id;
         if (isSameMarble) {
@@ -41,10 +43,9 @@ export default class MarblesComponent extends Vue {
         );
 
         if (isAtSamePlace) {
-          if (m1.countOnPlace) {
-            count++;
-
-          }
+          count++;
+          // if (m1.countOnPlace) {
+          // }
         }
         return;
       });
