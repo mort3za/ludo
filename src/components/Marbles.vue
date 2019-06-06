@@ -43,6 +43,7 @@ export default class MarblesComponent extends Vue {
         if (isAtSamePlace) {
           if (m1.countOnPlace) {
             count++;
+
           }
         }
         return;

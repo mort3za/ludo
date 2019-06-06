@@ -3,26 +3,20 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import { StepType } from '../types/types';
+import { Vue, Component, Prop } from "vue-property-decorator";
+import { StepType } from "../types/types";
 
-@Component({
-  props: {
-    row: {
-      type: Number,
-      required: true
-    },
-    column: {
-      type: Number,
-      required: true
-    },
-    types: {
-      type: Array as () => StepType[],
-      required: true
-    }
-  }
-})
-export default class StepComponent extends Vue {}
+@Component
+export default class StepComponent extends Vue {
+  @Prop({ type: Number, required: true })
+  public row!: number;
+
+  @Prop({ type: Number, required: true })
+  public column!: number;
+
+  @Prop({ type: Array as () => StepType[], required: true })
+  public types!: StepType[];
+}
 </script>
 
 <style lang="scss" scoped>

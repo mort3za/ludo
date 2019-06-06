@@ -10,18 +10,15 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 import { Marble, PositionInBoard } from "@/types/types";
 
-@Component({
-  props: {
-    model: {
-      type: Object as () => Marble,
-      required: true
-    }
-  }
-})
+@Component
 export default class MarbleComponent extends Vue {
+
+  @Prop({type: Object as () => Marble})
+  public model!: Marble
+
   getStyle() {
     return {
       transform: `

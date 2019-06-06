@@ -42,8 +42,7 @@ const WAITING_TIME_BETWEEN_EVERY_TURN = 1000;
   components: {
     Road,
     Marbles
-  },
-  props: {}
+  }
 })
 export default class BoardComponent extends Vue {
   mounted() {
