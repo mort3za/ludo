@@ -69,7 +69,7 @@ export default class MarbleComponent extends Vue {
 
 .moveable {
   // animation: 1s moving infinite reverse linear;
-  border: rem(4px) solid $dark;
+  border: rem(4px) solid $dark-less;
 }
 
 $move-amount: rem(4px);
