@@ -5,14 +5,15 @@ import Vue from "vue";
 const initialList: Marble[] = [
   // side 1
   // FIXME: is in game to false
-  { id: 1, row: 5, column: 5, side: 1, isInGame: true, isAtEnd: false, isMoveable: false },
-  { id: 2, row: 5, column: 2, side: 1, isInGame: true, isAtEnd: false, isMoveable: false },
+  { id: 1, row: 4, column: 5, side: 1, isInGame: true, isAtEnd: false, isMoveable: false },
+  { id: 2, row: 5, column: 5, side: 1, isInGame: true, isAtEnd: false, isMoveable: false },
   // { id: 1, row: 11, column: 1, side: 1, isInGame: false, isAtEnd: false, isMoveable: false },
   // { id: 2, row: 11, column: 2, side: 1, isInGame: false, isAtEnd: false, isMoveable: false },
   { id: 3, row: 10, column: 1, side: 1, isInGame: false, isAtEnd: false, isMoveable: false },
   { id: 4, row: 10, column: 2, side: 1, isInGame: false, isAtEnd: false, isMoveable: false },
   // side 2
-  { id: 5, row: 1, column: 1, side: 2, isInGame: false, isAtEnd: false, isMoveable: false },
+  { id: 5, row: 5, column: 5, side: 2, isInGame: true, isAtEnd: false, isMoveable: false },
+  // { id: 5, row: 1, column: 1, side: 2, isInGame: false, isAtEnd: false, isMoveable: false },
   { id: 6, row: 1, column: 2, side: 2, isInGame: false, isAtEnd: false, isMoveable: false },
   { id: 7, row: 2, column: 1, side: 2, isInGame: false, isAtEnd: false, isMoveable: false },
   { id: 8, row: 2, column: 2, side: 2, isInGame: false, isAtEnd: false, isMoveable: false },
@@ -39,13 +40,10 @@ export default {
       const index = state.list.findIndex((m: Marble) => m.id === marble.id);
       Vue.set(state.list, index, marble);
     },
-    // moveToByMarble(state, { marble, destination }: { marble: Marble; destination: PositionInBoard }) {
-    //   const index = state.list.findIndex((m: Marble) => m.id === marble.id);
-    //   state.list[index].row = destination.row;
-    //   state.list[index].column = destination.column;
-    // },
     moveToByAction(state: any, action: MoveAction) {
-      const index = state.list.findIndex((m: Marble) => isSameStep(getPositionOfMarble(m), action.from));
+      const index = state.list.findIndex(
+        (m: Marble) => m.side === action.marble.side && isSameStep(getPositionOfMarble(m), action.from)
+      );
       state.list[index].row = action.to.row;
       state.list[index].column = action.to.column;
     },
@@ -61,16 +59,13 @@ export default {
     update({ commit }: { commit: any }, marble: Marble) {
       commit("update", marble);
     },
-    // moveToByMarble({ commit }: {commit: any}, payload) {
-    //   commit("moveToByMarble", payload);
-    // },
     moveToByAction({ commit }: { commit: any }, action: MoveAction) {
       commit("moveToByAction", action);
     },
     reset({ commit }: { commit: any }) {
       commit("reset");
     },
-    setItemsMoveable({ commit }: { commit: any }, marbles: Marble[] = []) {
+    setMoveableItems({ commit }: { commit: any }, marbles: Marble[] = []) {
       marbles.forEach((m: Marble) => commit("update", { ...m, isMoveable: true }));
     },
     unsetMovableAll({ commit, getters }: { commit: any; getters: any }) {

@@ -28,7 +28,8 @@ import {
   getAvailableActions,
   chooseAction,
   hasMultipleAvailableActions,
-  canMove
+  canMove,
+  performAfterMoveActions
 } from "@/functions/move-actions";
 import { Vue, Component } from "vue-property-decorator";
 import { Player, MoveAction, Marble } from "@/types/types";
@@ -36,12 +37,6 @@ import { createMoveAction, wait } from "../helpers";
 import { analyzeResult } from "../functions/dice";
 
 const WAITING_TIME_BETWEEN_EVERY_TURN = 1000;
-
-// const PLAYING_STATUS = {
-//   LOADING: 1,
-//   DICING: 2,
-//   WAITING_FOR_ACTION: 3
-// };
 
 @Component({
   components: {
@@ -55,20 +50,23 @@ export default class BoardComponent extends Vue {
     this.startGame();
   }
 
-  get playersInGame() {
+  get playersInGame(): Player[] {
     return store.getters["players/listInGame"];
   }
-  get allPlayers() {
+  get allPlayers(): Player[] {
     return store.getters["players/list"];
   }
-  get activePlayer() {
+  get activePlayer(): Player {
     return store.getters["players/active"] || {};
   }
-  get diceResult() {
+  get diceResult(): number {
     return store.getters["diceResult"];
   }
   get diceAnalization() {
     return analyzeResult(this.diceResult);
+  }
+  get isGameOver(): boolean {
+    return store.getters["isGameOver"];
   }
 
   startGame(): void {
@@ -126,11 +124,6 @@ export default class BoardComponent extends Vue {
     return true;
   }
 
-  shouldFinishGame(): boolean {
-    // TODO:
-    return false;
-  }
-
   setActivePlayer(player: Player): void {
     store.dispatch("players/updatePlayer", { ...player, isActive: true });
   }
@@ -138,7 +131,7 @@ export default class BoardComponent extends Vue {
   async playTurn() {
     console.log("-------------------------------------------------- play turn");
     this.unsetMovableMarbles();
-    if (this.shouldFinishGame()) {
+    if (this.isGameOver) {
       // show results & finish game
       return;
     }
@@ -191,13 +184,13 @@ export default class BoardComponent extends Vue {
       diceResult: this.diceResult
     });
     await this.move(moveAction);
-    await this.performAfterMoveActions();
+    await performAfterMoveActions(moveAction, this.activePlayer);
     this.playTurn();
   }
 
   setMovableMarbles(availableActions: MoveAction[]): void {
     const marbles: Marble[] = availableActions.map(action => action.marble);
-    store.dispatch("marbles/setItemsMoveable", marbles);
+    store.dispatch("marbles/setMoveableItems", marbles);
   }
   unsetMovableMarbles(): void {
     if (this.activePlayer.isAI) return;
@@ -213,20 +206,21 @@ export default class BoardComponent extends Vue {
   async autoMove(availableActions: MoveAction[]) {
     const moveAction = chooseAction(availableActions);
     await this.move(moveAction);
-    await this.performAfterMoveActions();
+    await performAfterMoveActions(moveAction, this.activePlayer);
   }
 
   async move(moveAction: MoveAction) {
-    await store.dispatch("marbles/moveToByAction", moveAction);
-    await store.dispatch("marbles/update", {
-      ...moveAction.marble,
-      isInGame: true
-    });
-    console.log('* move done *', moveAction);
-  }
-
-  async performAfterMoveActions() {
-    // TODO: set isAtEnd, check isGameOver, kick out other marbles
+    const updatedAction = {
+      ...moveAction,
+      marble: {
+        ...moveAction.marble,
+        isInGame: true,
+        row: moveAction.to.row,
+        column: moveAction.to.column
+      }
+    }
+    await store.dispatch("marbles/moveToByAction", updatedAction);
+    console.log("* move done *", moveAction);
   }
 
   getAvailableActions(): MoveAction[] {
