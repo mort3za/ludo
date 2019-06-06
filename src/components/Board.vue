@@ -123,9 +123,6 @@ export default class BoardComponent extends Vue {
     if (this.diceAnalization.hasReward) {
       return false;
     }
-    if (!this.diceAnalization.value) {
-      return true;
-    }
     return true;
   }
 
@@ -139,6 +136,7 @@ export default class BoardComponent extends Vue {
   }
 
   async playTurn(): Promise<void> {
+    console.log("-------------------------------------------------- play turn");
     this.unsetMovableMarbles();
     if (this.shouldFinishGame()) {
       // show results & finish game
@@ -148,9 +146,9 @@ export default class BoardComponent extends Vue {
       this.changeTurn();
     }
     this.turnDice();
-    // TODO: sleep before ai action, after no-ai actions
+
+    await this.sleepBetweenTurns();
     if (this.activePlayer.isAI) {
-      await this.sleepBetweenTurns();
       this.performActionsOfPlayerAI();
     } else {
       this.performActionsOfPlayerNoAI();
@@ -163,7 +161,6 @@ export default class BoardComponent extends Vue {
 
   performActionsOfPlayerAI(): void {
     const availableActions = this.getAvailableActions();
-    console.log("availableActions", availableActions);
 
     if (availableActions.length === 0) {
       console.log("---- no action ----");
@@ -177,10 +174,13 @@ export default class BoardComponent extends Vue {
 
   performActionsOfPlayerNoAI(): void {
     const availableActions = this.getAvailableActions();
-    console.log("availableActions", availableActions);
 
-    console.log("wait for move");
-    this.setMovableMarbles(availableActions);
+    console.log("Human move (wait or skip)");
+    if (availableActions.length > 0) {
+      this.setMovableMarbles(availableActions);
+    } else {
+      this.playTurn();
+    }
   }
 
   onClickMarble(marble: Marble): void {
@@ -218,6 +218,11 @@ export default class BoardComponent extends Vue {
   async move(moveAction: MoveAction): Promise<void> {
     return new Promise((resolve, reject) => {
       store.dispatch("marbles/moveToByAction", moveAction);
+      store.dispatch("marbles/update", {
+        ...moveAction.marble,
+        isInGame: true
+      });
+      // TODO: set isAtEnd, check isGameOver, kick out other marbles
       resolve();
     });
   }
@@ -232,6 +237,7 @@ export default class BoardComponent extends Vue {
   turnDice(): void {
     const result = Math.ceil(Math.random() * 6);
     store.dispatch("updateDice", result);
+    console.log("dice:", result);
   }
 }
 </script>

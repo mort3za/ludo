@@ -1,6 +1,11 @@
 <template>
-  <span @click="onClickMarble" class="marble-w" :style="getStyle()">
-    <span class="marble d-block" :class="[`is-side-${model.side}`, {moveable: model.isMoveable}]"></span>
+  <span
+    @click="onClickMarble"
+    class="marble-w"
+    :class="[`is-side-${model.side}`]"
+    :style="getStyle()"
+  >
+    <span class="marble d-block" :class="[{moveable: model.isMoveable}]"></span>
   </span>
 </template>
 
@@ -47,15 +52,18 @@ export default class MarbleComponent extends Vue {
   // will-change: transform;
 }
 .is-side-1 {
-  background-color: $brand-1;
+  z-index: 1;
+  .marble {
+    background-color: $brand-1;
+  }
 }
-.is-side-2 {
+.is-side-2 .marble {
   background-color: $brand-2;
 }
-.is-side-3 {
+.is-side-3 .marble {
   background-color: $brand-3;
 }
-.is-side-4 {
+.is-side-4 .marble {
   background-color: $brand-4;
 }
 
@@ -71,7 +79,7 @@ $move-amount: rem(4px);
     transform: translateY(0);
   }
   50% {
-    transform: translateY(- $move-amount);
+    transform: translateY(-$move-amount);
   }
 }
 </style>
