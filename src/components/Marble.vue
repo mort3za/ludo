@@ -51,7 +51,6 @@ export default class MarbleComponent extends Vue {
       else if (side === 3) {
         style.left = relative_move;
         style.top = 0;
-        console.log('3:', style);
         
       }
       else if (side === 4) {

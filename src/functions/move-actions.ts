@@ -66,9 +66,9 @@ function _getInGameActions(diceAnalization: DiceAnalization, player: Player): Mo
 
   playerMarblesInGame.forEach((marble: Marble) => {
     const marblePosition: PositionInBoard = getPositionOfMarble(marble);
-    const lastStepPosition: PositionInBoard = getPositionOfStep(store.getters["steps/sideLastpoint"](player));
+    const finalStepPosition: PositionInBoard = getPositionOfStep(store.getters["steps/finalStep"]);
 
-    const distance: number = getDistance(marblePosition, lastStepPosition, player);
+    const distance: number = getDistance(marblePosition, finalStepPosition, player);
     // console.log("distance", distance);
 
     if (diceAnalization.value <= distance) {
@@ -100,7 +100,7 @@ export function canMove(marble: Marble, player: Player) {
 }
 
 export async function performAfterMoveActions(moveAction: MoveAction, player: Player) {
-  // TODO: set isAtEnd, check isGameOver, kick out other marbles
+  // TODO: check isGameOver
   await updateMarbleIsAtEnd(moveAction.marble, player);
   await performOnGameOverActions(player);
   await kickoutOtherMarbles(moveAction.marble, player);

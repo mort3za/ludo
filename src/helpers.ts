@@ -1,4 +1,4 @@
-import { PositionInBoard, Marble, StepPlace, Player, MoveAction, MoveType } from "./types/types";
+import { PositionInBoard, Marble, StepPlace, Player, MoveAction, MoveType, StepType } from "./types/types";
 import { getPositionAfterMove } from "./functions/path";
 import store from "@/store/index";
 import marbles from "./store/modules/marbles";
@@ -19,6 +19,12 @@ export function getPositionOfMarble(marble: Marble): PositionInBoard {
     row: marble.row,
     column: marble.column
   };
+}
+
+export function getStepPlaceOfMarble(marble: Marble): StepType[] {
+  const position: PositionInBoard = getPositionOfMarble(marble);
+  const stepPlace: StepPlace = store.getters["steps/getStepByPosition"](position);
+  return stepPlace[3];
 }
 
 export function getMoveActionType(marble: Marble): MoveType {
@@ -68,7 +74,6 @@ export async function wait(time: number) {
 
 export function isPositionAtEnd(position: PositionInBoard, player: Player) {
   const playerEndPoints = store.getters["steps/sideEndpoints"](player);
-  console.log("playerEndPoints", playerEndPoints);
   return playerEndPoints.some((endPointStep: StepPlace) => {
     return isSameStep(position, getPositionOfStep(endPointStep));
   });
@@ -90,10 +95,19 @@ export async function performOnGameOverActions(player: Player) {
 }
 
 export async function kickoutOtherMarbles(marble: Marble, player: Player) {
-  const otherMarblesAtStepPlace = store.getters["marbles/listOtherPlayersMarblesByPosition"](player, getPositionOfMarble(marble))
-  const marblesListInitial = store.getters["marbles/listInitial"]
-  for (const m1 of otherMarblesAtStepPlace) {
-    const marbleInitial = marblesListInitial.find((m2: Marble) => m1.id === m2.id)
+  const otherMarblesAtStepPlace = store.getters["marbles/listOtherPlayersMarblesByPosition"](
+    player,
+    getPositionOfMarble(marble)
+  );
+  const kickoutList = otherMarblesAtStepPlace.filter((m: Marble) => {
+    const stepTypes: StepType[] = getStepPlaceOfMarble(m);
+    const shouldKickout = !stepTypes.includes(StepType.SAFEZONE);
+    return shouldKickout;
+  });
+
+  const marblesListInitial = store.getters["marbles/listInitial"];
+  for (const m1 of kickoutList) {
+    const marbleInitial = marblesListInitial.find((m2: Marble) => m1.id === m2.id);
     await store.dispatch("marbles/update", marbleInitial);
   }
 }

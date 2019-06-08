@@ -14,7 +14,7 @@ bench 1          |          bench 4
 Every step is in [row, column, side, step type] format
 */
 
-import { StepType, Player, StepPlace } from "@/types/types";
+import { StepType, Player, StepPlace, PositionInBoard } from "@/types/types";
 
 export default {
   namespaced: true,
@@ -98,37 +98,48 @@ export default {
       [6, 10, 4, [StepType.ENDPOINT]],
       [6, 9, 4, [StepType.ENDPOINT]],
       [6, 8, 4, [StepType.ENDPOINT]],
-      [6, 7, 4, [StepType.ENDPOINT, StepType.LASTPOINT]]
+      [6, 7, 4, [StepType.ENDPOINT, StepType.LASTPOINT]],
+
+      // final step
+      [6, 6, 0, [StepType.FINAL, StepType.SAFEZONE]]
     ]
   },
   getters: {
-    sideBenchs: state => ({ side }: Player) => {
+    getStepByPosition: (state: any) => (position: PositionInBoard) => {
+      return state.list.find((step: StepPlace) => step[0] === position.row && step[1] === position.column);
+    },
+    allBenchs(state: any) {
+      return state.list.filter((step: StepPlace) => step[3].includes(StepType.BENCH));
+    },
+    sideBenchs: (state: any) => ({ side }: Player) => {
       return state.list.filter((step: StepPlace) => step[2] === side && step[3].includes(StepType.BENCH));
     },
-    sideCommons: state => ({ side }: Player) => {
+    sideCommons: (state: any) => ({ side }: Player) => {
       return state.list.filter((step: StepPlace) => step[2] === side && step[3].includes(StepType.COMMON));
     },
-    sideEndpoints: state => ({ side }: Player) => {
+    sideEndpoints: (state: any) => ({ side }: Player) => {
       return state.list.filter((step: StepPlace) => step[2] === side && step[3].includes(StepType.ENDPOINT));
     },
-    sideLastpoint: state => ({ side }: Player) => {
-      return state.list.find((step: StepPlace) => step[2] === side && step[3].includes(StepType.LASTPOINT));
-    },
-    sideStartpoint: state => ({ side }: Player) => {
+    sideStartpoint: (state: any) => ({ side }: Player) => {
       return state.list.find((step: StepPlace) => step[2] === side && step[3].includes(StepType.STARTPOINT));
     },
-    sideSteps: (state, getters) => ({ side }: Player) => {
+    sideSteps: (state: any, getters: any) => ({ side }: Player) => {
       return [...getters.sideCommons({ side }), ...getters.sideEndpoints({ side })];
     },
-    allSteps(state, getters) {
+    finalStep(state: any) {
+      return state.list.find((step: StepPlace) => step[3].includes(StepType.FINAL));
+    },
+    allSteps(state: any, getters: any) {
       return [
+        ...getters.allBenchs,
         ...getters.sideSteps({ side: 1 }),
         ...getters.sideSteps({ side: 2 }),
         ...getters.sideSteps({ side: 3 }),
-        ...getters.sideSteps({ side: 4 })
+        ...getters.sideSteps({ side: 4 }),
+        getters.finalStep
       ];
     },
-    allPaths: (state, getters) => ({ side }: Player) => {
+    allPaths: (state: any, getters: any) => ({ side }: Player) => {
       switch (side) {
         case 1:
           return [
@@ -136,7 +147,8 @@ export default {
             ...getters.sideCommons({ side: 2 }),
             ...getters.sideCommons({ side: 3 }),
             ...getters.sideCommons({ side: 4 }),
-            ...getters.sideEndpoints({ side: 1 })
+            ...getters.sideEndpoints({ side: 1 }),
+            getters.finalStep
           ];
         case 2:
           return [
@@ -144,7 +156,8 @@ export default {
             ...getters.sideCommons({ side: 3 }),
             ...getters.sideCommons({ side: 4 }),
             ...getters.sideCommons({ side: 1 }),
-            ...getters.sideEndpoints({ side: 2 })
+            ...getters.sideEndpoints({ side: 2 }),
+            getters.finalStep
           ];
         case 3:
           return [
@@ -152,7 +165,8 @@ export default {
             ...getters.sideCommons({ side: 4 }),
             ...getters.sideCommons({ side: 1 }),
             ...getters.sideCommons({ side: 2 }),
-            ...getters.sideEndpoints({ side: 3 })
+            ...getters.sideEndpoints({ side: 3 }),
+            getters.finalStep
           ];
         case 4:
           return [
@@ -160,7 +174,8 @@ export default {
             ...getters.sideCommons({ side: 1 }),
             ...getters.sideCommons({ side: 2 }),
             ...getters.sideCommons({ side: 3 }),
-            ...getters.sideEndpoints({ side: 4 })
+            ...getters.sideEndpoints({ side: 4 }),
+            getters.finalStep
           ];
       }
     }
