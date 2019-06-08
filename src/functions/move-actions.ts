@@ -7,7 +7,8 @@ import {
   getPositionOfStep,
   updateMarbleIsAtEnd,
   performOnGameOverActions,
-  kickoutOtherMarbles
+  kickoutOtherMarbles,
+  updateMarbleIsAtFinal
 } from "@/helpers";
 
 /**
@@ -102,6 +103,7 @@ export function canMove(marble: Marble, player: Player) {
 export async function performAfterMoveActions(moveAction: MoveAction, player: Player) {
   // TODO: check isGameOver
   await updateMarbleIsAtEnd(moveAction.marble, player);
+  await updateMarbleIsAtFinal(moveAction.marble, player);
   await performOnGameOverActions(player);
   await kickoutOtherMarbles(moveAction.marble, player);
 

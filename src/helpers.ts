@@ -79,6 +79,11 @@ export function isPositionAtEnd(position: PositionInBoard, player: Player) {
   });
 }
 
+export function isPositionAtFinal(position: PositionInBoard) {
+  const finishPosition = getPositionOfStep(store.getters["steps/finalStep"]);
+  return isSameStep(position, finishPosition);
+}
+
 /**
  * set isAtEnd attribute of marble based on current position of marble
  */
@@ -87,6 +92,14 @@ export async function updateMarbleIsAtEnd(marble: Marble, player: Player) {
   await store.dispatch("marbles/update", {
     ...marble,
     isAtEnd
+  });
+}
+
+export async function updateMarbleIsAtFinal(marble: Marble, player: Player) {
+  const isAtFinal = isPositionAtFinal(getPositionOfMarble(marble));
+  await store.dispatch("marbles/update", {
+    ...marble,
+    isAtFinal
   });
 }
 

@@ -36,7 +36,7 @@ import { Player, MoveAction, Marble } from "@/types/types";
 import { createMoveAction, wait } from "../helpers";
 import { analyzeResult } from "../functions/dice";
 
-const WAITING_TIME_BETWEEN_EVERY_TURN = 1000;
+const WAITING_TIME_BETWEEN_EVERY_TURN = 500;
 
 @Component({
   components: {
@@ -65,7 +65,7 @@ export default class BoardComponent extends Vue {
     return analyzeResult(this.diceResult);
   }
   get isGameOver(): boolean {
-    return store.getters["isGameOver"];
+    return store.getters["marbles/isGameFinishedForPlayer"](this.activePlayer);
   }
 
   startGame(): void {
@@ -132,6 +132,7 @@ export default class BoardComponent extends Vue {
     this.unsetMovableMarbles();
     if (this.isGameOver) {
       // show results & finish game
+      console.log("Game is over")
       return;
     }
     if (this.shouldChangeTurn()) {

@@ -48,6 +48,7 @@ export interface Marble {
   side: Side;
   isInGame: boolean;
   isAtEnd: boolean;
+  isAtFinal: boolean;
   isMoveable: boolean;
   countOnPlace?: number;
 }
