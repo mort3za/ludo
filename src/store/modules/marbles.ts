@@ -4,8 +4,8 @@ import Vue from "vue";
 
 const listInitial: Marble[] = [
   // side 1
-  // { id: 1, row: 4, column: 5, side: 1, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, countOnPlace: 1 },
-  // { id: 2, row: 5, column: 5, side: 1, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, countOnPlace: 1 },
+  // { id: 1, row: 4, column: 5, side: 1, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
+  // { id: 2, row: 5, column: 5, side: 1, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
   {
     id: 1,
     row: 11,
@@ -15,6 +15,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   {
@@ -26,6 +27,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   {
@@ -37,6 +39,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   {
@@ -48,11 +51,12 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   // side 2
-  // { id: 5, row: 5, column: 5, side: 2, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, countOnPlace: 1 },
-  // { id: 6, row: 5, column: 5, side: 2, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, countOnPlace: 1 },
+  // { id: 5, row: 5, column: 5, side: 2, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
+  // { id: 6, row: 5, column: 5, side: 2, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
   {
     id: 5,
     row: 1,
@@ -62,6 +66,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   {
@@ -73,6 +78,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   {
@@ -84,6 +90,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   {
@@ -95,6 +102,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   // side 3
@@ -107,6 +115,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   {
@@ -118,6 +127,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   {
@@ -129,6 +139,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   {
@@ -140,6 +151,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   // side 4
@@ -152,6 +164,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   {
@@ -163,6 +176,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   {
@@ -174,6 +188,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   },
   {
@@ -185,6 +200,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
+    isMoving: false,
     countOnPlace: 1
   }
 ];
@@ -218,7 +234,7 @@ export default {
     setMoveableItems({ commit }: { commit: any }, marbles: Marble[] = []) {
       marbles.forEach((m: Marble) => commit("update", { ...m, isMoveable: true }));
     },
-    unsetMovableAll({ commit, getters }: { commit: any; getters: any }) {
+    unsetMoveableAll({ commit, getters }: { commit: any; getters: any }) {
       getters.list.forEach((m: Marble) => commit("update", { ...m, isMoveable: false }));
     }
   },

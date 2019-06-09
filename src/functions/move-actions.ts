@@ -1,3 +1,4 @@
+// tslint:disable: no-implicit-dependencies
 import store from "@/store/index";
 import { analyzeResult } from "./dice";
 import {
@@ -18,9 +19,8 @@ import {
   kickoutOtherMarbles,
   updateMarbleIsAtFinal,
   wait
-} from "@/helpers";
-
-const WAITING_TIME_BETWEEN_EVERY_TURN = 1000;
+} from "@/helpers.ts";
+import { MARBLE_ANIMATION_DURATION } from "@/constants.ts";
 
 /**
  * Find all available moves
@@ -116,27 +116,32 @@ export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction
     ...moveAction.marble,
     isInGame: true,
     row: moveAction.to.row,
-    column: moveAction.to.column
+    column: moveAction.to.column,
+    isMoving: false
   };
   const moveSteps: StepPlace[] = getStepsOfMoveAction(moveAction);
-  for (const step of moveSteps) {
+  for (const [index, step] of moveSteps.entries()) {
     const tempMarble: Marble = {
       ...moveAction.marble,
       isInGame: true,
       row: step[0],
-      column: step[1]
+      column: step[1],
+      isMoving: true
     };
     await store.dispatch("marbles/update", tempMarble);
-    await wait(WAITING_TIME_BETWEEN_EVERY_TURN);
+    if (index <= moveSteps.length - 2) {      
+      await wait(MARBLE_ANIMATION_DURATION);
+    }
   }
+  // await store.dispatch("marbles/update", finalMarble);
   const updatedMoveAction = {
     ...moveAction,
     marble: finalMarble
-  };  
+  };
   return updatedMoveAction;
 }
 
-export async function performAfterMoveActions(moveAction: MoveAction, player: Player) {  
+export async function performAfterMoveActions(moveAction: MoveAction, player: Player) {
   // TODO: check isGameOver
   await updateMarbleIsAtEnd(moveAction.marble, player);
   await updateMarbleIsAtFinal(moveAction.marble, player);

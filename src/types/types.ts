@@ -50,6 +50,7 @@ export interface Marble {
   isAtEnd: boolean;
   isAtFinal: boolean;
   isMoveable: boolean;
+  isMoving: boolean;
   countOnPlace?: number;
 }
 

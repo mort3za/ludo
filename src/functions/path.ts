@@ -4,17 +4,9 @@ import { isSameStep, getPositionOfStep, getPositionOfMarble } from "@/helpers";
 
 export function getDistance(position1: PositionInBoard, position2: PositionInBoard, player: Player): number {
   const playerPath = store.getters["steps/allPaths"](player);
-  const index1 = playerPath.findIndex((step: StepPlace) =>
-    isSameStep(getPositionOfStep(step), position1)
-  );
-
-  const index2 = playerPath.findIndex((step: StepPlace) =>
-    isSameStep(getPositionOfStep(step), position2)
-  );
-
-  console.log('distance', index2 - index1);
-  
-
+  const index1 = playerPath.findIndex((step: StepPlace) => isSameStep(getPositionOfStep(step), position1));
+  const index2 = playerPath.findIndex((step: StepPlace) => isSameStep(getPositionOfStep(step), position2));
+  // console.log("distance", index2 - index1);
   return index2 - index1;
 }
 
@@ -49,5 +41,5 @@ export function getStepsOfMoveAction(moveAction: MoveAction): StepPlace[] {
     isSameStep(getPositionOfStep(step), moveAction.to)
   );
 
-  return playerPath.slice(index1, index2 + 1);
+  return playerPath.slice(index1 + 1, index2 + 1);
 }

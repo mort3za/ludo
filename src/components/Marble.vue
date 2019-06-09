@@ -37,25 +37,20 @@ export default class MarbleComponent extends Vue {
     let style: any = {};
     const countOnPlace: number = this.model.countOnPlace || 1;
     const side = this.model.side;
-    const relative_move = `${STEP_WIDTH / 2}px`
-    
+
     if (countOnPlace >= 2) {
       if (side === 1) {
         style.left = 0;
-        style.top = relative_move;
-      }
-      else if (side === 2) {
+        style.bottom = 0;
+      } else if (side === 2) {
         style.left = 0;
         style.top = 0;
-      }
-      else if (side === 3) {
-        style.left = relative_move;
+      } else if (side === 3) {
+        style.right = 0;
         style.top = 0;
-        
-      }
-      else if (side === 4) {
-        style.left = relative_move;
-        style.top = relative_move;
+      } else if (side === 4) {
+        style.right = 0;
+        style.bottom = 0;
       }
     }
     return style;
@@ -70,11 +65,13 @@ export default class MarbleComponent extends Vue {
 <style lang="scss" scoped>
 .marble-w {
   position: absolute;
-  transition: transform 1s ease;
+  transition: transform #{$marble-animation-duration}ms ease;
   width: rem($step-width);
   height: rem($step-width);
 }
 .marble {
+  transition: width #{$marble-animation-duration / 2}ms ease,
+    height #{$marble-animation-duration / 2}ms ease;
   width: rem($step-width);
   height: rem($step-width);
   border-radius: 100%;
@@ -95,6 +92,7 @@ export default class MarbleComponent extends Vue {
   border: rem(2px) solid $light;
 }
 .moveable {
+  cursor: pointer;
   .marble {
     box-shadow: 0 0 0 rem(4px) $dark-less inset, rem(2px 2px 2px) $gray-60;
     border: none;

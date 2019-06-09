@@ -36,8 +36,7 @@ import { Vue, Component } from "vue-property-decorator";
 import { Player, MoveAction, Marble } from "@/types/types";
 import { createMoveAction, wait, getRandom } from "../helpers";
 import { analyzeResult } from "../functions/dice";
-
-const WAITING_TIME_BETWEEN_EVERY_TURN = 1000;
+import { SLEEP_BETWEEN_TURNS } from "@/constants.ts";
 
 @Component({
   components: {
@@ -130,7 +129,7 @@ export default class BoardComponent extends Vue {
 
   async playTurn() {
     console.log("-------------------------------------------------- play turn");
-    this.unsetMovableMarbles();
+    this.unsetMoveableMarbles();
     if (this.isGameOver) {
       // show results & finish game
       console.log("Game is over");
@@ -150,7 +149,7 @@ export default class BoardComponent extends Vue {
   }
 
   async sleepBetweenTurns() {
-    await wait(WAITING_TIME_BETWEEN_EVERY_TURN);
+    await wait(SLEEP_BETWEEN_TURNS);
   }
 
   async performActionsOfPlayerAI() {
@@ -171,7 +170,7 @@ export default class BoardComponent extends Vue {
 
     console.log("Human move (wait or skip)");
     if (availableActions.length > 0) {
-      this.setMovableMarbles(availableActions);
+      this.setMoveableMarbles(availableActions);
     } else {
       this.playTurn();
     }
@@ -189,13 +188,13 @@ export default class BoardComponent extends Vue {
     this.playTurn();
   }
 
-  setMovableMarbles(availableActions: MoveAction[]): void {
+  setMoveableMarbles(availableActions: MoveAction[]): void {
     const marbles: Marble[] = availableActions.map(action => action.marble);
     store.dispatch("marbles/setMoveableItems", marbles);
   }
-  unsetMovableMarbles(): void {
+  unsetMoveableMarbles(): void {
     if (this.activePlayer.isAI) return;
-    store.dispatch("marbles/unsetMovableAll");
+    store.dispatch("marbles/unsetMoveableAll");
   }
 
   shouldAutoMove(availableActions: MoveAction[]): boolean {
