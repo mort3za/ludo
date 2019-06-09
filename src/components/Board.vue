@@ -29,7 +29,8 @@ import {
   chooseAction,
   hasMultipleAvailableActions,
   canMove,
-  performAfterMoveActions
+  performAfterMoveActions,
+  moveStepByStep
 } from "@/functions/move-actions";
 import { Vue, Component } from "vue-property-decorator";
 import { Player, MoveAction, Marble } from "@/types/types";
@@ -132,7 +133,7 @@ export default class BoardComponent extends Vue {
     this.unsetMovableMarbles();
     if (this.isGameOver) {
       // show results & finish game
-      console.log("Game is over")
+      console.log("Game is over");
       return;
     }
     if (this.shouldChangeTurn()) {
@@ -210,17 +211,7 @@ export default class BoardComponent extends Vue {
   }
 
   async move(moveAction: MoveAction): Promise<MoveAction> {
-    const updatedMarble = {
-      ...moveAction.marble,
-      isInGame: true,
-      row: moveAction.to.row,
-      column: moveAction.to.column
-    };
-    await store.dispatch("marbles/update", updatedMarble);
-    const updatedMoveAction = {
-      ...moveAction,
-      marble: updatedMarble
-    };
+    const updatedMoveAction = await moveStepByStep(moveAction);
     console.log("* move done *", moveAction);
     return updatedMoveAction;
   }
@@ -233,7 +224,7 @@ export default class BoardComponent extends Vue {
   }
 
   turnDice(): void {
-    const result = Math.ceil(getRandom() * 6)
+    const result = Math.ceil(getRandom() * 6);
     store.dispatch("updateDice", result);
     console.log("dice:", result, "player:", this.activePlayer.id);
   }

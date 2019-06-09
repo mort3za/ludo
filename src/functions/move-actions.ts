@@ -1,15 +1,26 @@
 import store from "@/store/index";
 import { analyzeResult } from "./dice";
-import { MoveAction, DiceAnalization, Player, Marble, PositionInBoard, MoveType } from "@/types/types";
-import { getDistance, getPositionAfterMove } from "./path";
+import {
+  MoveAction,
+  DiceAnalization,
+  Player,
+  Marble,
+  PositionInBoard,
+  MoveType,
+  StepPlace
+} from "@/types/types";
+import { getDistance, getPositionAfterMove, getStepsOfMoveAction } from "./path";
 import {
   getPositionOfMarble,
   getPositionOfStep,
   updateMarbleIsAtEnd,
   performOnGameOverActions,
   kickoutOtherMarbles,
-  updateMarbleIsAtFinal
+  updateMarbleIsAtFinal,
+  wait
 } from "@/helpers";
+
+const WAITING_TIME_BETWEEN_EVERY_TURN = 1000;
 
 /**
  * Find all available moves
@@ -100,11 +111,35 @@ export function canMove(marble: Marble, player: Player) {
   return marble.side === player.side && marble.isMoveable === true;
 }
 
-export async function performAfterMoveActions(moveAction: MoveAction, player: Player) {
+export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction> {
+  const finalMarble = {
+    ...moveAction.marble,
+    isInGame: true,
+    row: moveAction.to.row,
+    column: moveAction.to.column
+  };
+  const moveSteps: StepPlace[] = getStepsOfMoveAction(moveAction);
+  for (const step of moveSteps) {
+    const tempMarble: Marble = {
+      ...moveAction.marble,
+      isInGame: true,
+      row: step[0],
+      column: step[1]
+    };
+    await store.dispatch("marbles/update", tempMarble);
+    await wait(WAITING_TIME_BETWEEN_EVERY_TURN);
+  }
+  const updatedMoveAction = {
+    ...moveAction,
+    marble: finalMarble
+  };  
+  return updatedMoveAction;
+}
+
+export async function performAfterMoveActions(moveAction: MoveAction, player: Player) {  
   // TODO: check isGameOver
   await updateMarbleIsAtEnd(moveAction.marble, player);
   await updateMarbleIsAtFinal(moveAction.marble, player);
   await performOnGameOverActions(player);
   await kickoutOtherMarbles(moveAction.marble, player);
-
 }
