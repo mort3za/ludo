@@ -33,7 +33,7 @@ import {
 } from "@/functions/move-actions";
 import { Vue, Component } from "vue-property-decorator";
 import { Player, MoveAction, Marble } from "@/types/types";
-import { createMoveAction, wait } from "../helpers";
+import { createMoveAction, wait, getRandom } from "../helpers";
 import { analyzeResult } from "../functions/dice";
 
 const WAITING_TIME_BETWEEN_EVERY_TURN = 1000;
@@ -233,7 +233,7 @@ export default class BoardComponent extends Vue {
   }
 
   turnDice(): void {
-    const result = Math.ceil(Math.random() * 6);
+    const result = Math.ceil(getRandom() * 6)
     store.dispatch("updateDice", result);
     console.log("dice:", result, "player:", this.activePlayer.id);
   }
