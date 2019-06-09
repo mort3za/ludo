@@ -36,7 +36,7 @@ import { Player, MoveAction, Marble } from "@/types/types";
 import { createMoveAction, wait } from "../helpers";
 import { analyzeResult } from "../functions/dice";
 
-const WAITING_TIME_BETWEEN_EVERY_TURN = 500;
+const WAITING_TIME_BETWEEN_EVERY_TURN = 1000;
 
 @Component({
   components: {
