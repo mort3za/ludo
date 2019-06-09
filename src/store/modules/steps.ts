@@ -102,25 +102,25 @@ export default {
     ]
   },
   getters: {
-    sideBenchs: state => ({ side }: Player) => {
+    sideBenchs: (state: any) => ({ side }: Player) => {
       return state.list.filter((step: StepPlace) => step[2] === side && step[3].includes(StepType.BENCH));
     },
-    sideCommons: state => ({ side }: Player) => {
+    sideCommons: (state: any) => ({ side }: Player) => {
       return state.list.filter((step: StepPlace) => step[2] === side && step[3].includes(StepType.COMMON));
     },
-    sideEndpoints: state => ({ side }: Player) => {
+    sideEndpoints: (state: any) => ({ side }: Player) => {
       return state.list.filter((step: StepPlace) => step[2] === side && step[3].includes(StepType.ENDPOINT));
     },
-    sideLastpoint: state => ({ side }: Player) => {
+    sideLastpoint: (state: any) => ({ side }: Player) => {
       return state.list.find((step: StepPlace) => step[2] === side && step[3].includes(StepType.LASTPOINT));
     },
-    sideStartpoint: state => ({ side }: Player) => {
+    sideStartpoint: (state: any) => ({ side }: Player) => {
       return state.list.find((step: StepPlace) => step[2] === side && step[3].includes(StepType.STARTPOINT));
     },
-    sideSteps: (state, getters) => ({ side }: Player) => {
+    sideSteps: (state: any, getters: any) => ({ side }: Player) => {
       return [...getters.sideCommons({ side }), ...getters.sideEndpoints({ side })];
     },
-    allSteps(state, getters) {
+    allSteps(state: any, getters: any) {
       return [
         ...getters.sideSteps({ side: 1 }),
         ...getters.sideSteps({ side: 2 }),
@@ -128,7 +128,7 @@ export default {
         ...getters.sideSteps({ side: 4 })
       ];
     },
-    allPaths: (state, getters) => ({ side }: Player) => {
+    allPaths: (state: any, getters: any) => ({ side }: Player) => {
       switch (side) {
         case 1:
           return [
