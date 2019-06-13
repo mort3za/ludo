@@ -4,32 +4,32 @@ import Vue from "vue";
 
 const listInitial: Marble[] = [
   // side 1
-  // { id: 1, row: 4, column: 5, side: 1, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
-  // { id: 2, row: 5, column: 5, side: 1, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
-  {
-    id: 1,
-    row: 11,
-    column: 1,
-    side: 1,
-    isInGame: false,
-    isAtEnd: false,
-    isAtFinal: false,
-    isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
-  },
-  {
-    id: 2,
-    row: 11,
-    column: 2,
-    side: 1,
-    isInGame: false,
-    isAtEnd: false,
-    isAtFinal: false,
-    isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
-  },
+  { id: 1, row: 4, column: 5, side: 1, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
+  { id: 2, row: 5, column: 5, side: 1, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
+  // {
+  //   id: 1,
+  //   row: 11,
+  //   column: 1,
+  //   side: 1,
+  //   isInGame: false,
+  //   isAtEnd: false,
+  //   isAtFinal: false,
+  //   isMoveable: false,
+  //   isMoving: false,
+  //   countOnPlace: 1
+  // },
+  // {
+  //   id: 2,
+  //   row: 11,
+  //   column: 2,
+  //   side: 1,
+  //   isInGame: false,
+  //   isAtEnd: false,
+  //   isAtFinal: false,
+  //   isMoveable: false,
+  //   isMoving: false,
+  //   countOnPlace: 1
+  // },
   {
     id: 3,
     row: 10,
@@ -55,32 +55,32 @@ const listInitial: Marble[] = [
     countOnPlace: 1
   },
   // side 2
-  // { id: 5, row: 5, column: 5, side: 2, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
-  // { id: 6, row: 5, column: 5, side: 2, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
-  {
-    id: 5,
-    row: 1,
-    column: 1,
-    side: 2,
-    isInGame: false,
-    isAtEnd: false,
-    isAtFinal: false,
-    isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
-  },
-  {
-    id: 6,
-    row: 1,
-    column: 2,
-    side: 2,
-    isInGame: false,
-    isAtEnd: false,
-    isAtFinal: false,
-    isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
-  },
+  { id: 5, row: 2, column: 5, side: 2, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
+  { id: 6, row: 1, column: 5, side: 2, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
+  // {
+  //   id: 5,
+  //   row: 1,
+  //   column: 1,
+  //   side: 2,
+  //   isInGame: false,
+  //   isAtEnd: false,
+  //   isAtFinal: false,
+  //   isMoveable: false,
+  //   isMoving: false,
+  //   countOnPlace: 1
+  // },
+  // {
+  //   id: 6,
+  //   row: 1,
+  //   column: 2,
+  //   side: 2,
+  //   isInGame: false,
+  //   isAtEnd: false,
+  //   isAtFinal: false,
+  //   isMoveable: false,
+  //   isMoving: false,
+  //   countOnPlace: 1
+  // },
   {
     id: 7,
     row: 2,

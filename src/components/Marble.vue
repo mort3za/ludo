@@ -3,13 +3,9 @@
     @click="onClickMarble"
     class="marble-w"
     :class="[{moveable: model.isMoveable}, `is-side-${model.side}`]"
-    :style="getStyleWrapper()"
+    :style="getWrapperStyle()"
   >
-    <span
-      class="marble d-block"
-      :class="[{[`multiple-${model.countOnPlace}`]: model.countOnPlace > 1, 'multiple': model.countOnPlace > 1}]"
-      :style="getStyleInner()"
-    ></span>
+    <span class="marble d-block" :class="getMarbleClasses()" :style="getMarbleStyle()"></span>
   </span>
 </template>
 
@@ -24,7 +20,7 @@ export default class MarbleComponent extends Vue {
   @Prop({ type: Object as () => Marble })
   public model!: Marble;
 
-  getStyleWrapper() {
+  getWrapperStyle() {
     return {
       transform: `
         translateX(${(this.model.column - 1) * (STEP_WIDTH + 4) + "px"})
@@ -33,7 +29,21 @@ export default class MarbleComponent extends Vue {
     };
   }
 
-  getStyleInner() {
+  getMarbleClasses() {
+    const {isMoving, countOnPlace} = this.model;
+    if (isMoving) {
+      return []
+    }
+    
+    return [
+      {
+        [`multiple-${countOnPlace}`]: countOnPlace > 1,
+        multiple: countOnPlace > 1
+      }
+    ];
+  }
+
+  getMarbleStyle() {
     let style: any = {};
     const countOnPlace: number = this.model.countOnPlace || 1;
     const side = this.model.side;

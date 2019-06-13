@@ -117,8 +117,10 @@ export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction
     isInGame: true,
     row: moveAction.to.row,
     column: moveAction.to.column,
-    isMoving: false
+    isMoving: false,
+    isMoveable: false
   };
+  
   const moveSteps: StepPlace[] = getStepsOfMoveAction(moveAction);
   for (const [index, step] of moveSteps.entries()) {
     const tempMarble: Marble = {
@@ -126,14 +128,16 @@ export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction
       isInGame: true,
       row: step[0],
       column: step[1],
-      isMoving: true
+      isMoving: true,
+      isMoveable: false
     };
     await store.dispatch("marbles/update", tempMarble);
     if (index <= moveSteps.length - 2) {      
       await wait(MARBLE_ANIMATION_DURATION);
     }
   }
-  // await store.dispatch("marbles/update", finalMarble);
+  await store.dispatch("marbles/update", finalMarble);
+
   const updatedMoveAction = {
     ...moveAction,
     marble: finalMarble

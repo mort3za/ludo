@@ -51,7 +51,7 @@ export interface Marble {
   isAtFinal: boolean;
   isMoveable: boolean;
   isMoving: boolean;
-  countOnPlace?: number;
+  countOnPlace: number;
 }
 
 export enum MoveType {
