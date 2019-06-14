@@ -4,9 +4,10 @@
       <template v-for="step in steps">
         <Step
           :style="{'grid-row-start': step[0], 'grid-column-start': step[1]}"
-          :types="step[3]"
           :row="step[0]"
           :column="step[1]"
+          :side="step[2]"
+          :types="step[3]"
           :key="`${step[0]}-${step[1]}-${step[2]}`"
         />
       </template>
