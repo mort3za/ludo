@@ -12,8 +12,7 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Marble, PositionInBoard } from "@/types/types";
-
-const STEP_WIDTH = 40;
+import { STEP_WIDTH } from "@/constants.ts";
 
 @Component
 export default class MarbleComponent extends Vue {

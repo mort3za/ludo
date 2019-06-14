@@ -153,6 +153,6 @@ export async function afterMoveActions(moveAction: MoveAction, player: Player) {
   await kickoutOtherMarbles(moveAction.marble, player);
 }
 
-export async function beeforeMoveActions(moveAction: MoveAction, player: Player) {
+export async function beforeMoveActions(moveAction: MoveAction, player: Player) {
   await store.dispatch("marbles/unsetMoveableAll");
 }

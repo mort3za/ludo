@@ -6,6 +6,7 @@
           <div class="board-inner">
             <Road class="road"/>
             <Marbles v-on:clickmarble="onClickMarble" class="marbles"/>
+            <Dice :dice-result="diceResult" :side="activePlayer.side" />
           </div>
         </section>
       </div>
@@ -23,6 +24,7 @@
 <script lang="ts">
 import store from "@/store/index";
 import Road from "@/components/Road.vue";
+import Dice from "@/components/Dice.vue";
 import Marbles from "@/components/Marbles.vue";
 import {
   getAvailableActions,
@@ -31,7 +33,7 @@ import {
   canMove,
   afterMoveActions,
   moveStepByStep,
-  beeforeMoveActions
+  beforeMoveActions
 } from "@/functions/move-helpers.ts";
 import { Vue, Component } from "vue-property-decorator";
 import { Player, MoveAction, Marble } from "@/types/types";
@@ -41,6 +43,7 @@ import { SLEEP_BETWEEN_TURNS } from "@/constants.ts";
 
 @Component({
   components: {
+    Dice,
     Road,
     Marbles
   }
@@ -187,7 +190,7 @@ export default class BoardComponent extends Vue {
       diceResult: this.diceResult
     });
 
-    beeforeMoveActions(moveAction, this.activePlayer);
+    beforeMoveActions(moveAction, this.activePlayer);
     const updatedMoveAction = await this.move(moveAction);
     await afterMoveActions(updatedMoveAction, this.activePlayer);
     this.playTurn();
