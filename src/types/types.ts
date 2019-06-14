@@ -60,5 +60,15 @@ export enum MoveType {
 
 export enum GameStatus {
   NOT_STARTED = 0,
-  GAME_OVER = 1
+  PLAYING = 1,
+  GAME_OVER = 2
+}
+
+export enum BoardStatus {
+  INITIALIZING = 0,
+  TURNING_DICE = 1,
+  MOVING_MARBLES = 2,
+  PLAYER_IS_THINKING = 3,
+  PAUSED = 4,
+  FINISHED = 5
 }

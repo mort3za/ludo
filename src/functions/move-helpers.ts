@@ -8,7 +8,8 @@ import {
   Marble,
   PositionInBoard,
   MoveType,
-  StepPlace
+  StepPlace,
+  BoardStatus
 } from "@/types/types";
 import { getDistance, getPositionAfterMove, getStepsOfMoveAction } from "@/functions/path-helpers.ts";
 import {
@@ -145,14 +146,16 @@ export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction
   return updatedMoveAction;
 }
 
+export async function beforeMoveActions(moveAction: MoveAction, player: Player) {
+  await store.dispatch("marbles/unsetMoveableAll");
+  store.dispatch("updateBoardStatus", BoardStatus.MOVING_MARBLES);
+}
+
 export async function afterMoveActions(moveAction: MoveAction, player: Player) {
   // TODO: check isGameOver
   await updateMarbleIsAtEnd(moveAction.marble, player);
   await updateMarbleIsAtFinal(moveAction.marble, player);
   await performOnGameOverActions(player);
   await kickoutOtherMarbles(moveAction.marble, player);
-}
-
-export async function beforeMoveActions(moveAction: MoveAction, player: Player) {
-  await store.dispatch("marbles/unsetMoveableAll");
+  await wait(MARBLE_ANIMATION_DURATION);
 }

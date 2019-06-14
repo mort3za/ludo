@@ -1,22 +1,21 @@
 <template>
   <div class="container">
     <div class="row">
-      <div class="col-6">
-        <section class="board m-3 p-3">
-          <div class="board-inner">
-            <Road class="road"/>
-            <Marbles v-on:clickmarble="onClickMarble" class="marbles"/>
-            <Dice :dice-result="diceResult" :side="activePlayer.side" />
-          </div>
-        </section>
-      </div>
-      <div class="col-6">
+      <section class="board mx-auto my-3 p-3">
+        <div class="board-inner">
+          <Road class="road"/>
+          <Marbles v-on:clickmarble="onClickMarble" class="marbles"/>
+          <Dice v-show="shouldShowDice()" :dice-result="diceResult" :side="activePlayer.side"/>
+        </div>
+      </section>
+      <!-- <div class="col-6"></div> -->
+      <!-- <div class="col-6">
         <div class="mt-4">player: {{activePlayer.id}}</div>
         <div
           class="mt-4"
           :style="{'background': diceResult === 6 ? 'green':'white'}"
         >dice result: {{diceResult}}</div>
-      </div>
+      </div>-->
     </div>
   </div>
 </template>
@@ -36,10 +35,16 @@ import {
   beforeMoveActions
 } from "@/functions/move-helpers.ts";
 import { Vue, Component } from "vue-property-decorator";
-import { Player, MoveAction, Marble } from "@/types/types";
+import {
+  Player,
+  MoveAction,
+  Marble,
+  BoardStatus,
+  GameStatus
+} from "@/types/types";
 import { createMoveAction, wait } from "@/functions/general-helpers.ts";
 import { analyzeResult, getRandom } from "@/functions/dice-helpers.ts";
-import { SLEEP_BETWEEN_TURNS } from "@/constants.ts";
+import { SLEEP_BETWEEN_TURNS, SLEEP_AFTER_TURN_DICE } from "@/constants.ts";
 
 @Component({
   components: {
@@ -51,6 +56,12 @@ import { SLEEP_BETWEEN_TURNS } from "@/constants.ts";
 export default class BoardComponent extends Vue {
   mounted() {
     this.startGame();
+  }
+
+  data() {
+    return {
+      BoardStatus
+    };
   }
 
   get playersInGame(): Player[] {
@@ -71,10 +82,14 @@ export default class BoardComponent extends Vue {
   get isGameOver(): boolean {
     return store.getters["marbles/isAllAtFinal"](this.activePlayer);
   }
+  get boardStatus(): BoardStatus {
+    return store.getters["boardStatus"];
+  }
 
-  startGame(): void {
+  async startGame() {
     this.resetGame();
     this.addPlayers();
+    await store.dispatch("updateGameStatus", GameStatus.PLAYING);
     this.playTurn();
   }
   resetGame() {
@@ -139,12 +154,14 @@ export default class BoardComponent extends Vue {
     if (this.isGameOver) {
       // show results & finish game
       console.log("Game is over");
+      await store.dispatch("updateBoardStatus", BoardStatus.FINISHED);
+      await store.dispatch("updateGameStatus", GameStatus.GAME_OVER);
       return;
     }
     if (this.shouldChangeTurn()) {
       this.changeTurn();
     }
-    this.turnDice();
+    await this.turnDice();
 
     await this.sleepBetweenTurns();
     if (this.activePlayer.isAI) {
@@ -176,6 +193,7 @@ export default class BoardComponent extends Vue {
 
     console.log("Human move (wait or skip)");
     if (availableActions.length > 0) {
+      store.dispatch("updateBoardStatus", BoardStatus.PLAYER_IS_THINKING);
       this.setMoveableMarbles(availableActions);
     } else {
       this.playTurn();
@@ -209,6 +227,7 @@ export default class BoardComponent extends Vue {
 
   async autoMove(availableActions: MoveAction[]) {
     const moveAction = chooseAction(availableActions);
+    beforeMoveActions(moveAction, this.activePlayer);
     const updatedMoveAction = await this.move(moveAction);
     await afterMoveActions(updatedMoveAction, this.activePlayer);
   }
@@ -226,10 +245,18 @@ export default class BoardComponent extends Vue {
     });
   }
 
-  turnDice(): void {
+  shouldShowDice(): boolean {
+    return [BoardStatus.TURNING_DICE, BoardStatus.PLAYER_IS_THINKING].includes(
+      this.boardStatus
+    );
+  }
+
+  async turnDice() {
+    store.dispatch("updateBoardStatus", BoardStatus.TURNING_DICE);
     const result = Math.ceil(getRandom() * 6);
     store.dispatch("updateDice", result);
     console.log("dice:", result, "player:", this.activePlayer.id);
+    await wait(SLEEP_AFTER_TURN_DICE);
   }
 }
 </script>
