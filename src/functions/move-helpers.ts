@@ -120,7 +120,7 @@ export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction
     isMoving: false,
     isMoveable: false
   };
-  
+
   const moveSteps: StepPlace[] = getStepsOfMoveAction(moveAction);
   for (const [index, step] of moveSteps.entries()) {
     const tempMarble: Marble = {
@@ -132,7 +132,7 @@ export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction
       isMoveable: false
     };
     await store.dispatch("marbles/update", tempMarble);
-    if (index <= moveSteps.length - 2) {      
+    if (index <= moveSteps.length - 2) {
       await wait(MARBLE_ANIMATION_DURATION);
     }
   }
@@ -145,10 +145,14 @@ export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction
   return updatedMoveAction;
 }
 
-export async function performAfterMoveActions(moveAction: MoveAction, player: Player) {
+export async function afterMoveActions(moveAction: MoveAction, player: Player) {
   // TODO: check isGameOver
   await updateMarbleIsAtEnd(moveAction.marble, player);
   await updateMarbleIsAtFinal(moveAction.marble, player);
   await performOnGameOverActions(player);
   await kickoutOtherMarbles(moveAction.marble, player);
+}
+
+export async function beeforeMoveActions(moveAction: MoveAction, player: Player) {
+  await store.dispatch("marbles/unsetMoveableAll");
 }

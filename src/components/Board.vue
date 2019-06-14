@@ -29,8 +29,9 @@ import {
   chooseAction,
   hasMultipleAvailableActions,
   canMove,
-  performAfterMoveActions,
-  moveStepByStep
+  afterMoveActions,
+  moveStepByStep,
+  beeforeMoveActions
 } from "@/functions/move-helpers.ts";
 import { Vue, Component } from "vue-property-decorator";
 import { Player, MoveAction, Marble } from "@/types/types";
@@ -132,7 +133,6 @@ export default class BoardComponent extends Vue {
 
   async playTurn() {
     console.log("-------------------------------------------------- play turn");
-    this.unsetMoveableMarbles();
     if (this.isGameOver) {
       // show results & finish game
       console.log("Game is over");
@@ -186,18 +186,16 @@ export default class BoardComponent extends Vue {
       marble,
       diceResult: this.diceResult
     });
+
+    beeforeMoveActions(moveAction, this.activePlayer);
     const updatedMoveAction = await this.move(moveAction);
-    await performAfterMoveActions(updatedMoveAction, this.activePlayer);
+    await afterMoveActions(updatedMoveAction, this.activePlayer);
     this.playTurn();
   }
 
   setMoveableMarbles(availableActions: MoveAction[]): void {
     const marbles: Marble[] = availableActions.map(action => action.marble);
     store.dispatch("marbles/setMoveableItems", marbles);
-  }
-  unsetMoveableMarbles(): void {
-    if (this.activePlayer.isAI) return;
-    store.dispatch("marbles/unsetMoveableAll");
   }
 
   shouldAutoMove(availableActions: MoveAction[]): boolean {
@@ -209,7 +207,7 @@ export default class BoardComponent extends Vue {
   async autoMove(availableActions: MoveAction[]) {
     const moveAction = chooseAction(availableActions);
     const updatedMoveAction = await this.move(moveAction);
-    await performAfterMoveActions(updatedMoveAction, this.activePlayer);
+    await afterMoveActions(updatedMoveAction, this.activePlayer);
   }
 
   async move(moveAction: MoveAction): Promise<MoveAction> {
