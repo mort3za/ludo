@@ -11,26 +11,19 @@ export default {
       const index = state.list.findIndex((p: Player) => p.id === player.id);
       Vue.set(state.list, index, player);
     },
-    reset(state: any) {
-      state.list = [];
+    setList(state: any, list: Player[]) {
+      Vue.set(state, "list", list);
     },
     add(state: any, player: Player) {
       state.list.push(player);
     }
   },
   actions: {
+    reset({ commit }: { commit: any }) {
+      commit("setList", []);
+    },
     update({ commit }: { commit: any }, player: Player) {
       commit("update", player);
-    },
-    updateAll({ commit, getters }: { commit: any; getters: any }, player: Player) {
-      const playersList = getters.list;
-      playersList.forEach((p: Player) => {
-        const updated = { ...p, ...player };
-        commit("update", updated);
-      });
-    },
-    reset({ commit }: { commit: any }) {
-      commit("reset");
     },
     add({ commit, getters }: { commit: any; getters: any }, player: Player) {
       // get length of list of players

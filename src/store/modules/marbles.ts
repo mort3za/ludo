@@ -14,8 +14,9 @@ export default {
       const index = state.list.findIndex((m: Marble) => m.id === marble.id);
       Vue.set(state.list, index, marble);
     },
-    reset(state: any) {
-      state.list = [...listInitial];
+    setList(state: any, list: Marble[]) {
+      Vue.set(state, 'list', list);
+      state.list = list;
     },
     setItemMoveable(state: any, marble: Marble) {
       const targetMarble = state.list.find((m: Marble) => m.id === marble.id);
@@ -27,7 +28,7 @@ export default {
       commit("update", marble);
     },
     reset({ commit }: { commit: any }) {
-      commit("reset");
+      commit("setList", [...listInitial]);
     },
     setMoveableItems({ commit }: { commit: any }, marbles: Marble[] = []) {
       marbles.forEach((m: Marble) => commit("update", { ...m, isMoveable: true }));
@@ -55,6 +56,7 @@ export default {
     listInBenchByPlayer: (state: any, getters: any) => (player: Player) => {
       return getters.list.filter((m: Marble) => m.side === player.side && m.isInGame === false);
     },
+    // TODO: remove, use stored marbles inside step
     listOtherPlayersMarblesByPosition: (state: any, getters: any) => (
       player: Player,
       position: PositionInBoard
@@ -66,7 +68,7 @@ export default {
     listInitial(state: any): Marble[] {
       return state.listInitial;
     },
-    isGameFinishedForPlayer: (state: any, getters: any) => (player: Player) => {
+    isAllAtFinal: (state: any, getters: any) => (player: Player) => {
       const playerMarbles = getters.listByPlayer(player);
       return playerMarbles.every((m: Marble) => m.isAtFinal);
     }

@@ -65,7 +65,7 @@ export default class BoardComponent extends Vue {
     return analyzeResult(this.diceResult);
   }
   get isGameOver(): boolean {
-    return store.getters["marbles/isGameFinishedForPlayer"](this.activePlayer);
+    return store.getters["marbles/isAllAtFinal"](this.activePlayer);
   }
 
   startGame(): void {
@@ -81,24 +81,27 @@ export default class BoardComponent extends Vue {
     store.dispatch("players/add", {
       isAI: false,
       color: "red",
-      isActive: true
+      isActive: true,
+      isInGame: true
     });
     store.dispatch("players/add", {
       isAI: true,
       color: "green",
-      isActive: false
+      isActive: false,
+      isInGame: true
     });
     store.dispatch("players/add", {
       isAI: true,
       color: "blue",
-      isActive: false
+      isActive: false,
+      isInGame: true
     });
     store.dispatch("players/add", {
       isAI: true,
       color: "yellow",
-      isActive: false
+      isActive: false,
+      isInGame: true
     });
-    store.dispatch("players/updateAll", { isInGame: true });
   }
   changeTurn(): void {
     const currentActivePlayerIndex = this.allPlayers.findIndex(
