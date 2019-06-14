@@ -31,11 +31,11 @@ import {
   canMove,
   performAfterMoveActions,
   moveStepByStep
-} from "@/functions/move-actions";
+} from "@/functions/move-helpers.ts";
 import { Vue, Component } from "vue-property-decorator";
 import { Player, MoveAction, Marble } from "@/types/types";
-import { createMoveAction, wait, getRandom } from "../helpers";
-import { analyzeResult } from "../functions/dice";
+import { createMoveAction, wait } from "@/functions/general-helpers.ts";
+import { analyzeResult, getRandom } from "@/functions/dice-helpers.ts";
 import { SLEEP_BETWEEN_TURNS } from "@/constants.ts";
 
 @Component({

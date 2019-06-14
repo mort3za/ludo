@@ -8,8 +8,8 @@
 import store from "@/store/index";
 import MarbleComponent from "@/components/Marble.vue";
 import { Vue, Component } from "vue-property-decorator";
-import { Marble } from "../types/types";
-import { getPositionOfMarble, isSameStep } from "../helpers";
+import { Marble } from "@/types/types";
+import { getPositionOfMarble, isSameStep } from "@/functions/general-helpers.ts";
 
 @Component({
   components: {

@@ -1,6 +1,6 @@
 // tslint:disable: no-implicit-dependencies
 import store from "@/store/index";
-import { analyzeResult } from "./dice";
+import { analyzeResult } from "@/functions/dice-helpers.ts";
 import {
   MoveAction,
   DiceAnalization,
@@ -10,7 +10,7 @@ import {
   MoveType,
   StepPlace
 } from "@/types/types";
-import { getDistance, getPositionAfterMove, getStepsOfMoveAction } from "./path";
+import { getDistance, getPositionAfterMove, getStepsOfMoveAction } from "@/functions/path-helpers.ts";
 import {
   getPositionOfMarble,
   getPositionOfStep,
@@ -19,7 +19,7 @@ import {
   kickoutOtherMarbles,
   updateMarbleIsAtFinal,
   wait
-} from "@/helpers.ts";
+} from "@/functions/general-helpers.ts";
 import { MARBLE_ANIMATION_DURATION } from "@/constants.ts";
 
 /**

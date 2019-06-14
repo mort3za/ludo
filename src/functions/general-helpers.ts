@@ -1,13 +1,6 @@
-import { PositionInBoard, Marble, StepPlace, Player, MoveAction, MoveType, StepType } from "./types/types";
-import { getPositionAfterMove } from "./functions/path";
+import { PositionInBoard, Marble, StepPlace, Player, MoveAction, MoveType, StepType } from "@/types/types";
+import { getPositionAfterMove } from "@/functions/path-helpers.ts";
 import store from "@/store/index";
-// @ts-ignore
-import MersenneTwister from "mersenne-twister";
-
-export function getRandom() {
-  const generator = new MersenneTwister();
-  return generator.random();
-}
 
 export function isSameStep(position1: PositionInBoard, position2: PositionInBoard) {
   return position1.row === position2.row && position1.column === position2.column;
