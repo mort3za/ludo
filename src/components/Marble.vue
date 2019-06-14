@@ -20,6 +20,12 @@ export default class MarbleComponent extends Vue {
   @Prop({ type: Object as () => Marble })
   public model!: Marble;
 
+  get countOnPlace() {
+    // get count of marbles in the current StepPlace
+    // TODO: implement
+    return 1;
+  }
+
   getWrapperStyle() {
     return {
       transform: `
@@ -30,25 +36,24 @@ export default class MarbleComponent extends Vue {
   }
 
   getMarbleClasses() {
-    const {isMoving, countOnPlace} = this.model;
+    const { isMoving } = this.model;
     if (isMoving) {
-      return []
+      return [];
     }
-    
+
     return [
       {
-        [`multiple-${countOnPlace}`]: countOnPlace > 1,
-        multiple: countOnPlace > 1
+        [`multiple-${this.countOnPlace}`]: this.countOnPlace > 1,
+        multiple: this.countOnPlace > 1
       }
     ];
   }
 
   getMarbleStyle() {
     let style: any = {};
-    const countOnPlace: number = this.model.countOnPlace || 1;
     const side = this.model.side;
 
-    if (countOnPlace >= 2) {
+    if (this.countOnPlace >= 2) {
       if (side === 1) {
         style.left = 0;
         style.bottom = 0;

@@ -4,32 +4,50 @@ import Vue from "vue";
 
 const listInitial: Marble[] = [
   // side 1
-  { id: 1, row: 4, column: 5, side: 1, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
-  { id: 2, row: 5, column: 5, side: 1, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
   // {
   //   id: 1,
-  //   row: 11,
-  //   column: 1,
+  //   row: 4,
+  //   column: 5,
   //   side: 1,
-  //   isInGame: false,
+  //   isInGame: true,
   //   isAtEnd: false,
   //   isAtFinal: false,
   //   isMoveable: false,
-  //   isMoving: false,
-  //   countOnPlace: 1
+  //   isMoving: false
   // },
   // {
   //   id: 2,
-  //   row: 11,
-  //   column: 2,
+  //   row: 5,
+  //   column: 5,
   //   side: 1,
-  //   isInGame: false,
+  //   isInGame: true,
   //   isAtEnd: false,
   //   isAtFinal: false,
   //   isMoveable: false,
-  //   isMoving: false,
-  //   countOnPlace: 1
+  //   isMoving: false
   // },
+  {
+    id: 1,
+    row: 11,
+    column: 1,
+    side: 1,
+    isInGame: false,
+    isAtEnd: false,
+    isAtFinal: false,
+    isMoveable: false,
+    isMoving: false
+  },
+  {
+    id: 2,
+    row: 11,
+    column: 2,
+    side: 1,
+    isInGame: false,
+    isAtEnd: false,
+    isAtFinal: false,
+    isMoveable: false,
+    isMoving: false
+  },
   {
     id: 3,
     row: 10,
@@ -39,8 +57,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
+    isMoving: false
   },
   {
     id: 4,
@@ -51,36 +68,53 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
+    isMoving: false
   },
   // side 2
-  { id: 5, row: 2, column: 5, side: 2, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
-  { id: 6, row: 1, column: 5, side: 2, isInGame: true, isAtEnd: false, isAtFinal: false, isMoveable: false, isMoving: false, countOnPlace: 1 },
   // {
   //   id: 5,
-  //   row: 1,
-  //   column: 1,
+  //   row: 2,
+  //   column: 5,
   //   side: 2,
-  //   isInGame: false,
+  //   isInGame: true,
   //   isAtEnd: false,
   //   isAtFinal: false,
   //   isMoveable: false,
-  //   isMoving: false,
-  //   countOnPlace: 1
+  //   isMoving: false
   // },
   // {
   //   id: 6,
   //   row: 1,
-  //   column: 2,
+  //   column: 5,
   //   side: 2,
-  //   isInGame: false,
+  //   isInGame: true,
   //   isAtEnd: false,
   //   isAtFinal: false,
   //   isMoveable: false,
-  //   isMoving: false,
-  //   countOnPlace: 1
+  //   isMoving: false
   // },
+  {
+    id: 5,
+    row: 1,
+    column: 1,
+    side: 2,
+    isInGame: false,
+    isAtEnd: false,
+    isAtFinal: false,
+    isMoveable: false,
+    isMoving: false
+  },
+  {
+    id: 6,
+    row: 1,
+    column: 2,
+    side: 2,
+    isInGame: false,
+    isAtEnd: false,
+    isAtFinal: false,
+    isMoveable: false,
+    isMoving: false
+  },
   {
     id: 7,
     row: 2,
@@ -90,8 +124,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
+    isMoving: false
   },
   {
     id: 8,
@@ -102,8 +135,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
+    isMoving: false
   },
   // side 3
   {
@@ -115,8 +147,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
+    isMoving: false
   },
   {
     id: 10,
@@ -127,8 +158,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
+    isMoving: false
   },
   {
     id: 11,
@@ -139,8 +169,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
+    isMoving: false
   },
   {
     id: 12,
@@ -151,8 +180,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
+    isMoving: false
   },
   // side 4
   {
@@ -164,8 +192,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
+    isMoving: false
   },
   {
     id: 14,
@@ -176,8 +203,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
+    isMoving: false
   },
   {
     id: 15,
@@ -188,8 +214,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
+    isMoving: false
   },
   {
     id: 16,
@@ -200,8 +225,7 @@ const listInitial: Marble[] = [
     isAtEnd: false,
     isAtFinal: false,
     isMoveable: false,
-    isMoving: false,
-    countOnPlace: 1
+    isMoving: false
   }
 ];
 

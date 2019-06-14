@@ -18,42 +18,7 @@ import { getPositionOfMarble, isSameStep } from "../helpers";
 })
 export default class MarblesComponent extends Vue {
   get list() {
-    let list = store.getters["marbles/list"];
-    list = this.removeSamePlaceMarbles(list);
-    return list;
-  }
-
-  removeSamePlaceMarbles(list: Marble[]) {
-    const upgradedList = list.map((m1: Marble) => {
-      let count = 1;
-      if (!m1.isInGame) {
-        m1.countOnPlace = count;
-        return m1;
-      }
-      
-      list.forEach((m2: Marble) => {
-        const isSameMarble = m1.id === m2.id;
-        if (isSameMarble) {
-          return;
-        }
-
-        const isAtSamePlace = isSameStep(
-          getPositionOfMarble(m1),
-          getPositionOfMarble(m2)
-        );
-
-        if (isAtSamePlace) {
-          count++;
-          // if (m1.countOnPlace) {
-          // }
-        }
-        return;
-      });
-      m1.countOnPlace = count;
-      return m1;
-    });
-
-    return upgradedList;
+    return store.getters["marbles/list"];
   }
 
   onClickMarble(marble: Marble) {
