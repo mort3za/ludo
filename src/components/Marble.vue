@@ -1,18 +1,19 @@
 <template>
   <span
     @click="onClickMarble"
-    class="marble-w"
+    class="marble"
     :class="[{moveable: model.isMoveable}, `is-side-${model.side}`]"
     :style="getWrapperStyle()"
   >
-    <span class="marble d-block" :class="getMarbleClasses()" :style="getMarbleStyle()"></span>
+    <span class="inner d-block" :class="getMarbleClasses()" :style="getMarbleStyle()"></span>
   </span>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Marble, PositionInBoard } from "@/types/types";
-import { STEP_WIDTH } from "@/constants.ts";
+import { STEP_WIDTH, STEP_GUTTER } from "@/constants.ts";
+import store from "@/store/index.ts";
 
 @Component
 export default class MarbleComponent extends Vue {
@@ -25,11 +26,18 @@ export default class MarbleComponent extends Vue {
     return 1;
   }
 
-  getWrapperStyle() {    
+  get boardWidth(): number {
+    return store.getters["boardWidth"];
+  }
+
+  getWrapperStyle() {
+    const column = this.model.column;
+    const row = this.model.row;
+    const moveUnit = (STEP_WIDTH + STEP_GUTTER) * this.boardWidth;
     return {
       transform: `
-        translateX(${(this.model.column - 1) * (STEP_WIDTH) + "%"})
-        translateY(${(this.model.row - 1) * (STEP_WIDTH) + "%"})
+        translateX(${(column - 1) * (moveUnit / 100) + "px"})
+        translateY(${(row - 1) * (moveUnit / 100) + "px"})
         `
     };
   }
@@ -77,69 +85,57 @@ export default class MarbleComponent extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.marble-w {
+.marble {
   position: absolute;
   transition: transform #{$marble-animation-duration}ms ease;
   width: $step-width;
   height: $step-width;
 }
-.marble {
+.inner {
   transition: width #{$marble-animation-duration / 2}ms ease,
     height #{$marble-animation-duration / 2}ms ease;
-  width: $step-width;
-  height: $step-width;
+  width: 100%;
+  height: 100%;
   border-radius: 100%;
   box-shadow: rem(2px 2px 2px) $gray-60;
   border: rem(4px) solid $light;
   background: $light url("../assets/img/flower.svg") no-repeat center;
-  background-size: $step-width / 1.2;
+  background-size: 86%;
   position: absolute;
-  // will-change: transform;
-  &.multiple {
-    width: rem($step-width / 2);
-    height: rem($step-width / 2);
-    background-size: rem(16px);
-  }
+  // &.multiple {
+  //   width: rem($step-width / 2);
+  //   height: rem($step-width / 2);
+  //   background-size: rem(16px);
+  // }
 }
-.multiple {
-  box-shadow: rem(2px 2px 2px) $gray-60;
-  border: rem(2px) solid $light;
-}
+// .multiple {
+//   box-shadow: rem(2px 2px 2px) $gray-60;
+//   border: rem(2px) solid $light;
+// }
 .moveable {
   cursor: pointer;
-  .marble {
+  .inner {
     box-shadow: 0 0 0 rem(4px) $dark-less inset, rem(2px 2px 2px) $gray-60;
     border: none;
   }
-  .multiple {
-    box-shadow: 0 0 0 rem(2px) $dark-less inset, rem(2px 2px 2px) $gray-60;
-  }
+  // .multiple {
+  //   box-shadow: 0 0 0 rem(2px) $dark-less inset, rem(2px 2px 2px) $gray-60;
+  // }
 }
 
 .is-side-1 {
   z-index: 1;
-  .marble {
+  .inner {
     background-color: $brand-1;
   }
 }
-.is-side-2 .marble {
+.is-side-2 .inner {
   background-color: $brand-2;
 }
-.is-side-3 .marble {
+.is-side-3 .inner {
   background-color: $brand-3;
 }
-.is-side-4 .marble {
+.is-side-4 .inner {
   background-color: $brand-4;
-}
-
-$move-amount: rem(4px);
-
-@keyframes moving {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-$move-amount);
-  }
 }
 </style>

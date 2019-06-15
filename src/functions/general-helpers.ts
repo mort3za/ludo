@@ -123,3 +123,7 @@ export async function kickoutOtherMarbles(marble: Marble, player: Player) {
     await store.dispatch("marbles/update", marbleInitial);
   }
 }
+
+export function boardWidthUpdater({ boardElement }: { boardElement: HTMLDivElement }) {
+  store.dispatch("updateBoardWidth", boardElement.clientWidth);
+}

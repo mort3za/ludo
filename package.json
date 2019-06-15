@@ -24,6 +24,7 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@types/lodash-es": "^4.17.3",
     "@types/jest": "^23.1.4",
     "@vue/cli-plugin-babel": "^3.7.0",
     "@vue/cli-plugin-pwa": "^3.7.0",

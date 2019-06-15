@@ -4,10 +4,10 @@
       <div class="aspect-ratio-box">
         <div class="aspect-ratio-box-inside">
           <section class="board p-3">
-            <div class="board-inner">
+            <div ref="boardInner" class="board-inner">
               <Road class="road"/>
-              <!-- <Marbles v-on:clickmarble="onClickMarble" class="marbles"/> -->
-              <!-- <Dice v-show="shouldShowDice()" :dice-result="diceResult" :side="activePlayer.side"/> -->
+              <Marbles v-on:clickmarble="onClickMarble" class="marbles"/>
+              <Dice v-show="shouldShowDice()" :dice-result="diceResult" :side="activePlayer.side"/>
             </div>
           </section>
           <!-- <div class="col-6"></div> -->
@@ -46,9 +46,14 @@ import {
   BoardStatus,
   GameStatus
 } from "@/types/types";
-import { createMoveAction, wait } from "@/functions/general-helpers.ts";
+import {
+  createMoveAction,
+  wait,
+  boardWidthUpdater
+} from "@/functions/general-helpers.ts";
 import { analyzeResult, getRandom } from "@/functions/dice-helpers.ts";
 import { SLEEP_BETWEEN_TURNS, SLEEP_AFTER_TURN_DICE } from "@/constants.ts";
+import { debounce } from "lodash-es";
 
 @Component({
   components: {
@@ -58,8 +63,19 @@ import { SLEEP_BETWEEN_TURNS, SLEEP_AFTER_TURN_DICE } from "@/constants.ts";
   }
 })
 export default class BoardComponent extends Vue {
+  boardWidthUpdaterDebounced = debounce(this.boardWidthUpdater, 150);
+
   mounted() {
-    // this.startGame();
+    this.init();
+  }
+  destroyed() {
+    this.removeResizeListener();
+  }
+
+  init() {
+    this.boardWidthUpdater();
+    this.resizeListener();
+    this.startGame();
   }
 
   data() {
@@ -261,6 +277,18 @@ export default class BoardComponent extends Vue {
     store.dispatch("updateDice", result);
     console.log("dice:", result, "player:", this.activePlayer.id);
     await wait(SLEEP_AFTER_TURN_DICE);
+  }
+
+  boardWidthUpdater() {
+    // @ts-ignore
+    boardWidthUpdater({ boardElement: this.$refs.boardInner });
+  }
+
+  resizeListener() {
+    window.addEventListener("resize", this.boardWidthUpdaterDebounced);
+  }
+  removeResizeListener() {
+    window.removeEventListener("resize", this.boardWidthUpdaterDebounced);
   }
 }
 </script>

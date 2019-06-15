@@ -11,7 +11,8 @@ const store = new Vuex.Store({
   state: {
     diceResult: null,
     gameStatus: GameStatus.NOT_STARTED,
-    boardStatus: BoardStatus.INITIALIZING
+    boardStatus: BoardStatus.INITIALIZING,
+    boardWidth: null
   },
   mutations: {
     updateDice(state, diceResult) {
@@ -22,6 +23,9 @@ const store = new Vuex.Store({
     },
     updateBoardStatus(state, status: BoardStatus) {
       state.boardStatus = status;
+    },
+    updateBoardWidth(state, boardWidth) {
+      state.boardWidth = boardWidth;
     }
   },
   actions: {
@@ -33,6 +37,9 @@ const store = new Vuex.Store({
     },
     updateBoardStatus({ commit }: { commit: any }, status: BoardStatus) {
       commit("updateBoardStatus", status);
+    },
+    updateBoardWidth({ commit }: { commit: any }, width: number) {
+      commit("updateBoardWidth", width);
     }
   },
   modules: {
@@ -46,6 +53,9 @@ const store = new Vuex.Store({
     },
     boardStatus(state) {
       return state.boardStatus;
+    },
+    boardWidth(state) {
+      return state.boardWidth;
     }
   }
 });

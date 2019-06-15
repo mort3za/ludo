@@ -6,7 +6,8 @@
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { Player } from "../types/types";
-import { STEP_WIDTH } from "@/constants.ts";
+import { STEP_WIDTH, STEP_GUTTER } from "@/constants.ts";
+import store from "@/store/index.ts";
 
 @Component
 export default class Dice extends Vue {
@@ -16,39 +17,32 @@ export default class Dice extends Vue {
   @Prop({ type: Number })
   public side!: number;
 
+  get boardWidth(): number {
+    return store.getters["boardWidth"];
+  }
+
   getStyle() {
     let result: any = {};
-    const moveUnit = STEP_WIDTH + 4
+    const moveUnit = STEP_WIDTH + STEP_GUTTER;
+    let moveAmountX: number = 0;
+    let moveAmountY: number= 0;
     if (this.side === 1) {
-      const moveAmountX = `${2.5 * moveUnit}px`;
-      const moveAmountY = `${7.5 * moveUnit}px`;
-      result.transform = `
-        translateX(${moveAmountX})
-        translateY(${moveAmountY})
-        `;
+      moveAmountX = 2.5 * moveUnit;
+      moveAmountY = 7.5 * moveUnit;
     } else if (this.side === 2) {
-      const moveAmountX = `${2.5 * moveUnit}px`;
-      const moveAmountY = `${2.5 * moveUnit}px`;
-      result.transform = `
-        translateX(${moveAmountX})
-        translateY(${moveAmountY})
-        `;
-    } 
-    else if (this.side === 3) {
-      const moveAmountX = `${7.5 * moveUnit}px`;
-      const moveAmountY = `${2.5 * moveUnit}px`;
-      result.transform = `
-        translateX(${moveAmountX})
-        translateY(${moveAmountY})
-        `;
+      moveAmountX = 2.5 * moveUnit;
+      moveAmountY = 2.5 * moveUnit;
+    } else if (this.side === 3) {
+      moveAmountX = 7.5 * moveUnit;
+      moveAmountY = 2.5 * moveUnit;
     } else if (this.side === 4) {
-      const moveAmountX = `${7.5 * moveUnit}px`;
-      const moveAmountY = `${7.5 * moveUnit}px`;
-      result.transform = `
-        translateX(${moveAmountX})
-        translateY(${moveAmountY})
-        `;
+      moveAmountX = 7.5 * moveUnit;
+      moveAmountY = 7.5 * moveUnit;
     }
+    result.transform = `
+        translateX(${moveAmountX / 100 * this.boardWidth}px)
+        translateY(${(moveAmountY / 100 * this.boardWidth)}px)
+        `;
     return result;
   }
 }
@@ -56,8 +50,9 @@ export default class Dice extends Vue {
 
 <style lang="scss" scoped>
 .dice {
+  position: absolute;
   background: none no-repeat center;
-  background-size: $step-width;
+  background-size: 100%;
   width: $step-width;
   height: $step-width;
 }
