@@ -57,9 +57,9 @@ export default class Dice extends Vue {
 <style lang="scss" scoped>
 .dice {
   background: none no-repeat center;
-  background-size: rem($step-width);
-  width: rem($step-width);
-  height: rem($step-width);
+  background-size: $step-width;
+  width: $step-width;
+  height: $step-width;
 }
 .dice-1 {
   background-image: url("../assets/img/dice-1.svg");

@@ -25,11 +25,11 @@ export default class MarbleComponent extends Vue {
     return 1;
   }
 
-  getWrapperStyle() {
+  getWrapperStyle() {    
     return {
       transform: `
-        translateX(${(this.model.column - 1) * (STEP_WIDTH + 4) + "px"})
-        translateY(${(this.model.row - 1) * (STEP_WIDTH + 4) + "px"})
+        translateX(${(this.model.column - 1) * (STEP_WIDTH) + "%"})
+        translateY(${(this.model.row - 1) * (STEP_WIDTH) + "%"})
         `
     };
   }
@@ -80,19 +80,19 @@ export default class MarbleComponent extends Vue {
 .marble-w {
   position: absolute;
   transition: transform #{$marble-animation-duration}ms ease;
-  width: rem($step-width);
-  height: rem($step-width);
+  width: $step-width;
+  height: $step-width;
 }
 .marble {
   transition: width #{$marble-animation-duration / 2}ms ease,
     height #{$marble-animation-duration / 2}ms ease;
-  width: rem($step-width);
-  height: rem($step-width);
+  width: $step-width;
+  height: $step-width;
   border-radius: 100%;
   box-shadow: rem(2px 2px 2px) $gray-60;
   border: rem(4px) solid $light;
   background: $light url("../assets/img/flower.svg") no-repeat center;
-  background-size: rem(32px);
+  background-size: $step-width / 1.2;
   position: absolute;
   // will-change: transform;
   &.multiple {

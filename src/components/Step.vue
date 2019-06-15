@@ -1,8 +1,7 @@
 <template>
-  <span
-    :class="getClasses()"
-    class="d-flex step justify-content-center align-content-center font-size-sm"
-  ></span>
+  <span class="step d-flex justify-content-center align-items-center">
+    <span :class="getClasses()" class="inner d-flex"></span>
+  </span>
 </template>
 
 <script lang="ts">
@@ -37,22 +36,25 @@ export default class StepComponent extends Vue {
 
 <style lang="scss" scoped>
 .step {
-  width: rem($step-width);
-  height: rem($step-width);
+  width: $step-width;
+  height: $step-width;
+}
+.inner {
   border-radius: 100%;
   background: $gray-96;
   box-shadow: 0 0 rem(2px) $dark inset;
+  width: 100%;
+  height: 100%;
 }
 
 // startpoint
 .type-2 {
-  position: relative;
   &::before {
     background: url("../assets/img/arrow.svg") no-repeat center;
-    background-size: rem(0.6 * $step-width);
+    background-size: 60%;
     content: "";
-    width: rem($step-width);
-    height: rem($step-width);
+    width: 100%;
+    height: 100%;
     position: absolute;
     top: 0;
     left: 0;
@@ -83,8 +85,8 @@ export default class StepComponent extends Vue {
 
 // endpoint
 .type-3 {
-  width: rem($step-width / $golden-ratio);
-  height: rem($step-width / $golden-ratio);
+  width: rem(100% / $golden-ratio);
+  height: rem(100% / $golden-ratio);
   &.side-1 {
     box-shadow: 0 0 rem(2px) $brand-1 inset;
     background-color: rgba($brand-1, 0.16);
@@ -107,7 +109,7 @@ export default class StepComponent extends Vue {
 .type-6 {
   box-shadow: none;
   background: url("../assets/img/star.svg") no-repeat center;
-  background-size: rem(24px);
+  background-size: 60%;
 }
 // .common
 // .bench

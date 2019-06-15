@@ -1,14 +1,15 @@
 <template>
   <div>
-    <div class="grid">
+    <div class="road">
       <template v-for="step in steps">
         <Step
-          :style="{'grid-row-start': step[0], 'grid-column-start': step[1]}"
+          :style="getStepStyle(step)"
           :row="step[0]"
           :column="step[1]"
           :side="step[2]"
           :types="step[3]"
           :key="`${step[0]}-${step[1]}-${step[2]}`"
+          :class="[`step row-${step[0]} column-${step[1]}`]"
         />
       </template>
     </div>
@@ -20,6 +21,7 @@ import store from "@/store/index";
 import Step from "@/components/Step.vue";
 import { Vue, Component } from "vue-property-decorator";
 import {StepPlace} from "@/types/types"
+import { STEP_WIDTH, STEP_GUTTER } from '../constants';
 
 @Component({
   components: {
@@ -32,17 +34,24 @@ export default class RoadComponent extends Vue {
       steps: store.getters["steps/allSteps"] as StepPlace[]
     }
   }
+
+  getStepStyle(step: StepPlace) {
+    const row = step[0]
+    const column = step[1]
+    
+    return {
+      top: `${(row - 1) * (STEP_WIDTH + STEP_GUTTER) + "%"}`,
+      left: `${(column - 1) * (STEP_WIDTH + STEP_GUTTER) + "%"}`
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-.grid {
+.road {
   margin: auto;
-  display: grid;
-  grid-template-columns: repeat(11, rem(40px));
-  grid-template-rows: repeat(11, rem(40px));
-  grid-gap: rem(4px);
-  justify-items: center;
-  align-items: center;
+}
+.step {
+  position: absolute;
 }
 </style>

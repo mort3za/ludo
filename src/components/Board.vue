@@ -1,21 +1,25 @@
 <template>
-  <div class="container">
-    <div class="row">
-      <section class="board mx-auto my-3 p-3">
-        <div class="board-inner">
-          <Road class="road"/>
-          <Marbles v-on:clickmarble="onClickMarble" class="marbles"/>
-          <Dice v-show="shouldShowDice()" :dice-result="diceResult" :side="activePlayer.side"/>
+  <div class="board-w mx-auto my-3">
+    <div class="mx-3">
+      <div class="aspect-ratio-box">
+        <div class="aspect-ratio-box-inside">
+          <section class="board p-3">
+            <div class="board-inner">
+              <Road class="road"/>
+              <!-- <Marbles v-on:clickmarble="onClickMarble" class="marbles"/> -->
+              <!-- <Dice v-show="shouldShowDice()" :dice-result="diceResult" :side="activePlayer.side"/> -->
+            </div>
+          </section>
+          <!-- <div class="col-6"></div> -->
+          <!-- <div class="col-6">
+            <div class="mt-4">player: {{activePlayer.id}}</div>
+            <div
+              class="mt-4"
+              :style="{'background': diceResult === 6 ? 'green':'white'}"
+            >dice result: {{diceResult}}</div>
+          </div>-->
         </div>
-      </section>
-      <!-- <div class="col-6"></div> -->
-      <!-- <div class="col-6">
-        <div class="mt-4">player: {{activePlayer.id}}</div>
-        <div
-          class="mt-4"
-          :style="{'background': diceResult === 6 ? 'green':'white'}"
-        >dice result: {{diceResult}}</div>
-      </div>-->
+      </div>
     </div>
   </div>
 </template>
@@ -55,7 +59,7 @@ import { SLEEP_BETWEEN_TURNS, SLEEP_AFTER_TURN_DICE } from "@/constants.ts";
 })
 export default class BoardComponent extends Vue {
   mounted() {
-    this.startGame();
+    // this.startGame();
   }
 
   data() {
@@ -262,24 +266,44 @@ export default class BoardComponent extends Vue {
 </script>
 
 <style lang="scss">
+.board-w {
+  max-width: $board-width;
+}
 .board {
   background: $light;
   box-shadow: 1px 1px 3px $gray-60;
   border-radius: $border-radius-sm;
-  width: rem(480px) + $grid-gutter-width * 2;
-  height: rem(480px) + $grid-gutter-width * 2;
+  max-width: 100%;
+  height: 100%;
+  // width: rem($board-width) + $grid-gutter-width * 2;
+  // height: rem($board-width) + $grid-gutter-width * 2;
 }
 .board-inner {
   position: relative;
   height: 100%;
 }
 .road {
-  width: rem(480px);
-  height: rem(480px);
+  max-width: 100%;
+  height: 100%;
+  // width: rem($board-width);
+  // height: rem($board-width);
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
+}
+
+.aspect-ratio-box {
+  height: 0;
+  padding-top: 100%;
+  position: relative;
+}
+.aspect-ratio-box-inside {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 </style>
