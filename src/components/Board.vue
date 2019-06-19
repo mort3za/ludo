@@ -1,7 +1,7 @@
 <template>
   <div class="board-w mx-auto my-3">
     <div class="mx-3">
-      <div class="aspect-ratio-box">
+      <div class="aspect-ratio-box mb-3">
         <div class="aspect-ratio-box-inside">
           <section class="board p-3">
             <div ref="boardInner" class="board-inner">
@@ -10,16 +10,9 @@
               <Dice v-show="shouldShowDice()" :dice-result="diceResult" :side="activePlayer.side"/>
             </div>
           </section>
-          <!-- <div class="col-6"></div> -->
-          <!-- <div class="col-6">
-            <div class="mt-4">player: {{activePlayer.id}}</div>
-            <div
-              class="mt-4"
-              :style="{'background': diceResult === 6 ? 'green':'white'}"
-            >dice result: {{diceResult}}</div>
-          </div>-->
         </div>
       </div>
+      <MenuBoard @start_game="startGame()" />
     </div>
   </div>
 </template>
@@ -29,6 +22,7 @@ import store from "@/store/index";
 import Road from "@/components/Road.vue";
 import Dice from "@/components/Dice.vue";
 import Marbles from "@/components/Marbles.vue";
+import MenuBoard from "@/components/MenuBoard.vue";
 import {
   getAvailableActions,
   chooseAction,
@@ -59,7 +53,8 @@ import { debounce } from "lodash-es";
   components: {
     Dice,
     Road,
-    Marbles
+    Marbles,
+    MenuBoard
   }
 })
 export default class BoardComponent extends Vue {
@@ -70,18 +65,14 @@ export default class BoardComponent extends Vue {
   }
   destroyed() {
     this.removeResizeListener();
+    store.dispatch("updateGameStatus", GameStatus.NOT_STARTED);
   }
 
   init() {
+    store.dispatch("updateBoardStatus", BoardStatus.INITIALIZING);
+    store.dispatch("updateGameStatus", GameStatus.NOT_STARTED);
     this.boardWidthUpdater();
     this.resizeListener();
-    this.startGame();
-  }
-
-  data() {
-    return {
-      BoardStatus
-    };
   }
 
   get playersInGame(): Player[] {
@@ -105,12 +96,21 @@ export default class BoardComponent extends Vue {
   get boardStatus(): BoardStatus {
     return store.getters["boardStatus"];
   }
+  get gameStatus(): GameStatus {
+    return store.getters["gameStatus"];
+  }
 
   async startGame() {
     this.resetGame();
     this.addPlayers();
     await store.dispatch("updateGameStatus", GameStatus.PLAYING);
     this.playTurn();
+  }
+  async pauseGame() {
+    await store.dispatch("updateGameStatus", GameStatus.PAUSED);
+  }
+  async resumeGame() {
+    await store.dispatch("updateGameStatus", GameStatus.PLAYING);
   }
   resetGame() {
     store.dispatch("marbles/reset");
@@ -170,7 +170,7 @@ export default class BoardComponent extends Vue {
   }
 
   async playTurn() {
-    console.log("-------------------------------------------------- play turn");
+    // console.log("-------------------------------------------------- play turn");
     if (this.isGameOver) {
       // show results & finish game
       console.log("Game is over");
@@ -199,10 +199,10 @@ export default class BoardComponent extends Vue {
     const availableActions = this.getAvailableActions();
 
     if (availableActions.length === 0) {
-      console.log("---- no action ----");
+      // console.log("---- no action ----");
       this.playTurn();
     } else if (this.shouldAutoMove(availableActions)) {
-      console.log("auto move");
+      // console.log("auto move");
       await this.autoMove(availableActions);
       this.playTurn();
     }
@@ -211,7 +211,7 @@ export default class BoardComponent extends Vue {
   performActionsOfPlayerNoAI(): void {
     const availableActions = this.getAvailableActions();
 
-    console.log("Human move (wait or skip)");
+    // console.log("Human move (wait or skip)");
     if (availableActions.length > 0) {
       store.dispatch("updateBoardStatus", BoardStatus.PLAYER_IS_THINKING);
       this.setMoveableMarbles(availableActions);
@@ -254,7 +254,7 @@ export default class BoardComponent extends Vue {
 
   async move(moveAction: MoveAction): Promise<MoveAction> {
     const updatedMoveAction = await moveStepByStep(moveAction);
-    console.log("* move done *", moveAction);
+    // console.log("* move done *", moveAction);
     return updatedMoveAction;
   }
 
@@ -275,7 +275,7 @@ export default class BoardComponent extends Vue {
     store.dispatch("updateBoardStatus", BoardStatus.TURNING_DICE);
     const result = Math.ceil(getRandom() * 6);
     store.dispatch("updateDice", result);
-    console.log("dice:", result, "player:", this.activePlayer.id);
+    // console.log("dice:", result, "player:", this.activePlayer.id);
     await wait(SLEEP_AFTER_TURN_DICE);
   }
 

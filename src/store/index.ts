@@ -54,6 +54,9 @@ const store = new Vuex.Store({
     boardStatus(state) {
       return state.boardStatus;
     },
+    gameStatus(state) {
+      return state.gameStatus;
+    },
     boardWidth(state) {
       return state.boardWidth;
     }
