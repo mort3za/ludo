@@ -101,7 +101,7 @@ export default class StepComponent extends Vue {
   }
   &.side-4 {
     box-shadow: 0 0 rem(2px) $brand-4 inset;
-    background-color: rgba($brand-4, 0.16);
+    background-color: rgba($brand-4, 0.30);
   }
 }
 

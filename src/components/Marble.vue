@@ -2,7 +2,7 @@
   <span
     @click="onClickMarble"
     class="marble"
-    :class="[{moveable: model.isMoveable}, `is-side-${model.side}`]"
+    :class="[{moveable: model.isMoveable, 'is-moving': model.isMoving}, `is-side-${model.side}`]"
     :style="getWrapperStyle()"
   >
     <span class="inner d-block" :class="getMarbleClasses()" :style="getMarbleStyle()"></span>
@@ -121,6 +121,10 @@ export default class MarbleComponent extends Vue {
   // .multiple {
   //   box-shadow: 0 0 0 rem(2px) $dark-less inset, rem(2px 2px 2px) $gray-60;
   // }
+}
+.is-moving,
+.moveable {
+  z-index: 1;
 }
 
 .is-side-1 {
