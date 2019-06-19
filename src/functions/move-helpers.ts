@@ -21,7 +21,7 @@ import {
   updateMarbleIsAtFinal,
   wait
 } from "@/functions/general-helpers.ts";
-import { MARBLE_ANIMATION_DURATION } from "@/constants.ts";
+import { MARBLE_ANIMATION_DURATION, SLEEP_BETWEEN_MOVES } from "@/constants.ts";
 
 /**
  * Find all available moves
@@ -133,8 +133,9 @@ export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction
       isMoveable: false
     };
     await store.dispatch("marbles/update", tempMarble);
+    // dont run on last
     if (index <= moveSteps.length - 2) {
-      await wait(MARBLE_ANIMATION_DURATION);
+      await wait(SLEEP_BETWEEN_MOVES);
     }
   }
   await store.dispatch("marbles/update", finalMarble);
