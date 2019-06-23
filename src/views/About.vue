@@ -1,5 +1,9 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div class="about container py-3">
+    <h1 class="h1">Ludo Game</h1>
+    <p>This is a free and open source software. The source code is available at <a href="https://github.com/mort3za/ludo">Github</a>. Please feel free to send pull requests or create an issue.</p>
+    <p>Made with ♥ by <a href="https://github.com/mort3za">Morteza Ziyae</a> in Tehran, Iran.</p>
+
+    <router-link class="btn btn-primary" to="/">Back</router-link>
   </div>
 </template>

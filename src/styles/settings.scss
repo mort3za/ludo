@@ -20,9 +20,12 @@ $brand-4: hsl(52, 100%, 65%);
 
 $brand-5: hsl(47, 100%, 50%);
 $brand-6: hsl(135, 100%, 50%);
+$brand-7: hsl(270, 100%, 50%);
 
 $body-bg: hsl(35, 100%, 98%);
 $body-color: hsl(207, 95%, 8%);
+$link-color: $brand-7;
+$link-hover-color: darken($link-color, 15%);
 
 // spacings
 $grid-gutter-width: rem(16px);

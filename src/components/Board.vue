@@ -1,5 +1,8 @@
 <template>
   <div class="board-w mx-auto my-3">
+    <div class="toolbar d-flex">
+      <a class="menu-toggle d-block mx-3 mb-3" href="#" @click.prevent="menuToggle()"></a>
+    </div>
     <div class="mx-3">
       <div class="aspect-ratio-box mb-3">
         <div class="aspect-ratio-box-inside">
@@ -8,11 +11,15 @@
               <Road class="road"/>
               <Marbles v-on:clickmarble="onClickMarble" class="marbles"/>
               <Dice v-show="shouldShowDice()" :dice-result="diceResult" :side="activePlayer.side"/>
+              <MenuBoard
+                v-show="shouldShowMenu"
+                @start_game="startGame()"
+                @resume_game="resumeGame()"
+              />
             </div>
           </section>
         </div>
       </div>
-      <MenuBoard @start_game="startGame()" />
     </div>
   </div>
 </template>
@@ -59,6 +66,7 @@ import { debounce } from "lodash-es";
 })
 export default class BoardComponent extends Vue {
   boardWidthUpdaterDebounced = debounce(this.boardWidthUpdater, 150);
+  shouldShowMenu = true;
 
   mounted() {
     this.init();
@@ -104,13 +112,26 @@ export default class BoardComponent extends Vue {
     this.resetGame();
     this.addPlayers();
     await store.dispatch("updateGameStatus", GameStatus.PLAYING);
+    this.shouldShowMenu = false;
     this.playTurn();
   }
-  async pauseGame() {
-    await store.dispatch("updateGameStatus", GameStatus.PAUSED);
+  async menuToggle() {
+    this.shouldShowMenu = !this.shouldShowMenu;
   }
   async resumeGame() {
-    await store.dispatch("updateGameStatus", GameStatus.PLAYING);
+    this.shouldShowMenu = false;
+    this.$emit("__game_resume");
+  }
+  resumePromise() {
+    return new Promise((resolve, reject) => {
+      if (this.gameStatus === GameStatus.PLAYING) {
+        resolve();
+      } else if (this.gameStatus === GameStatus.PAUSED) {
+        this.$once("__game_resume", () => {
+          resolve();
+        });
+      }
+    });
   }
   resetGame() {
     store.dispatch("marbles/reset");
@@ -178,6 +199,7 @@ export default class BoardComponent extends Vue {
       await store.dispatch("updateGameStatus", GameStatus.GAME_OVER);
       return;
     }
+    await this.resumePromise();
     if (this.shouldChangeTurn()) {
       this.changeTurn();
     }
@@ -333,5 +355,11 @@ export default class BoardComponent extends Vue {
   left: 0;
   width: 100%;
   height: 100%;
+}
+.menu-toggle {
+  background: url("../assets/img/menu.svg") no-repeat center;
+  background-size: rem(32px);
+  width: rem(32px);
+  height: rem(32px);
 }
 </style>

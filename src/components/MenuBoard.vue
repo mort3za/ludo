@@ -1,37 +1,36 @@
 <template>
-  <nav>
-    <ul class="nav">
+  <nav class="wrapper h-100">
+    <ul class="nav d-flex flex-column justify-content-center align-items-center h-100">
       <button
         v-if="gameStatus === GameStatus.NOT_STARTED"
         @click="onClickStart()"
-        class="btn btn-primary mr-2"
+        class="btn w-75 btn-primary mb-3"
         type="button"
       >Start Game</button>
       <button
         v-if="gameStatus === GameStatus.PLAYING"
         @click="onClickPause()"
-        class="btn btn-primary mr-2"
+        class="btn w-75 btn-primary mb-3"
         type="button"
       >Pause</button>
       <button
         v-if="gameStatus === GameStatus.PAUSED"
         @click="onClickResume()"
-        class="btn btn-primary mr-2"
+        class="btn w-75 btn-primary mb-3"
         type="button"
       >Resume</button>
-      <router-link class="btn btn-secondary" to="/">Quit</router-link>
+      <router-link class="btn w-75 btn-secondary" to="/">Quit</router-link>
     </ul>
   </nav>
 </template>
 
 <script lang="ts">
 import { Vue, Component } from "vue-property-decorator";
-import store from '@/store/index.ts';
-import { GameStatus, BoardStatus } from '@/types/types.ts';
+import store from "@/store/index.ts";
+import { GameStatus, BoardStatus } from "@/types/types.ts";
 
 @Component
 export default class BoardComponent extends Vue {
-
   data() {
     return {
       BoardStatus,
@@ -46,8 +45,8 @@ export default class BoardComponent extends Vue {
     return store.getters["gameStatus"];
   }
 
-  onClickStart() {    
-    this.$emit('start_game');
+  onClickStart() {
+    this.$emit("start_game");
   }
   onClickPause() {
     this.pauseGame();
@@ -61,9 +60,16 @@ export default class BoardComponent extends Vue {
   }
   async resumeGame() {
     await store.dispatch("updateGameStatus", GameStatus.PLAYING);
+    this.$emit("resume_game");
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.wrapper {
+  z-index: 1;
+  position: relative;
+  background: rgba($dark, 0.6);
+  border-radius: $border-radius;
+}
 </style>
