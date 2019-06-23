@@ -1,34 +1,13 @@
-# ludo
+# Ludo Game
 
-## Project setup
-```
-yarn install
-```
+A [ludo](https://en.wikipedia.org/wiki/Ludo_%28board_game%29) game for web browsers.
 
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
+## Features
 
-### Compiles and minifies for production
-```
-yarn run build
-```
+- Single player
+- Mobile ready
+- PWA
 
-### Run your tests
-```
-yarn run test
-```
+## Play
 
-### Lints and fixes files
-```
-yarn run lint
-```
-
-### Run your unit tests
-```
-yarn run test:unit
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+You can [play it here](https://mort3za.github.io/ludo)
