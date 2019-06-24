@@ -79,8 +79,8 @@ export default class BoardComponent extends Vue {
 <style lang="scss" scoped>
 .wrapper {
   z-index: 1;
-  position: relative;
   background: rgba($dark, 0.6);
   border-radius: $border-radius;
+  @include absolute-cover;
 }
 </style>

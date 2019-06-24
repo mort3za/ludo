@@ -11,14 +11,14 @@
               <Road class="road"/>
               <Marbles v-on:clickmarble="onClickMarble" class="marbles"/>
               <Dice v-show="shouldShowDice()" :dice-result="diceResult" :side="activePlayer.side"/>
-              <MenuBoard
-                v-show="shouldShowMenu"
-                @start_game="startGame()"
-                @resume_game="resumeGame()"
-                @quit_game="quitGame()"
-              />
             </div>
           </section>
+          <MenuBoard
+            v-show="shouldShowMenu"
+            @start_game="startGame()"
+            @resume_game="resumeGame()"
+            @quit_game="quitGame()"
+          />
         </div>
       </div>
     </div>
@@ -56,7 +56,7 @@ import {
 import { analyzeResult, getRandom } from "@/functions/dice-helpers.ts";
 import { SLEEP_BETWEEN_TURNS, SLEEP_AFTER_TURN_DICE } from "@/constants.ts";
 import { debounce } from "lodash-es";
-import router from "../router";
+import router from "@/router.ts";
 
 @Component({
   components: {
