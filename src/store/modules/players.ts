@@ -19,7 +19,7 @@ export default {
     }
   },
   actions: {
-    reset({ commit }: { commit: any }) {
+    remove({ commit }: { commit: any }) {
       commit("setList", []);
     },
     update({ commit }: { commit: any }, player: Player) {

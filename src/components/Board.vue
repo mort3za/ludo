@@ -15,6 +15,7 @@
                 v-show="shouldShowMenu"
                 @start_game="startGame()"
                 @resume_game="resumeGame()"
+                @quit_game="quitGame()"
               />
             </div>
           </section>
@@ -55,6 +56,7 @@ import {
 import { analyzeResult, getRandom } from "@/functions/dice-helpers.ts";
 import { SLEEP_BETWEEN_TURNS, SLEEP_AFTER_TURN_DICE } from "@/constants.ts";
 import { debounce } from "lodash-es";
+import router from "../router";
 
 @Component({
   components: {
@@ -122,6 +124,10 @@ export default class BoardComponent extends Vue {
     this.shouldShowMenu = false;
     this.$emit("__game_resume");
   }
+  async quitGame() {
+    this.cleanupBoard();
+    router.push({ name: "home" });
+  }
   resumePromise() {
     return new Promise((resolve, reject) => {
       if (this.gameStatus === GameStatus.PLAYING) {
@@ -133,9 +139,14 @@ export default class BoardComponent extends Vue {
       }
     });
   }
+  cleanupBoard() {
+    this.shouldShowMenu = false;
+    store.dispatch("marbles/remove");
+    store.dispatch("players/remove");
+  }
   resetGame() {
     store.dispatch("marbles/reset");
-    store.dispatch("players/reset");
+    store.dispatch("players/remove");
   }
   addPlayers(): void {
     store.dispatch("players/add", {

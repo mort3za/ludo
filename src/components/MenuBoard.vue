@@ -19,7 +19,11 @@
         class="btn w-75 btn-primary mb-3"
         type="button"
       >Resume</button>
-      <router-link class="btn w-75 btn-secondary" to="/">Quit</router-link>
+      <button
+        @click="onClickQuit()"
+        class="btn w-75 btn-secondary"
+        type="button"
+      >Quit</button>
     </ul>
   </nav>
 </template>
@@ -54,6 +58,9 @@ export default class BoardComponent extends Vue {
   onClickResume() {
     this.resumeGame();
   }
+  onClickQuit() {
+    this.quitGame();
+  }
 
   async pauseGame() {
     await store.dispatch("updateGameStatus", GameStatus.PAUSED);
@@ -61,6 +68,10 @@ export default class BoardComponent extends Vue {
   async resumeGame() {
     await store.dispatch("updateGameStatus", GameStatus.PLAYING);
     this.$emit("resume_game");
+  }
+  async quitGame() {
+    await store.dispatch("updateGameStatus", GameStatus.NOT_STARTED);
+    this.$emit("quit_game");
   }
 }
 </script>
