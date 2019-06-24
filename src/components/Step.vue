@@ -41,7 +41,7 @@ export default class StepComponent extends Vue {
 }
 .inner {
   border-radius: 100%;
-  background: $gray-96;
+  background: $gray-97;
   box-shadow: 0 0 rem(2px) $dark inset;
   width: 100%;
   height: 100%;
