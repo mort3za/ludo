@@ -151,6 +151,7 @@ export default class BoardComponent extends Vue {
   addPlayers(): void {
     store.dispatch("players/add", {
       isAI: false,
+      name: "You",
       color: "red",
       isActive: true,
       isInGame: true
