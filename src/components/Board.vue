@@ -112,7 +112,10 @@ export default class BoardComponent extends Vue {
 
   async startGame() {
     this.resetGame();
-    this.addPlayers();
+    await this.addPlayers();
+    console.log('player added');
+    
+    await this.setActivePlayer(this.getRandomPlayer());
     await store.dispatch("updateGameStatus", GameStatus.PLAYING);
     this.shouldShowMenu = false;
     this.playTurn();
@@ -148,27 +151,27 @@ export default class BoardComponent extends Vue {
     store.dispatch("marbles/reset");
     store.dispatch("players/remove");
   }
-  addPlayers(): void {
-    store.dispatch("players/add", {
+  async addPlayers() {
+    await store.dispatch("players/add", {
       isAI: false,
       name: "You",
       color: "red",
-      isActive: true,
+      isActive: false,
       isInGame: true
     });
-    store.dispatch("players/add", {
+    await store.dispatch("players/add", {
       isAI: true,
       color: "green",
       isActive: false,
       isInGame: true
     });
-    store.dispatch("players/add", {
+    await store.dispatch("players/add", {
       isAI: true,
       color: "blue",
       isActive: false,
       isInGame: true
     });
-    store.dispatch("players/add", {
+    await store.dispatch("players/add", {
       isAI: true,
       color: "yellow",
       isActive: false,
@@ -198,8 +201,13 @@ export default class BoardComponent extends Vue {
     return true;
   }
 
-  setActivePlayer(player: Player): void {
-    store.dispatch("players/updatePlayer", { ...player, isActive: true });
+  getRandomPlayer(): Player {
+    const random = Math.ceil(getRandom() * this.allPlayers.length);
+    return this.allPlayers[random - 1];
+  }
+
+  async setActivePlayer(player: Player) {
+    await store.dispatch("players/update", { ...player, isActive: true });
   }
 
   async playTurn() {
