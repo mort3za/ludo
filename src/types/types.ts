@@ -71,5 +71,6 @@ export enum BoardStatus {
   MOVING_MARBLES = 2,
   PLAYER_IS_THINKING = 3,
   PAUSED = 4,
-  FINISHED = 5
+  FINISHED = 5,
+  WAITING_TURN_DICE = 6
 }

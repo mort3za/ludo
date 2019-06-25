@@ -12,8 +12,9 @@ export function analyzeResult(diceResult: number): DiceAnalization {
   };
 }
 
-
 export function getRandom() {
   const generator = new MersenneTwister();
-  return generator.random();
+  const result = generator.random();
+  // console.log("random:", result);
+  return result;
 }

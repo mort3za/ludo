@@ -10,7 +10,12 @@
             <div ref="boardInner" class="board-inner">
               <Road class="road"/>
               <Marbles v-on:clickmarble="onClickMarble" class="marbles"/>
-              <Dice v-show="shouldShowDice()" :dice-result="diceResult" :side="activePlayer.side"/>
+              <Dice
+                @turn_dice="turnDice()"
+                :board-status="boardStatus"
+                :dice-result="diceResult"
+                :side="activePlayer.side"
+              />
             </div>
           </section>
           <MenuBoard
@@ -113,8 +118,6 @@ export default class BoardComponent extends Vue {
   async startGame() {
     this.resetGame();
     await this.addPlayers();
-    console.log('player added');
-    
     await this.setActivePlayer(this.getRandomPlayer());
     await store.dispatch("updateGameStatus", GameStatus.PLAYING);
     this.shouldShowMenu = false;
@@ -125,7 +128,7 @@ export default class BoardComponent extends Vue {
   }
   async resumeGame() {
     this.shouldShowMenu = false;
-    this.$emit("__game_resume");
+    this.$emit("__resume_game");
   }
   async quitGame() {
     this.cleanupBoard();
@@ -136,7 +139,7 @@ export default class BoardComponent extends Vue {
       if (this.gameStatus === GameStatus.PLAYING) {
         resolve();
       } else if (this.gameStatus === GameStatus.PAUSED) {
-        this.$once("__game_resume", () => {
+        this.$once("__resume_game", () => {
           resolve();
         });
       }
@@ -223,7 +226,7 @@ export default class BoardComponent extends Vue {
     if (this.shouldChangeTurn()) {
       this.changeTurn();
     }
-    await this.turnDice();
+    await this.turnDicePromise();
 
     await this.sleepBetweenTurns();
     if (this.activePlayer.isAI) {
@@ -307,10 +310,18 @@ export default class BoardComponent extends Vue {
     });
   }
 
-  shouldShowDice(): boolean {
-    return [BoardStatus.TURNING_DICE, BoardStatus.PLAYER_IS_THINKING].includes(
-      this.boardStatus
-    );
+  turnDicePromise() {
+    return new Promise((resolve, reject) => {
+      if (this.activePlayer.isAI) {
+        this.turnDice();
+        resolve();
+      } else {
+        store.dispatch("updateBoardStatus", BoardStatus.WAITING_TURN_DICE);
+        this.$once("__turn_dice", () => {
+          resolve();
+        });
+      }
+    });
   }
 
   async turnDice() {
@@ -318,6 +329,7 @@ export default class BoardComponent extends Vue {
     const result = Math.ceil(getRandom() * 6);
     store.dispatch("updateDice", result);
     // console.log("dice:", result, "player:", this.activePlayer.id);
+    this.$emit("__turn_dice");
     await wait(SLEEP_AFTER_TURN_DICE);
   }
 
