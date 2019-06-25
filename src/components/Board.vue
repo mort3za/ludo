@@ -248,7 +248,7 @@ export default class BoardComponent extends Vue {
       this.playTurn();
     } else if (this.shouldAutoMove(availableActions)) {
       // console.log("auto move");
-      await this.autoMove(availableActions);
+      await this.autoMove(availableActions, this.activePlayer);
       this.playTurn();
     }
   }
@@ -290,8 +290,8 @@ export default class BoardComponent extends Vue {
     );
   }
 
-  async autoMove(availableActions: MoveAction[]) {
-    const moveAction = chooseAction(availableActions);
+  async autoMove(availableActions: MoveAction[], player: Player) {
+    const moveAction = chooseAction(availableActions, player);
     beforeMoveActions(moveAction, this.activePlayer);
     const updatedMoveAction = await this.move(moveAction);
     await afterMoveActions(updatedMoveAction, this.activePlayer);

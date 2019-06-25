@@ -18,6 +18,11 @@ export interface MoveAction {
   to: PositionInBoard;
   type: MoveType;
   marble: Marble;
+  distanceToFinal?: number;
+  kickoutList?: Marble[];
+  isCurrentPositionSafepoint?: boolean;
+  isTargetPositionSafepoint?: boolean;
+  quality?: number;
 }
 
 type Row = number; // between 0 and 10

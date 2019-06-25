@@ -9,7 +9,8 @@ import {
   PositionInBoard,
   MoveType,
   StepPlace,
-  BoardStatus
+  BoardStatus,
+  StepType
 } from "@/types/types";
 import { getDistance, getPositionAfterMove, getStepsOfMoveAction } from "@/functions/path-helpers.ts";
 import {
@@ -19,9 +20,12 @@ import {
   performOnGameOverActions,
   kickoutOtherMarbles,
   updateMarbleIsAtFinal,
-  wait
+  wait,
+  getKickoutList,
+  getStepPlaceOfPosition
 } from "@/functions/general-helpers.ts";
-import { MARBLE_ANIMATION_DURATION, SLEEP_BETWEEN_MOVES } from "@/constants.ts";
+import { MARBLE_ANIMATION_DURATION, SLEEP_BETWEEN_MOVES, PATH_STEPS_COUNT } from "@/constants.ts";
+import { cloneDeep, maxBy } from "lodash-es";
 
 /**
  * Find all available moves
@@ -42,12 +46,66 @@ export function getAvailableActions({
   return availableActions;
 }
 
+export function getStrategicalAction(action: MoveAction, player: Player): MoveAction {
+  const finalStepPosition: PositionInBoard = getPositionOfStep(store.getters["steps/finalStep"]);
+  const upgradedAction = cloneDeep(action);
+
+  upgradedAction.distanceToFinal = getDistance(action.to, finalStepPosition, player);
+  upgradedAction.kickoutList = getKickoutList(player, action.to);
+  upgradedAction.isCurrentPositionSafepoint = getStepPlaceOfPosition(action.from)[3] === StepType.SAFEZONE;
+  upgradedAction.isTargetPositionSafepoint = getStepPlaceOfPosition(action.to)[3] === StepType.SAFEZONE;
+  return upgradedAction;
+}
+
+const ActionQualityList = {
+  currentSafepoint: -2,
+  targetSafepoint: 4,
+  benchOut: 5,
+  stayBehindOthers(action: MoveAction) {
+    if ((action.kickoutList || []).length > 0) {
+      return 0;
+    }
+    // TODO: implement
+    // target: count of behind, count of front
+    // current: count of behind, count of front
+    return 0;
+  },
+  kickout(action: MoveAction) {
+    if (action.isTargetPositionSafepoint) {
+      return 0;
+    }
+    return 10;
+  },
+  distanceFinal(distance: number = PATH_STEPS_COUNT) {
+    return (PATH_STEPS_COUNT - distance) / PATH_STEPS_COUNT;
+  }
+};
+
+export function getActionQuality(action: MoveAction): number {
+  let quality = 0;
+  quality += (action.kickoutList || []).length * ActionQualityList.kickout(action);
+  quality += action.isTargetPositionSafepoint ? ActionQualityList.targetSafepoint : 0;
+  quality += action.isCurrentPositionSafepoint ? ActionQualityList.currentSafepoint : 0;
+  quality += action.marble.isInGame ? ActionQualityList.benchOut : 0;
+  quality += ActionQualityList.distanceFinal(action.distanceToFinal);
+  return quality;
+}
+
 /**
  * Choose best action through available actions
  */
-export function chooseAction(actions: MoveAction[]): MoveAction {
-  // TODO: implement logic
-  return actions[0];
+export function chooseAction(actions: MoveAction[], player: Player): MoveAction {
+  const upgradedActions: MoveAction[] = [];
+
+  actions.forEach(action => {
+    const upgradedAction = getStrategicalAction(action, player);
+    upgradedAction.quality = getActionQuality(upgradedAction);
+    upgradedActions.push(upgradedAction);
+  });
+
+  console.log("upgradedActions", upgradedActions, `player ${upgradedActions[0].marble.side}`);
+  // @ts-ignore
+  return maxBy(upgradedActions, "quality");
 }
 
 function _getBenchActions(diceAnalization: DiceAnalization, player: Player): MoveAction[] {

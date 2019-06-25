@@ -22,6 +22,10 @@ export function getPositionOfMarble(marble: Marble): PositionInBoard {
 
 export function getStepPlaceOfMarble(marble: Marble): StepType[] {
   const position: PositionInBoard = getPositionOfMarble(marble);
+  return getStepPlaceOfPosition(position);
+}
+
+export function getStepPlaceOfPosition(position: PositionInBoard) {
   const stepPlace: StepPlace = store.getters["steps/getStepByPosition"](position);
   return stepPlace[3];
 }
@@ -106,16 +110,20 @@ export async function performOnGameOverActions(player: Player) {
   // TODO:
 }
 
-export async function kickoutOtherMarbles(marble: Marble, player: Player) {
+export function getKickoutList(player: Player, targetPosition: PositionInBoard): Marble[] {
   const otherMarblesAtStepPlace = store.getters["marbles/listOtherPlayersMarblesByPosition"](
     player,
-    getPositionOfMarble(marble)
+    targetPosition
   );
-  const kickoutList = otherMarblesAtStepPlace.filter((m: Marble) => {
+  return otherMarblesAtStepPlace.filter((m: Marble) => {
     const stepTypes: StepType[] = getStepPlaceOfMarble(m);
     const shouldKickout = !stepTypes.includes(StepType.SAFEZONE);
     return shouldKickout;
   });
+}
+
+export async function kickoutOtherMarbles(marble: Marble, player: Player) {
+  const kickoutList = getKickoutList(player, getPositionOfMarble(marble));
 
   const marblesListInitial = store.getters["marbles/listInitial"];
   for (const m1 of kickoutList) {
