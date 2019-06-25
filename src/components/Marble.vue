@@ -5,7 +5,7 @@
     :class="[{moveable: model.isMoveable, 'is-moving': model.isMoving}, `is-side-${model.side}`]"
     :style="getWrapperStyle()"
   >
-    <span class="inner d-block" :class="getMarbleClasses()" :style="getMarbleStyle()"></span>
+    <span class="inner d-block"></span>
   </span>
 </template>
 
@@ -19,12 +19,6 @@ import store from "@/store/index.ts";
 export default class MarbleComponent extends Vue {
   @Prop({ type: Object as () => Marble })
   public model!: Marble;
-
-  get countOnPlace() {
-    // get count of marbles in the current StepPlace
-    // TODO: implement
-    return 1;
-  }
 
   get boardWidth(): number {
     return store.getters["boardWidth"];
@@ -40,42 +34,6 @@ export default class MarbleComponent extends Vue {
         translateY(${(row - 1) * (moveUnit / 100) + "px"})
         `
     };
-  }
-
-  getMarbleClasses() {
-    const { isMoving } = this.model;
-    if (isMoving) {
-      return [];
-    }
-
-    return [
-      {
-        [`multiple-${this.countOnPlace}`]: this.countOnPlace > 1,
-        multiple: this.countOnPlace > 1
-      }
-    ];
-  }
-
-  getMarbleStyle() {
-    let style: any = {};
-    const side = this.model.side;
-
-    if (this.countOnPlace >= 2) {
-      if (side === 1) {
-        style.left = 0;
-        style.bottom = 0;
-      } else if (side === 2) {
-        style.left = 0;
-        style.top = 0;
-      } else if (side === 3) {
-        style.right = 0;
-        style.top = 0;
-      } else if (side === 4) {
-        style.right = 0;
-        style.bottom = 0;
-      }
-    }
-    return style;
   }
 
   onClickMarble() {

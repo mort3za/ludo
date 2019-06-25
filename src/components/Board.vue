@@ -8,7 +8,7 @@
         <div class="aspect-ratio-box-inside">
           <section class="board p-3">
             <div ref="boardInner" class="board-inner">
-              <Road class="road"/>
+              <Road :active-player="activePlayer" class="road"/>
               <Marbles v-on:clickmarble="onClickMarble" class="marbles"/>
               <Dice
                 @turn_dice="turnDice()"
