@@ -46,6 +46,9 @@ export function getAvailableActions({
   return availableActions;
 }
 
+/**
+ *  Adds strategical information to a MoveAction object
+ */
 export function getStrategicalAction(action: MoveAction, player: Player): MoveAction {
   const finalStepPosition: PositionInBoard = getPositionOfStep(store.getters["steps/finalStep"]);
   const upgradedAction = cloneDeep(action);
@@ -57,9 +60,18 @@ export function getStrategicalAction(action: MoveAction, player: Player): MoveAc
   return upgradedAction;
 }
 
+/**
+ * A list of qualities needed to take a decition to choose an action
+ */
 const ActionQualityList = {
-  currentSafepoint: -2,
-  targetSafepoint: 4,
+  currentSafepoint() {
+    const gamePlay = store.getters["settings/gamePlay"];
+    return gamePlay.isSafezonesEnabled ? -2 : 0;
+  },
+  targetSafepoint() {
+    const gamePlay = store.getters["settings/gamePlay"];
+    return gamePlay.isSafezonesEnabled ? 4 : 0;
+  },
   benchOut: 5,
   stayBehindOthers(action: MoveAction) {
     if ((action.kickoutList || []).length > 0) {
@@ -81,13 +93,16 @@ const ActionQualityList = {
   }
 };
 
+/**
+ * Calculate sum of qualities of an action
+ */
 export function getActionQuality(action: MoveAction): number {
   let quality = 0;
   quality += (action.kickoutList || []).length * ActionQualityList.kickout(action);
-  quality += action.isTargetPositionSafepoint ? ActionQualityList.targetSafepoint : 0;
-  quality += action.isCurrentPositionSafepoint ? ActionQualityList.currentSafepoint : 0;
   quality += action.marble.isInGame ? ActionQualityList.benchOut : 0;
   quality += ActionQualityList.distanceFinal(action.distanceToFinal);
+  quality += action.isTargetPositionSafepoint ? ActionQualityList.targetSafepoint() : 0;
+  quality += action.isCurrentPositionSafepoint ? ActionQualityList.currentSafepoint() : 0;
   return quality;
 }
 
@@ -170,6 +185,9 @@ export function canMove(marble: Marble, player: Player) {
   return marble.side === player.side && marble.isMoveable === true;
 }
 
+/**
+ * Break a move into one step moves and perform them one by one
+ */
 export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction> {
   const finalMarble = {
     ...moveAction.marble,

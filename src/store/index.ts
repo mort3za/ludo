@@ -1,9 +1,10 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import steps from "./modules/steps";
-import players from "./modules/players";
-import marbles from "./modules/marbles";
-import { GameStatus, BoardStatus } from "@/types/types";
+import steps from "@/store/modules/steps.ts";
+import players from "@/store/modules/players.ts";
+import marbles from "@/store/modules/marbles.ts";
+import settings from "@/store/modules/settings.ts";
+import { GameStatus, BoardStatus } from "@/types/types.ts";
 
 Vue.use(Vuex);
 
@@ -42,11 +43,6 @@ const store = new Vuex.Store({
       commit("updateBoardWidth", width);
     }
   },
-  modules: {
-    steps,
-    players,
-    marbles
-  },
   getters: {
     diceResult(state) {
       return state.diceResult;
@@ -60,6 +56,12 @@ const store = new Vuex.Store({
     boardWidth(state) {
       return state.boardWidth;
     }
+  },
+  modules: {
+    steps,
+    players,
+    marbles,
+    settings
   }
 });
 

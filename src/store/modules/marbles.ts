@@ -1,6 +1,7 @@
 import { Player, Marble, PositionInBoard, MoveAction } from "@/types/types";
 import { isSameStep, getPositionOfMarble } from "@/functions/general-helpers.ts";
 import { listInitial } from "@/store/initials/marbles-initial.ts";
+// import { listInitial } from "@/store/initials/marbles-initial.sample";
 import Vue from "vue";
 
 export default {

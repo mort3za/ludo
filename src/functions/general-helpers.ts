@@ -115,9 +115,13 @@ export function getKickoutList(player: Player, targetPosition: PositionInBoard):
     player,
     targetPosition
   );
+  const gamePlay = store.getters["settings/gamePlay"];
   return otherMarblesAtStepPlace.filter((m: Marble) => {
     const stepTypes: StepType[] = getStepPlaceOfMarble(m);
-    const shouldKickout = !stepTypes.includes(StepType.SAFEZONE);
+    let shouldKickout = true;
+    if (gamePlay.isSafezonesEnabled) {
+      shouldKickout = !stepTypes.includes(StepType.SAFEZONE);
+    }
     return shouldKickout;
   });
 }
