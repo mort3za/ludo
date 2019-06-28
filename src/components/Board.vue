@@ -1,7 +1,14 @@
 <template>
   <div class="board-w mx-auto py-3">
     <div class="toolbar d-flex">
-      <a class="menu-toggle d-block mx-3 mb-3" href="#" @click.prevent="menuToggle()"></a>
+      <a class="menu position-relative d-block mx-3 mb-3" href="#" @click.prevent="menuToggle()">
+        <transition name="fade">
+          <span v-if="!shouldShowMenu" class="menu-icon menu-open position-absolute d-block"></span>
+        </transition>
+        <transition name="fade">
+          <span v-if="shouldShowMenu" class="menu-icon menu-close position-absolute d-block"></span>
+        </transition>
+      </a>
     </div>
     <div class="mx-3">
       <div class="aspect-ratio-box mb-3">
@@ -391,10 +398,39 @@ export default class BoardComponent extends Vue {
   width: 100%;
   height: 100%;
 }
-.menu-toggle {
-  background: url("../assets/img/menu.svg") no-repeat center;
+
+.fade-enter-to, .fade-leave {
+  opacity: 1;
+}
+.fade-leave-to, .fade-enter {
+  opacity: 0;
+}
+
+.menu {
   background-size: rem(32px);
   width: rem(32px);
   height: rem(32px);
 }
+.menu-icon {
+  transition: all 300ms ease 75ms;
+  position: absolute;
+
+  background-size: rem(32px);
+  width: rem(32px);
+  height: rem(32px);
+}
+
+.menu-open {
+  background: url("../assets/img/menu.svg") no-repeat center;
+  &.fade-enter-to {
+    transition-delay: 200ms;
+  }
+}
+.menu-close {
+  background: url("../assets/img/close.svg") no-repeat center;
+  &.fade-enter-to {
+    transition-delay: 200ms;
+  }
+}
+
 </style>
