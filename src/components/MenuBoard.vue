@@ -4,24 +4,24 @@
       <button
         v-if="gameStatus === GameStatus.NOT_STARTED"
         @click="onClickStart()"
-        class="btn w-75 btn-primary mb-3"
+        class="btn btn-lg w-75 btn-primary mb-3 font-weight-bolder rounded-pill shadow-sm"
         type="button"
       >Start Game</button>
       <button
         v-if="gameStatus === GameStatus.PLAYING"
         @click="onClickPause()"
-        class="btn w-75 btn-primary mb-3"
+        class="btn btn-lg w-75 btn-primary mb-3 font-weight-bolder rounded-pill shadow-sm"
         type="button"
       >Pause</button>
       <button
         v-if="gameStatus === GameStatus.PAUSED"
         @click="onClickResume()"
-        class="btn w-75 btn-primary mb-3"
+        class="btn btn-lg w-75 btn-primary mb-3 font-weight-bolder rounded-pill shadow-sm"
         type="button"
       >Resume</button>
       <button
         @click="onClickQuit()"
-        class="btn w-75 btn-secondary"
+        class="btn btn-lg w-75 btn-secondary font-weight-normal rounded-pill shadow-sm"
         type="button"
       >Quit</button>
     </ul>
@@ -79,7 +79,7 @@ export default class BoardComponent extends Vue {
 <style lang="scss" scoped>
 .wrapper {
   z-index: 1;
-  background: rgba($dark, 0.6);
+  background: rgba($light, 0.8);
   border-radius: $border-radius;
   @include absolute-cover;
 }

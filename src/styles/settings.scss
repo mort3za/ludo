@@ -1,6 +1,6 @@
 // colors
-$primary: hsl(129, 57%, 70%);
-$secondary: hsl(206, 57%, 70%);
+$primary: hsl(164, 100%, 50%);
+$secondary: hsl(181, 100%, 50%);
 
 $success: hsl(135, 59%, 41%);
 $info: hsl(174, 62%, 47%);
@@ -10,19 +10,22 @@ $danger: hsl(353, 81%, 51%);
 $light: hsl(180, 100%, 99%);
 $dark: hsl(180, 13%, 20%);
 $dark-less: hsl(180, 5%, 30%);
-$gray-97: hsl(174, 62%, 97%);
 $gray-60: hsl(180, 13%, 60%);
+
+$sky: #87ceeb;
 
 $brand-1: hsl(356, 100%, 65%);
 $brand-2: hsl(126, 100%, 65%);
 $brand-3: hsl(206, 100%, 65%);
-$brand-4: hsl(52, 100%, 65%);
+$brand-4: hsl(305, 100%, 65%);
 
-$brand-5: hsl(47, 100%, 50%);
 $brand-6: hsl(135, 100%, 50%);
-$brand-7: hsl(270, 100%, 50%);
+$brand-7: hsl(281, 100%, 50%);
+$brand-8: hsl(164, 100%, 50%);
+$brand-9: hsl(181, 100%, 50%);
+$brand-10: hsl(175, 33%, 50%);
 
-$body-bg: hsl(35, 100%, 98%);
+$body-bg: white;
 $body-color: hsl(207, 95%, 8%);
 $link-color: $brand-7;
 $link-hover-color: darken($link-color, 15%);
@@ -41,3 +44,7 @@ $marble-animation-duration: 300;
 
 // typography
 $font-family-sans-serif: 'Open Sans', sans-serrif;
+
+// general
+$enable-shadows: true;
+$enable-print-styles: false;
