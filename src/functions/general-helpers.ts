@@ -98,7 +98,7 @@ export async function updateMarbleIsAtEnd(marble: Marble, player: Player) {
   });
 }
 
-export async function updateMarbleIsAtFinal(marble: Marble, player: Player) {
+export async function updateMarbleIsAtFinal(marble: Marble) {
   const isAtFinal = isPositionAtFinal(getPositionOfMarble(marble));
   await store.dispatch("marbles/update", {
     ...marble,
@@ -129,11 +129,15 @@ export function getKickoutList(player: Player, targetPosition: PositionInBoard):
 export async function kickoutOtherMarbles(marble: Marble, player: Player) {
   const kickoutList = getKickoutList(player, getPositionOfMarble(marble));
 
-  const marblesListInitial = store.getters["marbles/listInitial"];
   for (const m1 of kickoutList) {
-    const marbleInitial = marblesListInitial.find((m2: Marble) => m1.id === m2.id);
+    const marbleInitial = getInitialStateOfMarble(m1);
     await store.dispatch("marbles/update", marbleInitial);
   }
+}
+
+export function getInitialStateOfMarble(marble: Marble): Marble {
+  const marblesListInitial = store.getters["marbles/listInitial"];
+  return marblesListInitial.find((m: Marble) => marble.id === m.id);
 }
 
 export function boardWidthUpdater({ boardElement }: { boardElement: HTMLDivElement }) {

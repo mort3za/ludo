@@ -85,19 +85,19 @@ export default class StepComponent extends Vue {
   height: rem(100% / $golden-ratio);
   &.side-1 {
     box-shadow: 0 0 rem(2px) $brand-1 inset;
-    background-color: rgba($brand-1, 0.16);
+    background-color: rgba($brand-1, 0.4);
   }
   &.side-2 {
     box-shadow: 0 0 rem(2px) $brand-2 inset;
-    background-color: rgba($brand-2, 0.16);
+    background-color: rgba($brand-2, 0.4);
   }
   &.side-3 {
     box-shadow: 0 0 rem(2px) $brand-3 inset;
-    background-color: rgba($brand-3, 0.16);
+    background-color: rgba($brand-3, 0.4);
   }
   &.side-4 {
     box-shadow: 0 0 rem(2px) $brand-4 inset;
-    background-color: rgba($brand-4, 0.30);
+    background-color: rgba($brand-4, 0.4);
   }
 }
 
@@ -106,6 +106,11 @@ export default class StepComponent extends Vue {
   box-shadow: none;
   background: url("../assets/img/star.svg") no-repeat center;
   background-size: 60%;
+}
+
+// bench-done
+.type-7 {
+  background: green;
 }
 // .common
 // .bench

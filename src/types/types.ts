@@ -35,7 +35,8 @@ export enum StepType {
   ENDPOINT = 3,
   LASTPOINT = 4,
   SAFEZONE = 5,
-  FINAL = 6
+  FINAL = 6,
+  BENCH_DONE = 7
 }
 
 export type StepPlace = [Row, Column, Side, StepType[]];

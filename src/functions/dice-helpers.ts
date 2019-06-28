@@ -16,5 +16,6 @@ export function getRandom() {
   const generator = new MersenneTwister();
   const result = generator.random();
   // console.log("random:", result);
+  return 0.1;
   return result;
 }

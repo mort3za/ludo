@@ -14,13 +14,29 @@ bench 1          |          bench 4
 Every step is in [row, column, side, step type] format
 */
 
+import Vue from "vue";
 import { StepType, Player, StepPlace, PositionInBoard } from "@/types/types";
 import { listInitial } from "@/store/initials/steps-initial.ts";
+import { isSameStep, getPositionOfStep } from "@/functions/general-helpers";
 
 export default {
   namespaced: true,
   state: {
     list: listInitial
+  },
+  mutations: {
+    update(state: any, step: StepPlace) {
+      const index = state.list.findIndex((s: StepPlace) =>
+        isSameStep(getPositionOfStep(s), getPositionOfStep(step))
+      );
+      console.log('index', index);
+      Vue.set(state.list, index, step);
+    }
+  },
+  actions: {
+    update({ commit }: { commit: any }, step: StepPlace) {
+      commit("update", step);
+    }
   },
   getters: {
     getStepByPosition: (state: any) => (position: PositionInBoard) => {
