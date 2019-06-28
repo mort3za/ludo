@@ -83,4 +83,7 @@ export default class BoardComponent extends Vue {
   border-radius: $border-radius;
   @include absolute-cover;
 }
+.btn {
+  text-transform: uppercase;
+}
 </style>
