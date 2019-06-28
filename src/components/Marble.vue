@@ -60,25 +60,13 @@ export default class MarbleComponent extends Vue {
   background: $light url("../assets/img/flower.svg") no-repeat center;
   background-size: 86%;
   position: absolute;
-  // &.multiple {
-  //   width: rem($step-width / 2);
-  //   height: rem($step-width / 2);
-  //   background-size: rem(16px);
-  // }
 }
-// .multiple {
-//   box-shadow: rem(2px 2px 2px) $gray-60;
-//   border: rem(2px) solid $light;
-// }
 .moveable {
   cursor: pointer;
   .inner {
     box-shadow: 0 0 0 rem(4px) $dark-less inset, rem(2px 2px 2px) $gray-60;
     border: none;
   }
-  // .multiple {
-  //   box-shadow: 0 0 0 rem(2px) $dark-less inset, rem(2px 2px 2px) $gray-60;
-  // }
 }
 .is-moving,
 .moveable {

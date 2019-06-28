@@ -78,11 +78,10 @@ export default class RoadComponent extends Vue {
   margin-bottom: 0;
   font-size: $font-size-sm;
   width: $step-width * 2 + $step-gutter;
+  border-radius: $border-radius;
   &.is-active {
+    transition: background-color 200ms linear;
     background-color: $secondary;
-    border-radius: $border-radius;
-    color: $white;
-    transition: all 75ms ease;
   }
 }
 .player-name-1 {
