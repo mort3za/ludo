@@ -100,7 +100,7 @@ export default class BoardComponent extends Vue {
 <style lang="scss" scoped>
 .wrapper {
   z-index: 1;
-  background: rgba($dark, 0.5);
+  background: rgba($light, 0.5);
   border-radius: $border-radius;
   @include absolute-cover;
   &.game-over {

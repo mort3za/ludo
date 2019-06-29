@@ -30,3 +30,48 @@
     transform: scale(0);
   }
 }
+
+@keyframes scale-bouncing {
+  0% {
+    transform: scale(1);
+  }
+  4% {
+    transform: scale(0.98);
+  }
+  8% {
+    transform: scale(0.99);
+  }
+  18% {
+    transform: scale(0.94);
+  }
+  26% {
+    transform: scale(0.98);
+  }
+  46% {
+    transform: scale(0.75);
+  }
+  64% {
+    transform: scale(0.98);
+  }
+  76% {
+    transform: scale(0.44);
+  }
+  88% {
+    transform: scale(0.11);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+
+@keyframes heartbeat {
+  0% {
+    transform: scale(1)
+  }
+  45% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+}
