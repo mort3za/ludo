@@ -30,6 +30,7 @@
             @start_game="startGame()"
             @resume_game="resumeGame()"
             @quit_game="quitGame()"
+            :winner-player="winnerPlayer"
           />
         </div>
       </div>
@@ -80,7 +81,8 @@ import router from "@/router.ts";
 })
 export default class BoardComponent extends Vue {
   boardWidthUpdaterDebounced = debounce(this.boardWidthUpdater, 150);
-  shouldShowMenu = true;
+  shouldShowMenu: boolean = true;
+  winnerPlayer: Player | null = null;
 
   mounted() {
     this.init();
@@ -130,6 +132,12 @@ export default class BoardComponent extends Vue {
     this.shouldShowMenu = false;
     this.playTurn();
   }
+  finishGame() {
+    store.dispatch("updateBoardStatus", BoardStatus.FINISHED);
+    store.dispatch("updateGameStatus", GameStatus.GAME_OVER);
+    this.winnerPlayer = this.activePlayer;
+    this.shouldShowMenu = true;
+  }
   async menuToggle() {
     this.shouldShowMenu = !this.shouldShowMenu;
   }
@@ -160,6 +168,7 @@ export default class BoardComponent extends Vue {
   resetGame() {
     store.dispatch("marbles/reset");
     store.dispatch("players/remove");
+    this.winnerPlayer = null;
   }
   async addPlayers() {
     await store.dispatch("players/add", {
@@ -223,10 +232,7 @@ export default class BoardComponent extends Vue {
   async playTurn() {
     // console.log("-------------------------------------------------- play turn");
     if (this.isGameOver) {
-      // show results & finish game
-      console.log("Game is over");
-      await store.dispatch("updateBoardStatus", BoardStatus.FINISHED);
-      await store.dispatch("updateGameStatus", GameStatus.GAME_OVER);
+      this.finishGame();
       return;
     }
     await this.resumePromise();
@@ -390,10 +396,12 @@ export default class BoardComponent extends Vue {
   height: 100%;
 }
 
-.fade-enter-to, .fade-leave {
+.fade-enter-to,
+.fade-leave {
   opacity: 1;
 }
-.fade-leave-to, .fade-enter {
+.fade-leave-to,
+.fade-enter {
   opacity: 0;
 }
 
@@ -423,5 +431,4 @@ export default class BoardComponent extends Vue {
     transition-delay: 150ms;
   }
 }
-
 </style>
