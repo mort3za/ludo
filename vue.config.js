@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 module.exports = {
   lintOnSave: false,
   productionSourceMap: false,
@@ -15,6 +17,15 @@ module.exports = {
       maskIcon: "img/icons/safari-pinned-tab.svg",
       msTileImage: "img/icons/mstile-144x144.png"
     }
+  },
+  configureWebpack: {
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.env': {
+          APP_VERSION: '"' + escape(JSON.stringify(require('./package.json').version)) + '"'
+        }
+      })
+    ]
   },
   css: {
     loaderOptions: {

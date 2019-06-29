@@ -10,6 +10,7 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
+    appVersion: JSON.parse(unescape(process.env.APP_VERSION)),
     diceResult: null,
     gameStatus: GameStatus.NOT_STARTED,
     boardStatus: BoardStatus.INITIALIZING,
@@ -55,6 +56,9 @@ const store = new Vuex.Store({
     },
     boardWidth(state) {
       return state.boardWidth;
+    },
+    appVersion(state) {
+      return state.appVersion
     }
   },
   modules: {

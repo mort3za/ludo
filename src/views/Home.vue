@@ -12,16 +12,22 @@
       </div>
     </div>
     <footer>
-      <small>version: 1.0.0-alpha.2</small>
+      <small>version: {{appVersion}}</small>
     </footer>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component } from "vue-property-decorator";
+import store from '@/store/index.ts';
 import Board from "@/components/Board.vue";
-export default {
-  name: "page-home"
-};
+
+@Component
+export default class HomeComponent extends Vue {
+  get appVersion() {
+    return store.getters["appVersion"]
+  }
+}
 </script>
 
 <style lang="scss" scoped>
