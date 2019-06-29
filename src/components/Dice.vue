@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { Player, GameStatus, BoardStatus } from "../types/types";
+import { GameStatus, BoardStatus } from "@/types/types";
 import { STEP_WIDTH, STEP_GUTTER } from "@/constants.ts";
 import store from "@/store/index.ts";
 

@@ -1,6 +1,6 @@
 <template>
-  <div class="wrapper d-flex justify-content-center align-items-center overflow-auto">
-    <div class="inner w-100 rounded mx-auto d-flex h-75 justify-content-center align-items-center">
+  <div class="wrapper d-flex justify-content-center align-items-center overflow-auto flex-column">
+    <div class="inner w-100 rounded mx-auto d-flex justify-content-center align-items-center">
       <div class="d-flex flex-column justify-content-center align-items-center p-3 w-100">
         <h1 class="h1 title d-flex align-items-center font-weight-light">
           <span>Ludo Game</span></h1>
@@ -11,6 +11,9 @@
         </div>
       </div>
     </div>
+    <footer>
+      <small>version: 1.0.0-alpha.2</small>
+    </footer>
   </div>
 </template>
 
