@@ -12,7 +12,7 @@
       </div>
     </div>
     <footer>
-      <small>version: {{appVersion}}</small>
+      <small class="text-dark">version: {{appVersion}}</small>
     </footer>
   </div>
 </template>
