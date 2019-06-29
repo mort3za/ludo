@@ -12,9 +12,9 @@
 +-------------------------------+          | get isGameOver                    |         |                    |         | column                       |     |   COMMON             |
                                            | startGame()                       |         +--------------------+         | side                         |     |   STARTPOINT         |
 +-------------------------------+          | resetGame()                       |                                        | StepType  ------------------------>+   ENDPOINT           |
-| General Helpers               |          | addPlayers()                      |                                        | get getStepByPosition()      |     |   LASTPOINT          |
-+-------------------------------+          | changeTurn()                      |                                        | get allBenchs()              |     |   SAFEZONE           |
-|                               |          | shouldChangeTurn()                |                                        | get sideBenchs()             |     |   FINAL              |
+| General Helpers               |          | addPlayers()                      |                                        | get getStepByPosition()      |     |   SAFEZONE           |
++-------------------------------+          | changeTurn()                      |                                        | get allBenchs()              |     |   FINAL              |
+|                               |          | shouldChangeTurn()                |                                        | get sideBenchs()             |     |                      |
 +-------------------------------+          | setActivePlayer()                 |         +-------------------+          | get sideCommons()            |     |                      |
                                            | playTurn()                        |         | Player Store      |          | get sideEndpoints()          |     |                      |
                                            | sleepBetweenTurns()               |         +-------------------+          | get sideStartpoint()         |     |                      |

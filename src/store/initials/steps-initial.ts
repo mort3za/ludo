@@ -19,7 +19,7 @@ export const listInitial: StepPlace[] = [
   [10, 6, 1, [StepType.ENDPOINT]],
   [9, 6, 1, [StepType.ENDPOINT]],
   [8, 6, 1, [StepType.ENDPOINT]],
-  [7, 6, 1, [StepType.ENDPOINT, StepType.LASTPOINT]],
+  [7, 6, 1, [StepType.ENDPOINT]],
 
   // side 2
   [1, 1, 2, [StepType.BENCH]],
@@ -39,7 +39,7 @@ export const listInitial: StepPlace[] = [
   [6, 2, 2, [StepType.ENDPOINT]],
   [6, 3, 2, [StepType.ENDPOINT]],
   [6, 4, 2, [StepType.ENDPOINT]],
-  [6, 5, 2, [StepType.ENDPOINT, StepType.LASTPOINT]],
+  [6, 5, 2, [StepType.ENDPOINT]],
 
   // side 3
   [1, 10, 3, [StepType.BENCH]],
@@ -59,7 +59,7 @@ export const listInitial: StepPlace[] = [
   [2, 6, 3, [StepType.ENDPOINT]],
   [3, 6, 3, [StepType.ENDPOINT]],
   [4, 6, 3, [StepType.ENDPOINT]],
-  [5, 6, 3, [StepType.ENDPOINT, StepType.LASTPOINT]],
+  [5, 6, 3, [StepType.ENDPOINT]],
 
   // side 4
   [10, 10, 4, [StepType.BENCH]],
@@ -79,7 +79,7 @@ export const listInitial: StepPlace[] = [
   [6, 10, 4, [StepType.ENDPOINT]],
   [6, 9, 4, [StepType.ENDPOINT]],
   [6, 8, 4, [StepType.ENDPOINT]],
-  [6, 7, 4, [StepType.ENDPOINT, StepType.LASTPOINT]],
+  [6, 7, 4, [StepType.ENDPOINT]],
 
   // final step
   [6, 6, 0, [StepType.FINAL, StepType.SAFEZONE]]

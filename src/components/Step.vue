@@ -102,16 +102,33 @@ export default class StepComponent extends Vue {
 }
 
 // final
+$star-background-size: 60%;
 .type-6 {
   box-shadow: none;
   background: url("../assets/img/star.svg") no-repeat center;
-  background-size: 60%;
+  background-size: $star-background-size;
 }
 
+// bench
+.type-0 {
+  background-size: 0;
+  transition: background 300ms ease;
+  &.side-1 {
+    background-image: url("../assets/img/star-side-1.svg");
+  }
+  &.side-2 {
+    background-image: url("../assets/img/star-side-2.svg");
+  }
+  &.side-3 {
+    background-image: url("../assets/img/star-side-3.svg");
+  }
+  &.side-4 {
+    background-image: url("../assets/img/star-side-4.svg");
+  }
+}
 // bench-done
-.type-7 {
-  background: green;
+.type-4 {
+  background-size: $star-background-size;
 }
 // .common
-// .bench
 </style>
