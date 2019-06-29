@@ -123,11 +123,12 @@ export function getKickoutList(player: Player, targetPosition: PositionInBoard):
   const gamePlay = store.getters["settings/gamePlay"];
   return otherMarblesAtStepPlace.filter((m: Marble) => {
     const stepPlace: StepPlace = getStepPlaceOfMarble(m);
-    let shouldKickout = true;
+    let preventKickout = false;
     if (gamePlay.isSafezonesEnabled) {
-      shouldKickout = !stepPlace[3].includes(StepType.SAFEZONE);
+      preventKickout = preventKickout || stepPlace[3].includes(StepType.SAFEZONE);
     }
-    return shouldKickout;
+    preventKickout = preventKickout || stepPlace[3].includes(StepType.FINAL);
+    return !preventKickout;
   });
 }
 
