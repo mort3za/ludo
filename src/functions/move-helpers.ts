@@ -57,8 +57,10 @@ export function getStrategicalAction(action: MoveAction, player: Player): MoveAc
 
   upgradedAction.distanceToFinal = getDistance(action.to, finalStepPosition, player);
   upgradedAction.kickoutList = getKickoutList(player, action.to);
-  upgradedAction.isCurrentPositionSafepoint = getStepPlaceOfPosition(action.from)[3] === StepType.SAFEZONE;
-  upgradedAction.isTargetPositionSafepoint = getStepPlaceOfPosition(action.to)[3] === StepType.SAFEZONE;
+  upgradedAction.isCurrentPositionSafepoint = getStepPlaceOfPosition(action.from)[3].includes(
+    StepType.SAFEZONE
+  );
+  upgradedAction.isTargetPositionSafepoint = getStepPlaceOfPosition(action.to)[3].includes(StepType.SAFEZONE);
   return upgradedAction;
 }
 
@@ -119,8 +121,8 @@ export function chooseAction(actions: MoveAction[], player: Player): MoveAction 
     upgradedAction.quality = getActionQuality(upgradedAction);
     upgradedActions.push(upgradedAction);
   });
+  // console.log("upgradedActions", upgradedActions, `player ${upgradedActions[0].marble.side}`);
 
-  console.log("upgradedActions", upgradedActions, `player ${upgradedActions[0].marble.side}`);
   // @ts-ignore
   return maxBy(upgradedActions, "quality");
 }
@@ -225,16 +227,17 @@ export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction
   return updatedMoveAction;
 }
 
-export async function goToHeaven(marble: Marble, player: Player) {
-  if (!marble.isAtFinal) {
+export async function goToHeaven(marbleId: number) {
+  // marble is not updated here, should get fresh one
+  const freshMarble = store.getters["marbles/itemById"](marbleId);
+  if (!freshMarble.isAtFinal) {
     return;
   }
 
   wait(MARBLE_ANIMATION_DURATION);
-  const initialStepPlaceOfMarble = getStepPlaceOfMarble(getInitialStateOfMarble(marble));
-  const updatedStep = [...initialStepPlaceOfMarble];
-  updatedStep[3] = StepType.BENCH_DONE;
-  store.dispatch("steps/update", updatedStep);
+  const initialMarble = getInitialStateOfMarble(freshMarble);
+  const initialStepPlaceOfMarble: StepPlace = getStepPlaceOfMarble(initialMarble);
+  store.dispatch("steps/updateSomeProps", { step: initialStepPlaceOfMarble, setType: StepType.BENCH_DONE });
 }
 
 export async function beforeMoveActions(moveAction: MoveAction, player: Player) {
@@ -246,7 +249,7 @@ export async function afterMoveActions(moveAction: MoveAction, player: Player) {
   // TODO: check isGameOver
   await updateMarbleIsAtEnd(moveAction.marble, player);
   await updateMarbleIsAtFinal(moveAction.marble);
-  await goToHeaven(moveAction.marble, player);
+  await goToHeaven(moveAction.marble.id);
   await performOnGameOverActions(player);
   await kickoutOtherMarbles(moveAction.marble, player);
   await wait(MARBLE_ANIMATION_DURATION);

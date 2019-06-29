@@ -2,8 +2,13 @@ import { PositionInBoard, Marble, StepPlace, Player, MoveAction, MoveType, StepT
 import { getPositionAfterMove } from "@/functions/path-helpers.ts";
 import store from "@/store/index";
 
-export function isSameStep(position1: PositionInBoard, position2: PositionInBoard) {
+// TODO: rename to isSamePosition
+export function isSameStep(position1: PositionInBoard, position2: PositionInBoard): boolean {
   return position1.row === position2.row && position1.column === position2.column;
+}
+
+export function isSameStepPlace(step1: StepPlace, step2: StepPlace): boolean {
+  return isSameStep(getPositionOfStep(step1), getPositionOfStep(step2));
 }
 
 export function getPositionOfStep(step: StepPlace): PositionInBoard {
@@ -20,14 +25,14 @@ export function getPositionOfMarble(marble: Marble): PositionInBoard {
   };
 }
 
-export function getStepPlaceOfMarble(marble: Marble): StepType[] {
+export function getStepPlaceOfMarble(marble: Marble): StepPlace {
   const position: PositionInBoard = getPositionOfMarble(marble);
   return getStepPlaceOfPosition(position);
 }
 
-export function getStepPlaceOfPosition(position: PositionInBoard) {
+export function getStepPlaceOfPosition(position: PositionInBoard): StepPlace {
   const stepPlace: StepPlace = store.getters["steps/getStepByPosition"](position);
-  return stepPlace[3];
+  return stepPlace;
 }
 
 export function getMoveActionType(marble: Marble): MoveType {
@@ -100,10 +105,10 @@ export async function updateMarbleIsAtEnd(marble: Marble, player: Player) {
 
 export async function updateMarbleIsAtFinal(marble: Marble) {
   const isAtFinal = isPositionAtFinal(getPositionOfMarble(marble));
-  await store.dispatch("marbles/update", {
-    ...marble,
-    isAtFinal
-  });
+  if (isAtFinal) {
+    return store.dispatch("marbles/updateSomeProps", { marble, props: { isAtFinal } });
+  }
+  return Promise.resolve();
 }
 
 export async function performOnGameOverActions(player: Player) {
@@ -117,10 +122,10 @@ export function getKickoutList(player: Player, targetPosition: PositionInBoard):
   );
   const gamePlay = store.getters["settings/gamePlay"];
   return otherMarblesAtStepPlace.filter((m: Marble) => {
-    const stepTypes: StepType[] = getStepPlaceOfMarble(m);
+    const stepPlace: StepPlace = getStepPlaceOfMarble(m);
     let shouldKickout = true;
     if (gamePlay.isSafezonesEnabled) {
-      shouldKickout = !stepTypes.includes(StepType.SAFEZONE);
+      shouldKickout = !stepPlace[3].includes(StepType.SAFEZONE);
     }
     return shouldKickout;
   });

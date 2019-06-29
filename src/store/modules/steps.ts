@@ -17,7 +17,7 @@ Every step is in [row, column, side, step type] format
 import Vue from "vue";
 import { StepType, Player, StepPlace, PositionInBoard } from "@/types/types";
 import { listInitial } from "@/store/initials/steps-initial.ts";
-import { isSameStep, getPositionOfStep } from "@/functions/general-helpers";
+import { isSameStep, getPositionOfStep, isSameStepPlace } from "@/functions/general-helpers";
 
 export default {
   namespaced: true,
@@ -29,13 +29,20 @@ export default {
       const index = state.list.findIndex((s: StepPlace) =>
         isSameStep(getPositionOfStep(s), getPositionOfStep(step))
       );
-      console.log('index', index);
       Vue.set(state.list, index, step);
     }
   },
   actions: {
     update({ commit }: { commit: any }, step: StepPlace) {
       commit("update", step);
+    },
+    updateSomeProps({ commit, state }: any, { step, setType }: { step: StepPlace; setType: StepType }) {
+      const index = state.list.findIndex((s: StepPlace) => isSameStepPlace(s, step));
+      const types = [...state.list[index][3], setType];
+
+      const updatedStep = [...state.list[index]];
+      updatedStep[3] = types;
+      commit("update", updatedStep);
     }
   },
   getters: {

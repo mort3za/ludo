@@ -1,8 +1,12 @@
 import { Player, Marble, PositionInBoard, MoveAction } from "@/types/types";
 import { isSameStep, getPositionOfMarble } from "@/functions/general-helpers.ts";
-// import { listInitial } from "@/store/initials/marbles-initial.ts";
-import { listInitial } from "@/store/initials/marbles-initial.sample.ts";
+import { listInitial } from "@/store/initials/marbles-initial.ts";
+// import { listInitial } from "@/store/initials/marbles-initial.sample.ts";
 import Vue from "vue";
+
+function getMarbleIndexById(list: Marble[], marbleId: number) {
+  return list.findIndex((m: Marble) => m.id === marbleId);
+}
 
 export default {
   namespaced: true,
@@ -28,6 +32,11 @@ export default {
     update({ commit }: { commit: any }, marble: Marble) {
       commit("update", marble);
     },
+    updateSomeProps({ commit, state }: any, { marble, props }: { marble: Marble; props: object }) {
+      const index = state.list.findIndex((m: Marble) => m.id === marble.id);
+      const updatedMarble = { ...state.list[index], ...props };
+      commit("update", updatedMarble);
+    },
     reset({ commit }: { commit: any }) {
       commit("setList", [...listInitial]);
     },
@@ -42,6 +51,9 @@ export default {
     }
   },
   getters: {
+    itemById: (state: any) => (marbleId: number) => {
+      return state.list[getMarbleIndexById(state.list, marbleId)];
+    },
     list(state: any): Marble[] {
       return state.list;
     },
