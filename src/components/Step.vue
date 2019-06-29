@@ -112,7 +112,13 @@ $star-background-size: 60%;
 // bench
 .type-0 {
   background-size: 0;
-  transition: background 300ms ease;
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: background-size #{$step-go-to-heaven-duration}ms ease #{$step-go-to-heaven-delay}ms;
+}
+// bench-done
+.type-4 {
+  background-size: $star-background-size;
   &.side-1 {
     background-image: url("../assets/img/star-side-1.svg");
   }
@@ -125,10 +131,6 @@ $star-background-size: 60%;
   &.side-4 {
     background-image: url("../assets/img/star-side-4.svg");
   }
-}
-// bench-done
-.type-4 {
-  background-size: $star-background-size;
 }
 // .common
 </style>

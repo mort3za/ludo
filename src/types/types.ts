@@ -28,6 +28,7 @@ export interface MoveAction {
 type Row = number; // between 0 and 10
 type Column = number; // between 0 and 10
 type Side = number; // between 1 and 4
+// NOTE: these values are hard-coded in Step.vue scss section
 export enum StepType {
   BENCH = 0,
   COMMON = 1,

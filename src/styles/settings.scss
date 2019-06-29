@@ -41,6 +41,9 @@ $step-gutter: 0.83333333333%;
 
 // animations
 $marble-animation-duration: 300;
+$marble-go-to-heaven-duration: 1000;
+$step-go-to-heaven-duration: 300;
+$step-go-to-heaven-delay: $marble-animation-duration + $marble-go-to-heaven-duration;
 
 // typography
 $font-family-sans-serif: 'Open Sans', sans-serrif;

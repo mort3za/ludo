@@ -5,7 +5,7 @@
     :class="[{moveable: model.isMoveable, 'is-moving': model.isMoving}, `is-side-${model.side}`]"
     :style="getWrapperStyle()"
   >
-    <span class="inner d-block"></span>
+    <span class="inner d-block" :class="{'is-at-final': model.isAtFinal}"></span>
   </span>
 </template>
 
@@ -59,7 +59,11 @@ export default class MarbleComponent extends Vue {
   border: rem(4px) solid $light;
   background: $light url("../assets/img/flower.svg") no-repeat center;
   background-size: 86%;
-  position: absolute;
+  &.is-at-final {
+    // transition: transform 300ms ease-in-bounce #{$marble-animation-duration}ms;
+    animation: #{$marble-go-to-heaven-duration}ms linear 0s 1 scale-easeInBounce;
+    transform: scale(0);
+  }
 }
 .moveable {
   cursor: pointer;
