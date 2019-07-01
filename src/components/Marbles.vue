@@ -24,6 +24,7 @@ export default class MarblesComponent extends Vue {
   onClickMarble(marble: Marble) {
     this.$emit("clickmarble", marble);
   }
+
 }
 </script>
 

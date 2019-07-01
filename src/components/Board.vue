@@ -53,7 +53,7 @@ import {
   moveStepByStep,
   beforeMoveActions
 } from "@/functions/move-helpers.ts";
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Watch } from "vue-property-decorator";
 import {
   Player,
   MoveAction,
@@ -122,6 +122,18 @@ export default class BoardComponent extends Vue {
   }
   get gameStatus(): GameStatus {
     return store.getters["gameStatus"];
+  }
+  get list() {
+    return store.getters["marbles/list"];
+  }
+
+  @Watch('boardStatus')
+  onBoardStatusChange(newValue: number) {
+    if (newValue === BoardStatus.PLAYER_IS_THINKING) {
+      window.addEventListener('keydown', this.keyboardHandler)
+    } else {
+      window.removeEventListener('keydown', this.keyboardHandler)
+    }
   }
 
   async startGame() {
@@ -356,6 +368,32 @@ export default class BoardComponent extends Vue {
   }
   removeResizeListener() {
     window.removeEventListener("resize", this.boardWidthUpdaterDebounced);
+  }
+  keyboardHandler(event) {
+    let foundMarble
+    switch(event.keyCode) {
+      case 49:
+        foundMarble = this.list.find(marble => {
+          return marble.id === 1
+        })
+        break
+      case 50:
+        foundMarble = this.list.find(marble => {
+          return marble.id === 2
+        })
+        break
+      case 51:
+        foundMarble = this.list.find(marble => {
+          return marble.id === 3
+        })
+        break
+      case 52:
+        foundMarble = this.list.find(marble => {
+          return marble.id === 4
+        })
+        break
+    }
+    foundMarble ? this.onClickMarble(foundMarble) : null
   }
 }
 </script>

@@ -13,7 +13,7 @@
 
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import { GameStatus, BoardStatus } from "@/types/types";
 import { STEP_WIDTH, STEP_GUTTER } from "@/constants.ts";
 import store from "@/store/index.ts";
@@ -38,8 +38,24 @@ export default class Dice extends Vue {
     return store.getters["boardWidth"];
   }
 
+  @Watch('boardStatus')
+  onBoardStatusChange(newValue: number) {
+    if (newValue === this.BoardStatus.WAITING_TURN_DICE) {
+      window.addEventListener('keydown', this.keyboardHandler)
+    } else {
+      window.removeEventListener('keydown', this.keyboardHandler)
+    }
+  }
+
   onClickTurn() {
     this.$emit("turn_dice");
+  }
+
+  keyboardHandler (event) {
+    if (event.keyCode === 32) {
+      event.preventDefault()
+      this.onClickTurn()
+    }
   }
 
   shouldShowResult() {

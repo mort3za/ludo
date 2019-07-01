@@ -4,8 +4,13 @@
     class="marble"
     :class="[{moveable: model.isMoveable, 'is-moving': model.isMoving}, `is-side-${model.side}`]"
     :style="getWrapperStyle()"
+    :ref="`marble${model.id}`"
   >
-    <span class="inner d-block" :class="{'is-at-final': model.isAtFinal}"></span>
+    <span class="inner d-block" :class="{'is-at-final': model.isAtFinal}">
+      <span v-if="model.isMoveable" class="font-weight-bold">
+        {{ model.id }}
+      </span>
+    </span>
   </span>
 </template>
 
@@ -70,6 +75,10 @@ export default class MarbleComponent extends Vue {
   .inner {
     box-shadow: 0 0 0 rem(4px) $dark-less inset, rem(2px 2px 2px) $gray-60;
     border: none;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size-lg;
   }
 }
 .is-moving,
