@@ -1,7 +1,7 @@
 <template>
   <div class="board-w mx-auto py-3">
     <div class="toolbar d-flex">
-      <a class="menu position-relative d-block mx-3 mb-3" href="#" @click.prevent="menuToggle()">
+      <a class="menu position-relative d-block mx-3 mb-3" href="#" @click.prevent="menuToggle()" aria-label="Main icon">
         <transition name="fade">
           <span v-if="!shouldShowMenu" class="menu-icon menu-open position-absolute d-block"></span>
         </transition>
@@ -10,7 +10,7 @@
         </transition>
       </a>
     </div>
-    <div class="mx-3">
+    <main class="mx-3">
       <div class="aspect-ratio-box mb-3">
         <div class="aspect-ratio-box-inside">
           <section class="board shadow-sm p-3">
@@ -34,7 +34,7 @@
           />
         </div>
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
