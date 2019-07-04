@@ -1,43 +1,48 @@
-+-------------------------------+          +-----------------------------------+         +-------------------+
-| Move Helpers                  |          | Board Component                   |         | Road Component    |
-+-------------------------------+          +-----------------------------------+         +-------------------+
-|                               |          |                                   |         |                   |
-+-------------------------------+          | Marbles Component                 |         | <Step />          |
-                                           | get playersInGame                 |         |                   |
-+-------------------------------+          | get allPlayers                    |         +-------------------+          +------------------------------+     +----------------------+
-| Path Helpers                  |          | get activePlayer                  |                                        | Step Store                   |     | StepType Enum        |
-+-------------------------------+          | get diceResult                    |         +--------------------+         +------------------------------+     +----------------------+
-|                               |          | get diceAnalization               |         | Step Component     |         |                              |     |                      |
-+-------------------------------+          | get isGameOver                    |         +--------------------+         | row                          |     |   BENCH              |
-                                           | startGame()                       |         |                    |         | column                       |     |   COMMON             |
-+-------------------------------+          | resetGame()                       |         +--------------------+         | side                         |     |   STARTPOINT         |
-| General Helpers               |          | addPlayers()                      |                                        | StepType  +----------------------->+   ENDPOINT           |
-+-------------------------------+          | changeTurn()                      |                                        | get getStepByPosition()      |     |   BENCH_DONE         |
-|                               |          | shouldChangeTurn()                |                                        | get allBenchs()              |     |   SAFEZONE           |
-+-------------------------------+          | setActivePlayer()                 |                                        | get sideBenchs()             |     |   FINAL              |
-                                           | playTurn()                        |         +-------------------+          | get sideCommons()            |     |                      |
-+-------------------------------+          | sleepBetweenTurns()               |         | Player Store      |          | get sideEndpoints()          |     |                      |
-| Dice Helpers                  |          | performActionsOfPlayerAI()        |         +-------------------+          | get sideStartpoint()         |     |                      |
-+-------------------------------+          | performActionsOfPlayerNoAI()      |         |                   |          | get sideSteps()              |     |                      |
-|                               |          | onClickMarble()                   |         | isAI              |          | get finalStep()              |     |                      |
-+-------------------------------+          | setMoveableMarbles()              |         | color             |          | get allSteps()               |     |                      |
-                                           | unsetMoveableMarbles()            |         | name              |          | get allPaths()               |     |                      |
-                                           | shouldAutoMove()                  |         | side              |          |                              |     |                      |
-                                           | autoMove()                        |         | isActive          |          +------------------------------+     +----------------------+
-                                           | move()                            |         | id                |
-                                           | getAvailableActions()             |         | get list()        |          +------------------------------+
-                                           | turnDice()                        |         | get itemById()    |          | Marble Store                 |
-                                           |                                   |         | get itemBySide()  |          +------------------------------+
-                                           | <Road />                          |         | get listInGame()  |          | id                           |
+                                                                                                                        +------------------------------+    +----------------------+
+                                                                                                                        | Board Store                  |    | DiceInfo Interface   |
+                                                                                                                        +------------------------------+    +----------------------+
+                                                                                                                        | diceInfo  +-----------------------> value                |
+                                                                                                                        | boardStatus                  |    | isDone               |
++-------------------------------+          +-----------------------------------+         +-------------------+          | shouldShowMenu               |    | player               |
+| Move Helpers                  |          | Board Component                   |         | Road Component    |          | boardWidth                   |    | canMoveBench         |
++-------------------------------+          +-----------------------------------+         +-------------------+          |                              |    | hasReward            |
+|                               |          | continueGame()                    |         |                   |          |                              |    |                      |
++-------------------------------+          | get playersInGame                 |         | <Step />          |          +------------------------------+    +----------------------+
+                                           | get allPlayers                    |         |                   |
++-------------------------------+          | get activePlayer                  |         +-------------------+          +------------------------------+     +---------------------+
+| Path Helpers                  |          | get diceInfo                      |                                        | Step Store                   |     | StepType Enum       |
++-------------------------------+          | get shouldShowMenu                |         +-------------------+          +------------------------------+     +---------------------+
+|                               |          | get isGameOver                    |         | Step Component    |          |                              |     |                     |
++-------------------------------+          | setShowMenu()                     |         +-------------------+          | row                          |     |   BENCH             |
+                                           | saveGame()                        |         |                   |          | column                       |     |   COMMON            |
++-------------------------------+          | startGame()                       |         +-------------------+          | side                         |     |   STARTPOINT        |
+| General Helpers               |          | resetGame()                       |                                        | StepType  +----------------------->+   ENDPOINT          |
++-------------------------------+          | addPlayers()                      |                                        | get getStepByPosition()      |     |   BENCH_DONE        |
+|                               |          | changeTurn()                      |                                        | get allBenchs()              |     |   SAFEZONE          |
++-------------------------------+          | shouldChangeTurn()                |                                        | get sideBenchs()             |     |   FINAL             |
+                                           | setActivePlayer()                 |         +-------------------+          | get sideCommons()            |     |                     |
++-------------------------------+          | playTurn()                        |         | Player Store      |          | get sideEndpoints()          |     +---------------------+
+| Dice Helpers                  |          | sleepBetweenTurns()               |         +-------------------+          | get sideStartpoint()         |
++-------------------------------+          | performActionsOfPlayerAI()        |         |                   |          | get sideSteps()              |
+|                               |          | performActionsOfPlayerNoAI()      |         | isAI              |          | get finalStep()              |
++-------------------------------+          | onClickMarble()                   |         | color             |          | get allSteps()               |
+                                           | setMoveableMarbles()              |         | name              |          | get allPaths()               |
+                                           | unsetMoveableMarbles()            |         | side              |          |                              |
+                                           | shouldAutoMove()                  |         | isActive          |          +------------------------------+
+                                           | autoMove()                        |         | id                |
+                                           | move()                            |         | get list()        |          +------------------------------+
+                                           | getAvailableActions()             |         | get itemById()    |          | Marble Store                 |
+                                           | turnDice()                        |         | get itemBySide()  |          +------------------------------+
+                                           | cleanupBoard()                    |         | get listInGame()  |          | id                           |
                                            |                                   |         | get active()      |          | side                         |
-                                           | <MenuBoard />                     |         |                   |          | isInGame                     |
-                                           |                                   |         +-----------------+-+          | isAtEnd                      |
-                                           | <Marbles />                       |                           ^            | isMoveable                   |
-                                           |                                   |                           |            | isAtFinal                    |
-                                           | <Dice />                          |                           |            | isMoving                     |
-                                           |                                   |                           |            | row                          |
+                                           |                                   |         |                   |          | isInGame                     |
+                                           | <Road />                          |         +-----------------+-+          | isAtEnd                      |
+                                           |                                   |                           ^            | isMoveable                   |
+                                           | <MenuBoard />                     |                           |            | isAtFinal                    |
+                                           |                                   |                           |            | isMoving                     |
+                                           | <Marbles />                       |                           |            | row                          |
                                            |                                   |                           |            | column                       |
-                                           |                                   |                           +------------+ _player                      |
+                                           | <Dice />                          |                           +------------+ _player                      |
                                            |                                   |                                        | unsetMoveableAll()           |
                                            +-----------------------------------+                                        | setMoveableItems()           |
                                                                                       +-----------------------+         | reset()                      |

@@ -1,6 +1,6 @@
 {
   "name": "ludo",
-  "version": "v1.0.0-alpha.2",
+  "version": "v1.1.0",
   "private": true,
   "scripts": {
     "start": "yarn serve",
