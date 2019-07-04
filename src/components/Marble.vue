@@ -5,7 +5,10 @@
     :class="[{moveable: model.isMoveable, 'is-moving': model.isMoving}, `is-side-${model.side}`]"
     :style="getWrapperStyle()"
   >
-    <span class="inner d-block" :class="{'is-at-final': model.isAtFinal}"></span>
+    <span
+      class="inner d-block"
+      :class="{'is-at-final': model.isAtFinal, 'no-animation': noAnimation}"
+    ></span>
   </span>
 </template>
 
@@ -17,8 +20,17 @@ import store from "@/store/index.ts";
 
 @Component
 export default class MarbleComponent extends Vue {
+  noAnimation = false;
+
   @Prop({ type: Object as () => Marble })
   public model!: Marble;
+
+  mounted() {
+    // no animation on refresh page
+    if (this.model.isAtFinal) {
+      this.noAnimation = true;
+    }
+  }
 
   get boardWidth(): number {
     return store.getters["board/boardWidth"];
@@ -63,6 +75,9 @@ export default class MarbleComponent extends Vue {
     // transition: transform 300ms ease-in-bounce #{$marble-animation-duration}ms;
     animation: #{$marble-go-to-heaven-duration}ms linear 0s 1 scale-easeInBounce;
     transform: scale(0);
+  }
+  &.no-animation {
+    animation: none;
   }
 }
 .moveable {
