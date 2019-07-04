@@ -16,4 +16,5 @@ You can [play here](https://mort3za.github.io/ludo)
 
 ## Contribution
 
-There are some tasks in issues page if you are interested or just open your own issue (in English please). Any helps is greatly appreciated.
+There are some tasks in issues page if you are interested or just open your own issue (in English please). Any helps is greatly appreciated.  
+Please read [Contributing Guideline](CONTRIBUTING.md).
