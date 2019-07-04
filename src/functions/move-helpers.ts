@@ -217,9 +217,7 @@ export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction
       await wait(SLEEP_BETWEEN_MOVES);
     }
   }
-  await store.dispatch("marbles/update", {
-    value: finalMarble
-  });
+  await store.dispatch("marbles/update", finalMarble);
 
   const updatedMoveAction = {
     ...moveAction,

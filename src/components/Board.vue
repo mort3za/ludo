@@ -315,7 +315,7 @@ export default class BoardComponent extends Vue {
     const moveAction = createMoveAction({
       player: this.activePlayer,
       marble,
-      diceResult: this.diceInfo.value
+      diceInfo: this.diceInfo
     });
 
     beforeMoveActions(moveAction, this.activePlayer);

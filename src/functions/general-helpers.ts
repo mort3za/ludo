@@ -1,4 +1,13 @@
-import { PositionInBoard, Marble, StepPlace, Player, MoveAction, MoveType, StepType } from "@/types/types";
+import {
+  PositionInBoard,
+  Marble,
+  StepPlace,
+  Player,
+  MoveAction,
+  MoveType,
+  StepType,
+  DiceInfo
+} from "@/types/types";
 import { getPositionAfterMove } from "@/functions/path-helpers.ts";
 import store from "@/store/index";
 
@@ -42,11 +51,11 @@ export function getMoveActionType(marble: Marble): MoveType {
 export function createMoveAction({
   player,
   marble,
-  diceResult
+  diceInfo
 }: {
   player: Player;
   marble: Marble;
-  diceResult: number;
+  diceInfo: DiceInfo;
 }): MoveAction {
   const type = getMoveActionType(marble);
   const from = getPositionOfMarble(marble);
@@ -60,7 +69,7 @@ export function createMoveAction({
   } else {
     to = getPositionAfterMove({
       from,
-      amount: diceResult,
+      amount: diceInfo.value,
       player
     });
   }
@@ -98,10 +107,8 @@ export function isPositionAtFinal(position: PositionInBoard) {
 export async function updateMarbleIsAtEnd(marble: Marble, player: Player) {
   const isAtEnd = isPositionAtEnd(getPositionOfMarble(marble), player);
   await store.dispatch("marbles/update", {
-    value: {
-      ...marble,
-      isAtEnd
-    }
+    ...marble,
+    isAtEnd
   });
 }
 
@@ -136,12 +143,11 @@ export function getKickoutList(player: Player, targetPosition: PositionInBoard):
 
 export async function kickoutOtherMarbles(marble: Marble, player: Player) {
   const kickoutList = getKickoutList(player, getPositionOfMarble(marble));
-
   for (const m1 of kickoutList) {
     const marbleInitial = getInitialStateOfMarble(m1);
-    await store.dispatch("marbles/update", {
-      value: marbleInitial
-    });
+    // FIXME: for debugging only:
+    // marbleInitial.row = 1;
+    await store.dispatch("marbles/update", marbleInitial);
   }
 }
 
