@@ -98,8 +98,10 @@ export function isPositionAtFinal(position: PositionInBoard) {
 export async function updateMarbleIsAtEnd(marble: Marble, player: Player) {
   const isAtEnd = isPositionAtEnd(getPositionOfMarble(marble), player);
   await store.dispatch("marbles/update", {
-    ...marble,
-    isAtEnd
+    value: {
+      ...marble,
+      isAtEnd
+    }
   });
 }
 
@@ -137,7 +139,9 @@ export async function kickoutOtherMarbles(marble: Marble, player: Player) {
 
   for (const m1 of kickoutList) {
     const marbleInitial = getInitialStateOfMarble(m1);
-    await store.dispatch("marbles/update", marbleInitial);
+    await store.dispatch("marbles/update", {
+      value: marbleInitial
+    });
   }
 }
 
@@ -147,5 +151,8 @@ export function getInitialStateOfMarble(marble: Marble): Marble {
 }
 
 export function boardWidthUpdater({ boardElement }: { boardElement: HTMLDivElement }) {
-  store.dispatch("updateBoardWidth", boardElement.clientWidth);
+  store.dispatch("board/update", {
+    key: "boardWidth",
+    value: boardElement.clientWidth
+  });
 }

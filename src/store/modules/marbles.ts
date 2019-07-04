@@ -15,7 +15,7 @@ export default {
     listInitial
   },
   mutations: {
-    update(state: any, marble: Marble) {
+    update: (state: any, marble: Marble) => {
       const index = state.list.findIndex((m: Marble) => m.id === marble.id);
       Vue.set(state.list, index, marble);
     },
@@ -86,7 +86,8 @@ export default {
     },
     isAllAtFinal: (state: any, getters: any) => (player: Player) => {
       const playerMarbles = getters.listByPlayer(player);
-      return playerMarbles.every((m: Marble) => m.isAtFinal);
+      const hasAnyInGameMarbles = playerMarbles.length;
+      return hasAnyInGameMarbles && playerMarbles.every((m: Marble) => m.isAtFinal);
     }
   }
 };

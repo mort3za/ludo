@@ -21,7 +21,7 @@ export default class MarbleComponent extends Vue {
   public model!: Marble;
 
   get boardWidth(): number {
-    return store.getters["boardWidth"];
+    return store.getters["board/boardWidth"];
   }
 
   getWrapperStyle() {

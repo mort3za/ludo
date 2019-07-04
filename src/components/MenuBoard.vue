@@ -64,7 +64,7 @@ export default class BoardComponent extends Vue {
   public winnerPlayer!: Player;
 
   get boardStatus(): BoardStatus {
-    return store.getters["boardStatus"];
+    return store.getters["board/boardStatus"];
   }
   get gameStatus(): GameStatus {
     return store.getters["gameStatus"];

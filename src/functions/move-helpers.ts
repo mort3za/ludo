@@ -1,16 +1,15 @@
 // tslint:disable: no-implicit-dependencies
 import store from "@/store/index";
-import { analyzeResult } from "@/functions/dice-helpers.ts";
 import {
   MoveAction,
-  DiceAnalization,
   Player,
   Marble,
   PositionInBoard,
   MoveType,
   StepPlace,
   BoardStatus,
-  StepType
+  StepType,
+  DiceInfo
 } from "@/types/types";
 import { getDistance, getPositionAfterMove, getStepsOfMoveAction } from "@/functions/path-helpers.ts";
 import {
@@ -28,22 +27,22 @@ import {
 } from "@/functions/general-helpers.ts";
 import { MARBLE_ANIMATION_DURATION, SLEEP_BETWEEN_MOVES, PATH_STEPS_COUNT } from "@/constants.ts";
 import { cloneDeep, maxBy } from "lodash-es";
+import { setDiceAsDone } from "./dice-helpers";
 
 /**
  * Find all available moves
  */
 export function getAvailableActions({
   player,
-  diceResult
+  diceInfo
 }: {
   player: Player;
-  diceResult: number;
+  diceInfo: DiceInfo;
 }): MoveAction[] {
   const availableActions: MoveAction[] = [];
-  const diceAnalization = analyzeResult(diceResult);
 
-  availableActions.push(..._getBenchActions(diceAnalization, player));
-  availableActions.push(..._getInGameActions(diceAnalization, player));
+  availableActions.push(..._getBenchActions(diceInfo, player));
+  availableActions.push(..._getInGameActions(diceInfo, player));
 
   return availableActions;
 }
@@ -127,7 +126,7 @@ export function chooseAction(actions: MoveAction[], player: Player): MoveAction 
   return maxBy(upgradedActions, "quality");
 }
 
-function _getBenchActions(diceAnalization: DiceAnalization, player: Player): MoveAction[] {
+function _getBenchActions(diceInfo: DiceInfo, player: Player): MoveAction[] {
   const availableActions: MoveAction[] = [];
   const playerMarblesInBench = store.getters["marbles/listInBenchByPlayer"](player);
   const hasAnyBenchMarbles = playerMarblesInBench.length > 0;
@@ -135,7 +134,7 @@ function _getBenchActions(diceAnalization: DiceAnalization, player: Player): Mov
   if (!hasAnyBenchMarbles) {
     return availableActions;
   }
-  if (diceAnalization.canMoveBench) {
+  if (diceInfo.canMoveBench) {
     const sideStartpointStep = store.getters["steps/sideStartpoint"](player);
     playerMarblesInBench.forEach((marble: Marble) => {
       const action: MoveAction = {
@@ -150,7 +149,7 @@ function _getBenchActions(diceAnalization: DiceAnalization, player: Player): Mov
   return availableActions;
 }
 
-function _getInGameActions(diceAnalization: DiceAnalization, player: Player): MoveAction[] {
+function _getInGameActions(diceInfo: DiceInfo, player: Player): MoveAction[] {
   const availableActions: MoveAction[] = [];
   const playerMarblesInGame = store.getters["marbles/listInGameByPlayer"](player);
 
@@ -161,12 +160,12 @@ function _getInGameActions(diceAnalization: DiceAnalization, player: Player): Mo
     const distance: number = getDistance(marblePosition, finalStepPosition, player);
     // console.log("distance", distance);
 
-    if (diceAnalization.value <= distance) {
+    if (diceInfo.value <= distance) {
       const action: MoveAction = {
         from: marblePosition,
         to: getPositionAfterMove({
           from: marblePosition,
-          amount: diceAnalization.value,
+          amount: diceInfo.value,
           player
         }),
         type: MoveType.IN_GAME,
@@ -218,7 +217,9 @@ export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction
       await wait(SLEEP_BETWEEN_MOVES);
     }
   }
-  await store.dispatch("marbles/update", finalMarble);
+  await store.dispatch("marbles/update", {
+    value: finalMarble
+  });
 
   const updatedMoveAction = {
     ...moveAction,
@@ -242,15 +243,27 @@ export async function goToHeaven(marbleId: number) {
 
 export async function beforeMoveActions(moveAction: MoveAction, player: Player) {
   await store.dispatch("marbles/unsetMoveableAll");
-  store.dispatch("updateBoardStatus", BoardStatus.MOVING_MARBLES);
+  store.dispatch("board/update", {
+    key: "boardStatus",
+    value: BoardStatus.MOVING_MARBLES
+  });
+}
+
+function _saveGame(reason: string) {
+  store.dispatch("saveGame");
+  // console.log("save game...", reason);
+}
+
+export async function afterFinishTurn() {
+  await setDiceAsDone();
+  _saveGame("turn finished");
+  await wait(MARBLE_ANIMATION_DURATION);
 }
 
 export async function afterMoveActions(moveAction: MoveAction, player: Player) {
-  // TODO: check isGameOver
   await updateMarbleIsAtEnd(moveAction.marble, player);
   await updateMarbleIsAtFinal(moveAction.marble);
   await goToHeaven(moveAction.marble.id);
   await performOnGameOverActions(player);
   await kickoutOtherMarbles(moveAction.marble, player);
-  await wait(MARBLE_ANIMATION_DURATION);
 }

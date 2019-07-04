@@ -38,10 +38,9 @@ import { STEP_WIDTH, STEP_GUTTER } from "../constants";
   }
 })
 export default class RoadComponent extends Vue {
-
-  @Prop({ type: Object as () => () => Player, required: false })
-  public activePlayer!: Player;
-
+  get activePlayer(): Player {
+    return store.getters["players/active"];
+  }
   get steps(): StepPlace[] {
     return store.getters["steps/allSteps"];
   }

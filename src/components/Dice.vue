@@ -1,6 +1,11 @@
 <template>
   <div>
-    <div v-if="shouldShowResult()" class="dice" :class="`dice-${diceResult}`" :style="getDiceStyle()"></div>
+    <div
+      v-if="shouldShowResult()"
+      class="dice"
+      :class="`dice-${diceInfo.value}`"
+      :style="getDiceStyle()"
+    ></div>
     <a
       :style="getTurnButtonStyle()"
       v-if="boardStatus === BoardStatus.WAITING_TURN_DICE"
@@ -11,10 +16,9 @@
   </div>
 </template>
 
-
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { GameStatus, BoardStatus } from "@/types/types";
+import { GameStatus, BoardStatus, Player, DiceInfo } from "@/types/types";
 import { STEP_WIDTH, STEP_GUTTER } from "@/constants.ts";
 import store from "@/store/index.ts";
 
@@ -22,20 +26,22 @@ import store from "@/store/index.ts";
 export default class Dice extends Vue {
   BoardStatus = BoardStatus;
 
-  @Prop({ type: Number })
-  public diceResult!: number;
+  @Prop({ type: Object as () => DiceInfo })
+  public diceInfo!: DiceInfo;
 
-  @Prop({
-    type: Number as () => BoardStatus,
-    default: BoardStatus.INITIALIZING
-  })
-  public boardStatus!: number;
+  get side(): number {
+    return this.activePlayer.side;
+  }
 
-  @Prop({ type: Number })
-  public side!: number;
-
+  get activePlayer(): Player {
+    return store.getters["players/active"];
+  }
   get boardWidth(): number {
-    return store.getters["boardWidth"];
+    return store.getters["board/boardWidth"];
+  }
+
+  get boardStatus(): number {
+    return store.getters["board/boardStatus"];
   }
 
   onClickTurn() {
@@ -72,7 +78,7 @@ export default class Dice extends Vue {
         `;
     return result;
   }
-  
+
   getTurnButtonStyle() {
     let result: any = {};
     const moveUnit = STEP_WIDTH + STEP_GUTTER;

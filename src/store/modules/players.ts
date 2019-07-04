@@ -51,7 +51,8 @@ export default {
       return state.list.filter((p: Player) => p.isInGame);
     },
     active(state: any) {
-      return state.list.find((p: Player) => p.isActive);
+      const activePlayer = state.list.find((p: Player) => p.isActive);
+      return activePlayer || {};
     }
   }
 };

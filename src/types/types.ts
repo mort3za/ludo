@@ -36,15 +36,17 @@ export enum StepType {
   ENDPOINT = 3,
   BENCH_DONE = 4,
   SAFEZONE = 5,
-  FINAL = 6,
+  FINAL = 6
 }
 
 export type StepPlace = [Row, Column, Side, StepType[]];
 
-export interface DiceAnalization {
+export interface DiceInfo {
   value: number;
-  canMoveBench: boolean;
-  hasReward: boolean;
+  canMoveBench?: boolean;
+  hasReward?: boolean;
+  isDone: boolean;
+  player: Player;
 }
 
 export interface Marble {

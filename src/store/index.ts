@@ -1,71 +1,64 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import VuexPersistence from "vuex-persist";
 import steps from "@/store/modules/steps.ts";
 import players from "@/store/modules/players.ts";
 import marbles from "@/store/modules/marbles.ts";
 import settings from "@/store/modules/settings.ts";
-import { GameStatus, BoardStatus } from "@/types/types.ts";
+import board from "@/store/modules/board.ts";
+import { GameStatus } from "@/types/types.ts";
 
 Vue.use(Vuex);
+const persistMutations: string[] = ["saveGame"];
+
+const vuexLocal = new VuexPersistence({
+  storage: window.sessionStorage,
+  key: "store",
+  filter: mutation => persistMutations.indexOf(mutation.type) >= 0
+});
 
 const store = new Vuex.Store({
+  plugins: [vuexLocal.plugin],
   state: {
     appVersion: JSON.parse(unescape(process.env.APP_VERSION)),
-    diceResult: null,
     gameStatus: GameStatus.NOT_STARTED,
-    boardStatus: BoardStatus.INITIALIZING,
-    boardWidth: null
+    lastSavedAt: null
   },
   mutations: {
-    updateDice(state, diceResult) {
-      state.diceResult = diceResult;
+    update(state: any, { key, value }: { key: string; value: any }) {
+      Vue.set(state, key, value);
     },
-    updateGameStatus(state, status: GameStatus) {
+    updateGameStatus(state: any, status: GameStatus) {
       state.gameStatus = status;
     },
-    updateBoardStatus(state, status: BoardStatus) {
-      state.boardStatus = status;
-    },
-    updateBoardWidth(state, boardWidth) {
-      state.boardWidth = boardWidth;
+    // NOTE: will save store data when calling this commit
+    saveGame(state: any) {
+      const now = new Date().getTime();
+      state.lastSavedAt = now;
     }
   },
   actions: {
-    updateDice({ commit }: { commit: any }, diceResult) {
-      commit("updateDice", diceResult);
-    },
     updateGameStatus({ commit }: { commit: any }, status: GameStatus) {
       commit("updateGameStatus", status);
     },
-    updateBoardStatus({ commit }: { commit: any }, status: BoardStatus) {
-      commit("updateBoardStatus", status);
-    },
-    updateBoardWidth({ commit }: { commit: any }, width: number) {
-      commit("updateBoardWidth", width);
+    saveGame({ commit }: any) {
+      commit("saveGame");
     }
   },
   getters: {
-    diceResult(state) {
-      return state.diceResult;
-    },
-    boardStatus(state) {
-      return state.boardStatus;
-    },
     gameStatus(state) {
       return state.gameStatus;
     },
-    boardWidth(state) {
-      return state.boardWidth;
-    },
     appVersion(state) {
-      return state.appVersion
+      return state.appVersion;
     }
   },
   modules: {
     steps,
     players,
     marbles,
-    settings
+    settings,
+    board
   }
 });
 
