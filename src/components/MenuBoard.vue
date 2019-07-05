@@ -1,10 +1,10 @@
 <template>
-  <nav class="wrapper h-100" :class="{'game-over': winnerPlayer}">
+  <nav class="wrapper h-100" :class="{'game-over': playerWinner}">
     <ul class="nav d-flex flex-column justify-content-center align-items-center h-100">
       <li>
-        <p v-if="winnerPlayer" class="message h3 text-dark mb-4">
-          <span class="font-weight-bold">{{winnerPlayer.name}}</span>
-          <span> Won the Game!</span>
+        <p v-if="playerWinner" class="message h3 text-dark mb-4">
+          <span class="font-weight-bold mr-2">{{playerWinner.name}}</span>
+          <span>Won the Game!</span>
         </p>
       </li>
       <li class="w-75">
@@ -54,14 +54,16 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 import store from "@/store/index.ts";
 import { GameStatus, BoardStatus, Player } from "@/types/types.ts";
+import { quitGame, pauseGame } from "@/functions/board-helpers";
 
 @Component
 export default class BoardComponent extends Vue {
   BoardStatus = BoardStatus;
   GameStatus = GameStatus;
 
-  @Prop({ type: Object as () => () => Player, required: false })
-  public winnerPlayer!: Player;
+  get playerWinner(): Player {
+    return store.getters["board/playerWinner"];
+  }
 
   get boardStatus(): BoardStatus {
     return store.getters["board/boardStatus"];
@@ -74,25 +76,13 @@ export default class BoardComponent extends Vue {
     this.$emit("start_game");
   }
   onClickPause() {
-    this.pauseGame();
+    pauseGame();
   }
-  onClickResume() {
-    this.resumeGame();
-  }
-  onClickQuit() {
-    this.quitGame();
-  }
-
-  async pauseGame() {
-    await store.dispatch("updateGameStatus", GameStatus.PAUSED);
-  }
-  async resumeGame() {
-    await store.dispatch("updateGameStatus", GameStatus.PLAYING);
+  async onClickResume() {
     this.$emit("resume_game");
   }
-  async quitGame() {
-    await store.dispatch("updateGameStatus", GameStatus.NOT_STARTED);
-    this.$emit("quit_game");
+  onClickQuit() {
+    quitGame();
   }
 }
 </script>

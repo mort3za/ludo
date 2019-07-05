@@ -1,14 +1,14 @@
 <template>
   <div>
     <div
-      v-if="shouldShowResult()"
+      v-if="shouldShowResult"
       class="dice"
       :class="`dice-${diceInfo.value}`"
       :style="getDiceStyle()"
     ></div>
     <a
       :style="getTurnButtonStyle()"
-      v-if="boardStatus === BoardStatus.WAITING_TURN_DICE"
+      v-if="shouldShowWaitingDice"
       @click.prevent="onClickTurn()"
       class="turn-button"
       role="button"
@@ -26,16 +26,21 @@ import store from "@/store/index.ts";
 export default class Dice extends Vue {
   BoardStatus = BoardStatus;
 
-  @Prop({ type: Object as () => DiceInfo })
-  public diceInfo!: DiceInfo;
-
   get side(): number {
-    return this.activePlayer.side;
+    if (!this.playerActive) {
+      return 0;
+    }
+    return this.playerActive.side;
   }
 
-  get activePlayer(): Player {
-    return store.getters["players/active"];
+  get playerActive(): Player {
+    return store.getters["board/playerActive"];
   }
+
+  get diceInfo(): DiceInfo {
+    return store.getters["board/diceInfo"];
+  }
+
   get boardWidth(): number {
     return store.getters["board/boardWidth"];
   }
@@ -44,14 +49,25 @@ export default class Dice extends Vue {
     return store.getters["board/boardStatus"];
   }
 
-  onClickTurn() {
-    this.$emit("turn_dice");
+  get shouldShowWaitingDice() {
+    return (
+      [BoardStatus.WAITING_TURN_DICE].includes(this.boardStatus) &&
+      this.playerActive.isMain
+    );
   }
 
-  shouldShowResult() {
-    return [BoardStatus.TURNING_DICE, BoardStatus.PLAYER_IS_THINKING].includes(
-      this.boardStatus
-    );
+  get shouldShowResult() {
+    const result = [
+      BoardStatus.TURNING_DICE,
+      BoardStatus.PLAYER_IS_THINKING,
+      BoardStatus.MOVING_MARBLES
+    ].includes(this.boardStatus);
+
+    return result;
+  }
+
+  onClickTurn() {
+    this.$emit("turn_dice");
   }
 
   getDiceStyle() {

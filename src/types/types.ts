@@ -10,7 +10,7 @@ export interface Player {
   name: string;
   isInGame: boolean;
   isAI: boolean;
-  isActive: boolean;
+  isMain: boolean;
 }
 
 export interface MoveAction {
@@ -81,10 +81,10 @@ export enum GameStatus {
 
 export enum BoardStatus {
   INITIALIZING = 0,
-  TURNING_DICE = 1,
-  MOVING_MARBLES = 2,
+  WAITING_TURN_DICE = 1,
+  TURNING_DICE = 2,
   PLAYER_IS_THINKING = 3,
-  PAUSED = 4,
-  FINISHED = 5,
-  WAITING_TURN_DICE = 6
+  MOVING_MARBLES = 4,
+  PAUSED = 5,
+  FINISHED = 6,
 }

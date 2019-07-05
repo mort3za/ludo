@@ -7,13 +7,14 @@ import marbles from "@/store/modules/marbles.ts";
 import settings from "@/store/modules/settings.ts";
 import board from "@/store/modules/board.ts";
 import { GameStatus } from "@/types/types.ts";
+import { STORAGE_KEY } from '@/constants';
 
 Vue.use(Vuex);
 const persistMutations: string[] = ["saveGame"];
 
 const vuexLocal = new VuexPersistence({
   storage: window.sessionStorage,
-  key: "store",
+  key: STORAGE_KEY,
   filter: mutation => persistMutations.indexOf(mutation.type) >= 0
 });
 

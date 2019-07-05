@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { StepType } from "../types/types";
+import { StepType } from "@/types/types";
 
 @Component
 export default class StepComponent extends Vue {

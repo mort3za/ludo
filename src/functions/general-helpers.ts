@@ -156,10 +156,3 @@ export function getInitialStateOfMarble(marble: Marble): Marble {
   const marblesListInitial = store.getters["marbles/listInitial"];
   return marblesListInitial.find((m: Marble) => marble.id === m.id);
 }
-
-export function boardWidthUpdater({ boardElement }: { boardElement: HTMLDivElement }) {
-  store.dispatch("board/update", {
-    key: "boardWidth",
-    value: boardElement.clientWidth
-  });
-}

@@ -50,9 +50,8 @@ export default {
     listInGame(state: any) {
       return state.list.filter((p: Player) => p.isInGame);
     },
-    active(state: any) {
-      const activePlayer = state.list.find((p: Player) => p.isActive);
-      return activePlayer || {};
+    indexInListById: (state: any) => (playerId: number) => {
+      return state.list.findIndex((p: Player) => p.id === playerId);
     }
   }
 };

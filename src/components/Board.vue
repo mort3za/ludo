@@ -22,15 +22,13 @@
             <div ref="boardInner" class="board-inner">
               <Road class="road" />
               <Marbles v-on:clickmarble="onClickMarble" class="marbles" />
-              <Dice @turn_dice="turnDice()" :board-status="boardStatus" :dice-info="diceInfo" />
+              <Dice @turn_dice="_turnDice()" />
             </div>
           </section>
           <MenuBoard
             v-show="shouldShowMenu"
-            @start_game="startGame()"
+            @start_game="_startGame()"
             @resume_game="resumeGame()"
-            @quit_game="quitGame()"
-            :winner-player="winnerPlayer"
           />
         </div>
       </div>
@@ -63,15 +61,21 @@ import {
   GameStatus,
   DiceInfo
 } from "@/types/types";
+import { createMoveAction, wait } from "@/functions/general-helpers.ts";
 import {
-  createMoveAction,
-  wait,
-  boardWidthUpdater
-} from "@/functions/general-helpers.ts";
-import { createDiceInfo, getRandom } from "@/functions/dice-helpers.ts";
+  createDiceInfo,
+  getRandom,
+  turnDice
+} from "@/functions/dice-helpers.ts";
 import { SLEEP_BETWEEN_TURNS, SLEEP_AFTER_TURN_DICE } from "@/constants.ts";
 import { debounce } from "lodash-es";
-import router from "@/router.ts";
+import {
+  setShowMenu,
+  startGame,
+  finishGame,
+  changeTurn,
+  boardWidthUpdater
+} from "@/functions/board-helpers";
 
 @Component({
   components: {
@@ -83,7 +87,6 @@ import router from "@/router.ts";
 })
 export default class BoardComponent extends Vue {
   boardWidthUpdaterDebounced = debounce(this.boardWidthUpdater, 150);
-  winnerPlayer: Player | null = null;
 
   mounted() {
     this.init();
@@ -92,6 +95,31 @@ export default class BoardComponent extends Vue {
   destroyed() {
     this.removeResizeListener();
     store.dispatch("updateGameStatus", GameStatus.NOT_STARTED);
+  }
+
+  get shouldShowMenu(): boolean {
+    return store.getters["board/shouldShowMenu"];
+  }
+  get playerActive(): Player {
+    return store.getters["board/playerActive"];
+  }
+  get playerWinner(): Player {
+    return store.getters["board/playerWinner"];
+  }
+  get diceInfo(): DiceInfo {
+    return store.getters["board/diceInfo"];
+  }
+  get isGameOver(): boolean {
+    if (!this.playerActive) {
+      return false;
+    }
+    return store.getters["marbles/isAllAtFinal"](this.playerActive);
+  }
+  get gameStatus(): GameStatus {
+    return store.getters["gameStatus"];
+  }
+  get isPreviousMoveCompleted(): boolean {
+    return this.diceInfo.isDone;
   }
 
   init() {
@@ -106,70 +134,6 @@ export default class BoardComponent extends Vue {
     }
   }
 
-  get shouldShowMenu(): boolean {
-    return store.getters["board/shouldShowMenu"];
-  }
-  get playersInGame(): Player[] {
-    return store.getters["players/listInGame"];
-  }
-  get allPlayers(): Player[] {
-    return store.getters["players/list"];
-  }
-  get activePlayer(): Player {
-    return store.getters["players/active"];
-  }
-  get diceInfo(): DiceInfo {
-    return store.getters["board/diceInfo"];
-  }
-  get isGameOver(): boolean {
-    return store.getters["marbles/isAllAtFinal"](this.activePlayer);
-  }
-  get boardStatus(): BoardStatus {
-    return store.getters["board/boardStatus"];
-  }
-  get gameStatus(): GameStatus {
-    return store.getters["gameStatus"];
-  }
-
-  setShowMenu(shouldShowMenu: boolean): void {
-    store.dispatch("board/update", {
-      key: "shouldShowMenu",
-      value: shouldShowMenu
-    });
-  }
-
-  async startGame() {
-    await this.resetGame();
-    await this.addPlayers();
-    await this.setActivePlayer(this.getRandomPlayer());
-    await store.dispatch("updateGameStatus", GameStatus.PLAYING);
-    this.setShowMenu(false);
-    this.playTurn();
-  }
-  finishGame() {
-    store.dispatch("board/update", {
-      key: "boardStatus",
-      value: BoardStatus.FINISHED
-    });
-    store.dispatch("updateGameStatus", GameStatus.GAME_OVER);
-    this.winnerPlayer = this.activePlayer;
-    this.setShowMenu(true);
-    this.saveGame("game finished");
-  }
-  async menuToggle() {
-    this.setShowMenu(!this.shouldShowMenu);
-  }
-  async resumeGame() {
-    this.setShowMenu(false);
-    this.$emit("__resume_game");
-  }
-  saveGame(reason: string) {
-    store.dispatch("saveGame");
-  }
-  async quitGame() {
-    this.cleanupBoard();
-    router.push({ name: "home" });
-  }
   resumePromise() {
     return new Promise((resolve, reject) => {
       if (this.gameStatus === GameStatus.PLAYING) {
@@ -181,95 +145,52 @@ export default class BoardComponent extends Vue {
       }
     });
   }
-  async cleanupBoard() {
-    await store.dispatch("marbles/remove");
-    await store.dispatch("players/remove");
-    await store.dispatch("board/reset");
-  }
-  async resetGame() {
-    this.winnerPlayer = null;
-    await store.dispatch("marbles/reset");
-    await store.dispatch("players/remove");
-    await store.dispatch("board/reset");
-  }
-  async addPlayers() {
-    await store.dispatch("players/add", {
-      isAI: false,
-      name: "You",
-      color: "red",
-      isActive: false,
-      isInGame: true
-    });
-    await store.dispatch("players/add", {
-      isAI: true,
-      color: "green",
-      isActive: false,
-      isInGame: true
-    });
-    await store.dispatch("players/add", {
-      isAI: true,
-      color: "blue",
-      isActive: false,
-      isInGame: true
-    });
-    await store.dispatch("players/add", {
-      isAI: true,
-      color: "yellow",
-      isActive: false,
-      isInGame: true
-    });
-  }
-  changeTurn(): void {
-    const currentActivePlayerIndex = this.allPlayers.findIndex(
-      (p: Player) => p.id === this.activePlayer.id
-    );
-    const currentActivePlayer = this.allPlayers[currentActivePlayerIndex];
-    const newActivePlayerIndex =
-      (currentActivePlayerIndex + 1) % this.allPlayers.length;
-    const newActivePlayer = this.allPlayers[newActivePlayerIndex];
 
-    store.dispatch("players/update", {
-      ...currentActivePlayer,
-      isActive: false
-    });
-    store.dispatch("players/update", { ...newActivePlayer, isActive: true });
+  async resumeGame() {
+    await store.dispatch("updateGameStatus", GameStatus.PLAYING);
+    setShowMenu(false);
+    this.$emit("__resume_game");
+  }
+
+  async _startGame() {
+    await startGame();
+    this.playTurn();
   }
 
   shouldChangeTurn(): boolean {
-    if (!this.isPreviousMoveCompleted()) {
+    if (!this.diceInfo.value) {
+      return true;
+    }
+    if (this.isPreviousMoveCompleted === false) {
       return false;
     }
-    if (this.isPreviousMoveCompleted() && this.diceInfo.hasReward) {
+
+    if (this.diceInfo.hasReward) {
       return false;
     }
     return true;
   }
 
-  getRandomPlayer(): Player {
-    const random = Math.ceil(getRandom() * this.allPlayers.length);
-    return this.allPlayers[random - 1];
-  }
-
-  async setActivePlayer(player: Player) {
-    await store.dispatch("players/update", { ...player, isActive: true });
+  menuToggle() {
+    setShowMenu(!this.shouldShowMenu);
   }
 
   async playTurn() {
-    // console.log("-------------------------------------------------- play turn");
+    // console.log("------------------------------------ play turn");
     if (this.isGameOver) {
-      this.finishGame();
+      finishGame();
       return;
     }
     await this.resumePromise();
     if (this.shouldChangeTurn()) {
-      this.changeTurn();
+      changeTurn();
     }
     await this.turnDicePromise();
 
     // TODO: remove if is unnecessary
     await this.sleepBetweenTurns();
 
-    let performActionsOfPlayer = this.activePlayer.isAI
+    let performActionsOfPlayer = this.playerActive.isAI
       ? this.performActionsOfPlayerAI
       : this.performActionsOfPlayerNoAI;
     await performActionsOfPlayer();
@@ -288,7 +209,7 @@ export default class BoardComponent extends Vue {
       this.playTurn();
     } else if (this.shouldAutoMove(availableActions)) {
       // console.log("auto move");
-      await this.autoMove(availableActions, this.activePlayer);
+      await this.autoMove(availableActions, this.playerActive);
       await afterFinishTurn();
       this.playTurn();
     }
@@ -299,11 +220,11 @@ export default class BoardComponent extends Vue {
 
     // console.log("Human move (wait or skip)");
     if (availableActions.length > 0) {
+      this.setMoveableMarbles(availableActions);
       store.dispatch("board/update", {
         key: "boardStatus",
         value: BoardStatus.PLAYER_IS_THINKING
       });
-      this.setMoveableMarbles(availableActions);
     } else {
       await afterFinishTurn();
       this.playTurn();
@@ -311,16 +232,16 @@ export default class BoardComponent extends Vue {
   }
 
   async onClickMarble(marble: Marble) {
-    if (!canMove(marble, this.activePlayer)) return;
+    if (!canMove(marble, this.playerActive)) return;
     const moveAction = createMoveAction({
-      player: this.activePlayer,
+      player: this.playerActive,
       marble,
       diceInfo: this.diceInfo
     });
 
-    beforeMoveActions(moveAction, this.activePlayer);
+    beforeMoveActions(moveAction, this.playerActive);
     const updatedMoveAction = await this.move(moveAction);
-    await afterMoveActions(updatedMoveAction, this.activePlayer);
+    await afterMoveActions(updatedMoveAction, this.playerActive);
     await afterFinishTurn();
     this.playTurn();
   }
@@ -332,15 +253,15 @@ export default class BoardComponent extends Vue {
 
   shouldAutoMove(availableActions: MoveAction[]): boolean {
     return (
-      this.activePlayer.isAI || !hasMultipleAvailableActions(availableActions)
+      this.playerActive.isAI || !hasMultipleAvailableActions(availableActions)
     );
   }
 
   async autoMove(availableActions: MoveAction[], player: Player) {
     const moveAction = chooseAction(availableActions, player);
-    beforeMoveActions(moveAction, this.activePlayer);
+    beforeMoveActions(moveAction, this.playerActive);
     const updatedMoveAction = await this.move(moveAction);
-    await afterMoveActions(updatedMoveAction, this.activePlayer);
+    await afterMoveActions(updatedMoveAction, this.playerActive);
   }
 
   async move(moveAction: MoveAction): Promise<MoveAction> {
@@ -351,56 +272,36 @@ export default class BoardComponent extends Vue {
 
   getAvailableActions(): MoveAction[] {
     return getAvailableActions({
-      player: this.activePlayer,
+      player: this.playerActive,
       diceInfo: this.diceInfo
     });
   }
 
-  turnDicePromise() {
-    return new Promise((resolve, reject) => {
-      if (!this.isPreviousMoveCompleted()) {
-        // don't turn
-        resolve();
-        return;
-      }
+  async turnDicePromise() {
+    // don't turn (after refresh when game is running)
+    if (this.isPreviousMoveCompleted === false) {
+      console.log("dont turn");
+      return Promise.resolve();
+    }
 
-      if (this.activePlayer.isAI) {
-        this.turnDice();
-        resolve();
-      } else {
-        store.dispatch("board/update", {
-          key: "boardStatus",
-          value: BoardStatus.WAITING_TURN_DICE
-        });
-
-        this.$once("__turn_dice", () => {
-          resolve();
-        });
-      }
-    });
-  }
-
-  isPreviousMoveCompleted() {
-    return this.diceInfo.isDone;
-  }
-
-  async turnDice() {
+    // waiting
     store.dispatch("board/update", {
       key: "boardStatus",
-      value: BoardStatus.TURNING_DICE,
-      side: this.activePlayer.side
+      value: BoardStatus.WAITING_TURN_DICE
     });
-    const result = Math.ceil(getRandom() * 6);
-    await store.dispatch("board/update", {
-      key: "diceInfo",
-      value: createDiceInfo({
-        value: result,
-        isDone: false,
-        player: this.activePlayer
-      })
+
+    // AI: auto turn
+    if (this.playerActive.isAI) {
+      return await this._turnDice();
+    }
+    // noAI: click on dice:
+    return new Promise(resolve => {
+      this.$once("__turn_dice", resolve);
     });
-    this.saveGame("turned dice");
-    // console.log("dice:", result, "player:", this.activePlayer.id);
+  }
+
+  async _turnDice() {
+    await turnDice(this.playerActive);
     this.$emit("__turn_dice");
     await wait(SLEEP_AFTER_TURN_DICE);
   }

@@ -21,7 +21,6 @@ export default {
     },
     setList(state: any, list: Marble[]) {
       Vue.set(state, "list", list);
-      state.list = list;
     },
     setItemMoveable(state: any, marble: Marble) {
       const targetMarble = state.list.find((m: Marble) => m.id === marble.id);
@@ -29,7 +28,7 @@ export default {
     }
   },
   actions: {
-    update({ commit }: { commit: any }, marble: Marble) {
+    update({ commit }: any, marble: Marble) {
       commit("update", marble);
     },
     updateSomeProps({ commit, state }: any, { marble, props }: { marble: Marble; props: object }) {
@@ -37,13 +36,13 @@ export default {
       const updatedMarble = { ...state.list[index], ...props };
       commit("update", updatedMarble);
     },
-    reset({ commit }: { commit: any }) {
+    reset({ commit }: any) {
       commit("setList", [...listInitial]);
     },
-    remove({ commit }: { commit: any }) {
+    remove({ commit }: any) {
       commit("setList", []);
     },
-    setMoveableItems({ commit }: { commit: any }, marbles: Marble[] = []) {
+    setMoveableItems({ commit }: any, marbles: Marble[] = []) {
       marbles.forEach((m: Marble) => commit("update", { ...m, isMoveable: true }));
     },
     unsetMoveableAll({ commit, getters }: { commit: any; getters: any }) {

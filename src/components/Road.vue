@@ -17,7 +17,7 @@
         <p
           v-for="player in players"
           :key="`player-name-${player.id}`"
-          :class="[`player-name-${player.side}`, {'is-active font-weight-bold': isActivePlayer(player)}]"
+          :class="[`player-name-${player.side}`, {'is-active font-weight-bold': isPlayerActive(player)}]"
           class="player-name d-block text-truncate text-center mb-2"
         >{{player.name}}</p>
       </div>
@@ -30,7 +30,7 @@ import store from "@/store/index";
 import Step from "@/components/Step.vue";
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { StepPlace, Player, StepPlaceProps } from "@/types/types";
-import { STEP_WIDTH, STEP_GUTTER } from "../constants";
+import { STEP_WIDTH, STEP_GUTTER } from "@/constants.ts";
 
 @Component({
   components: {
@@ -39,8 +39,8 @@ import { STEP_WIDTH, STEP_GUTTER } from "../constants";
 })
 export default class RoadComponent extends Vue {
   StepPlaceProps = StepPlaceProps;
-  get activePlayer(): Player {
-    return store.getters["players/active"];
+  get playerActive(): Player {
+    return store.getters["board/playerActive"];
   }
   get steps(): StepPlace[] {
     return store.getters["steps/allSteps"];
@@ -59,11 +59,11 @@ export default class RoadComponent extends Vue {
     };
   }
 
-  isActivePlayer(player: Player): boolean {
-    if (!this.activePlayer) {
+  isPlayerActive(player: Player): boolean {
+    if (!this.playerActive) {
       return false;
     }
-    return this.activePlayer.id === player.id;
+    return this.playerActive.id === player.id;
   }
 }
 </script>
