@@ -21,6 +21,7 @@ const store = new Vuex.Store({
   plugins: [vuexLocal.plugin],
   state: {
     appVersion: JSON.parse(unescape(process.env.APP_VERSION)),
+    buildDate: JSON.parse(unescape(process.env.BUILD_DATE)),
     gameStatus: GameStatus.NOT_STARTED,
     lastSavedAt: null
   },
@@ -51,6 +52,9 @@ const store = new Vuex.Store({
     },
     appVersion(state) {
       return state.appVersion;
+    },
+    buildDate(state) {
+      return state.buildDate;
     }
   },
   modules: {

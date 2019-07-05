@@ -1,4 +1,4 @@
-const webpack = require('webpack');
+const webpack = require("webpack");
 
 module.exports = {
   lintOnSave: false,
@@ -20,8 +20,9 @@ module.exports = {
   configureWebpack: {
     plugins: [
       new webpack.DefinePlugin({
-        'process.env': {
-          APP_VERSION: '"' + escape(JSON.stringify(require('./package.json').version)) + '"'
+        "process.env": {
+          APP_VERSION: '"' + escape(JSON.stringify(require("./package.json").version)) + '"',
+          BUILD_DATE: new Date().getTime()
         }
       })
     ]
