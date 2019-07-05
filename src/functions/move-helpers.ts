@@ -9,7 +9,8 @@ import {
   StepPlace,
   BoardStatus,
   StepType,
-  DiceInfo
+  DiceInfo,
+  StepPlaceProps
 } from "@/types/types";
 import { getDistance, getPositionAfterMove, getStepsOfMoveAction } from "@/functions/path-helpers.ts";
 import {
@@ -56,10 +57,10 @@ export function getStrategicalAction(action: MoveAction, player: Player): MoveAc
 
   upgradedAction.distanceToFinal = getDistance(action.to, finalStepPosition, player);
   upgradedAction.kickoutList = getKickoutList(player, action.to);
-  upgradedAction.isCurrentPositionSafepoint = getStepPlaceOfPosition(action.from)[3].includes(
+  upgradedAction.isCurrentPositionSafepoint = getStepPlaceOfPosition(action.from)[StepPlaceProps.STEP_TYPE].includes(
     StepType.SAFEZONE
   );
-  upgradedAction.isTargetPositionSafepoint = getStepPlaceOfPosition(action.to)[3].includes(StepType.SAFEZONE);
+  upgradedAction.isTargetPositionSafepoint = getStepPlaceOfPosition(action.to)[StepPlaceProps.STEP_TYPE].includes(StepType.SAFEZONE);
   return upgradedAction;
 }
 
@@ -206,8 +207,8 @@ export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction
     const tempMarble: Marble = {
       ...moveAction.marble,
       isInGame: true,
-      row: step[0],
-      column: step[1],
+      row: step[StepPlaceProps.ROW],
+      column: step[StepPlaceProps.COLUMN],
       isMoving: true,
       isMoveable: false
     };

@@ -15,7 +15,7 @@ Every step is in [row, column, side, step type] format
 */
 
 import Vue from "vue";
-import { StepType, Player, StepPlace, PositionInBoard } from "@/types/types";
+import { StepType, Player, StepPlace, PositionInBoard, StepPlaceProps } from "@/types/types";
 import { listInitial } from "@/store/initials/steps-initial.ts";
 import { isSameStep, getPositionOfStep, isSameStepPlace } from "@/functions/general-helpers";
 
@@ -38,37 +38,52 @@ export default {
     },
     updateSomeProps({ commit, state }: any, { step, setType }: { step: StepPlace; setType: StepType }) {
       const index = state.list.findIndex((s: StepPlace) => isSameStepPlace(s, step));
-      const types = [...state.list[index][3], setType];
+      const types = [...state.list[index][StepPlaceProps.STEP_TYPE], setType];
 
       const updatedStep = [...state.list[index]];
-      updatedStep[3] = types;
+      updatedStep[StepPlaceProps.STEP_TYPE] = types;
       commit("update", updatedStep);
     }
   },
   getters: {
     getStepByPosition: (state: any) => (position: PositionInBoard) => {
-      return state.list.find((step: StepPlace) => step[0] === position.row && step[1] === position.column);
+      return state.list.find(
+        (step: StepPlace) =>
+          step[StepPlaceProps.ROW] === position.row && step[StepPlaceProps.COLUMN] === position.column
+      );
     },
     allBenchs(state: any) {
-      return state.list.filter((step: StepPlace) => step[3].includes(StepType.BENCH));
+      return state.list.filter((step: StepPlace) => step[StepPlaceProps.STEP_TYPE].includes(StepType.BENCH));
     },
     sideBenchs: (state: any) => ({ side }: Player) => {
-      return state.list.filter((step: StepPlace) => step[2] === side && step[3].includes(StepType.BENCH));
+      return state.list.filter(
+        (step: StepPlace) =>
+          step[StepPlaceProps.SIDE] === side && step[StepPlaceProps.STEP_TYPE].includes(StepType.BENCH)
+      );
     },
     sideCommons: (state: any) => ({ side }: Player) => {
-      return state.list.filter((step: StepPlace) => step[2] === side && step[3].includes(StepType.COMMON));
+      return state.list.filter(
+        (step: StepPlace) =>
+          step[StepPlaceProps.SIDE] === side && step[StepPlaceProps.STEP_TYPE].includes(StepType.COMMON)
+      );
     },
     sideEndpoints: (state: any) => ({ side }: Player) => {
-      return state.list.filter((step: StepPlace) => step[2] === side && step[3].includes(StepType.ENDPOINT));
+      return state.list.filter(
+        (step: StepPlace) =>
+          step[StepPlaceProps.SIDE] === side && step[StepPlaceProps.STEP_TYPE].includes(StepType.ENDPOINT)
+      );
     },
     sideStartpoint: (state: any) => ({ side }: Player) => {
-      return state.list.find((step: StepPlace) => step[2] === side && step[3].includes(StepType.STARTPOINT));
+      return state.list.find(
+        (step: StepPlace) =>
+          step[StepPlaceProps.SIDE] === side && step[StepPlaceProps.STEP_TYPE].includes(StepType.STARTPOINT)
+      );
     },
     sideSteps: (state: any, getters: any) => ({ side }: Player) => {
       return [...getters.sideCommons({ side }), ...getters.sideEndpoints({ side })];
     },
     finalStep(state: any) {
-      return state.list.find((step: StepPlace) => step[3].includes(StepType.FINAL));
+      return state.list.find((step: StepPlace) => step[StepPlaceProps.STEP_TYPE].includes(StepType.FINAL));
     },
     allSteps(state: any, getters: any) {
       return [

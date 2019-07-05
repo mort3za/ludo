@@ -40,6 +40,12 @@ export enum StepType {
 }
 
 export type StepPlace = [Row, Column, Side, StepType[]];
+export enum StepPlaceProps {
+  ROW = 0,
+  COLUMN = 1,
+  SIDE = 2,
+  STEP_TYPE = 3
+}
 
 export interface DiceInfo {
   value: number;

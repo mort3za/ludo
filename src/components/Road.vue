@@ -5,12 +5,12 @@
         <Step
           v-for="step in steps"
           :style="getStepStyle(step)"
-          :row="step[0]"
-          :column="step[1]"
-          :side="step[2]"
-          :types="step[3]"
-          :key="`${step[0]}-${step[1]}-${step[2]}`"
-          :class="[`step row-${step[0]} column-${step[1]}`]"
+          :row="step[StepPlaceProps.ROW]"
+          :column="step[StepPlaceProps.COLUMN]"
+          :side="step[StepPlaceProps.SIDE]"
+          :types="step[StepPlaceProps.STEP_TYPE]"
+          :key="`${step[StepPlaceProps.ROW]}-${step[StepPlaceProps.COLUMN]}-${step[StepPlaceProps.SIDE]}`"
+          :class="[`step row-${step[StepPlaceProps.ROW]} column-${step[StepPlaceProps.COLUMN]}`]"
         />
       </div>
       <div>
@@ -29,7 +29,7 @@
 import store from "@/store/index";
 import Step from "@/components/Step.vue";
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { StepPlace, Player } from "@/types/types";
+import { StepPlace, Player, StepPlaceProps } from "@/types/types";
 import { STEP_WIDTH, STEP_GUTTER } from "../constants";
 
 @Component({
@@ -38,6 +38,7 @@ import { STEP_WIDTH, STEP_GUTTER } from "../constants";
   }
 })
 export default class RoadComponent extends Vue {
+  StepPlaceProps = StepPlaceProps;
   get activePlayer(): Player {
     return store.getters["players/active"];
   }
@@ -49,8 +50,8 @@ export default class RoadComponent extends Vue {
   }
 
   getStepStyle(step: StepPlace) {
-    const row = step[0];
-    const column = step[1];
+    const row = step[StepPlaceProps.ROW];
+    const column = step[StepPlaceProps.COLUMN];
 
     return {
       top: `${(row - 1) * (STEP_WIDTH + STEP_GUTTER) + "%"}`,

@@ -1,5 +1,5 @@
 import store from "@/store/index";
-import { StepPlace, PositionInBoard, Player, MoveAction } from "@/types/types";
+import { StepPlace, PositionInBoard, Player, MoveAction, StepPlaceProps } from "@/types/types";
 import { isSameStep, getPositionOfStep } from "@/functions/general-helpers.ts";
 
 export function getDistance(position1: PositionInBoard, position2: PositionInBoard, player: Player): number {
@@ -21,7 +21,7 @@ export function getPositionAfterMove({
 }): PositionInBoard {
   const playerPath = store.getters["steps/allPaths"](player);
   const positionIndex = playerPath.findIndex((step: StepPlace) => {
-    return step[0] === from.row && step[1] === from.column;
+    return step[StepPlaceProps.ROW] === from.row && step[StepPlaceProps.COLUMN] === from.column;
   });
 
   if (playerPath.length >= positionIndex + amount) {

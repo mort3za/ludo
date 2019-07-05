@@ -6,7 +6,8 @@ import {
   MoveAction,
   MoveType,
   StepType,
-  DiceInfo
+  DiceInfo,
+  StepPlaceProps
 } from "@/types/types";
 import { getPositionAfterMove } from "@/functions/path-helpers.ts";
 import store from "@/store/index";
@@ -22,8 +23,8 @@ export function isSameStepPlace(step1: StepPlace, step2: StepPlace): boolean {
 
 export function getPositionOfStep(step: StepPlace): PositionInBoard {
   return {
-    row: step[0],
-    column: step[1]
+    row: step[StepPlaceProps.ROW],
+    column: step[StepPlaceProps.COLUMN]
   };
 }
 
@@ -134,9 +135,9 @@ export function getKickoutList(player: Player, targetPosition: PositionInBoard):
     const stepPlace: StepPlace = getStepPlaceOfMarble(m);
     let preventKickout = false;
     if (gamePlay.isSafezonesEnabled) {
-      preventKickout = preventKickout || stepPlace[3].includes(StepType.SAFEZONE);
+      preventKickout = preventKickout || stepPlace[StepPlaceProps.STEP_TYPE].includes(StepType.SAFEZONE);
     }
-    preventKickout = preventKickout || stepPlace[3].includes(StepType.FINAL);
+    preventKickout = preventKickout || stepPlace[StepPlaceProps.STEP_TYPE].includes(StepType.FINAL);
     return !preventKickout;
   });
 }
