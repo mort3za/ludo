@@ -174,7 +174,6 @@ function _getInGameActions(diceInfo: DiceInfo, player: Player): MoveAction[] {
       player,
       toPosition
     );
-    console.log("playerMarblesAtToPosition", playerMarblesAtToPosition);
 
     const toPositionIsFilled = playerMarblesAtToPosition.length > 0;
     if (toPositionIsFilled) {

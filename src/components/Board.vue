@@ -1,5 +1,10 @@
 <template>
-  <div class="board-w mx-auto py-3">
+  <div
+    class="board-w mx-auto py-3"
+    @keyup.space="keySpacePressed()"
+    @keyup.esc="menuToggle()"
+    tabindex="0"
+  >
     <div class="toolbar d-flex">
       <a
         class="menu position-relative d-block mx-3 mb-3"
@@ -100,6 +105,9 @@ export default class BoardComponent extends Vue {
   get shouldShowMenu(): boolean {
     return store.getters["board/shouldShowMenu"];
   }
+  get boardStatus(): BoardStatus {
+    return store.getters["board/boardStatus"];
+  }
   get playerActive(): Player {
     return store.getters["board/playerActive"];
   }
@@ -125,13 +133,20 @@ export default class BoardComponent extends Vue {
   init() {
     this.boardWidthUpdater();
     this.resizeListener();
+    this.focusBoard();
   }
 
   continueGame() {
     if (this.gameStatus === GameStatus.PLAYING) {
       console.log("continue game");
+      this.focusBoard();
       this.playTurn();
     }
+  }
+
+  focusBoard() {
+    // @ts-ignore
+    this.$el.focus();
   }
 
   resumePromise() {
@@ -149,11 +164,13 @@ export default class BoardComponent extends Vue {
   async resumeGame() {
     await store.dispatch("updateGameStatus", GameStatus.PLAYING);
     setShowMenu(false);
+    this.focusBoard();
     this.$emit("__resume_game");
   }
 
   async _startGame() {
     await startGame();
+    this.focusBoard();
     this.playTurn();
   }
 
@@ -306,6 +323,16 @@ export default class BoardComponent extends Vue {
     await wait(SLEEP_AFTER_TURN_DICE);
   }
 
+  keySpacePressed() {
+    if (
+      !this.playerActive.isMain ||
+      this.boardStatus != BoardStatus.WAITING_TURN_DICE
+    ) {
+      return;
+    }
+    this._turnDice();
+  }
+
   boardWidthUpdater() {
     // @ts-ignore
     boardWidthUpdater({ boardElement: this.$refs.boardInner });
@@ -323,6 +350,9 @@ export default class BoardComponent extends Vue {
 <style lang="scss">
 .board-w {
   max-width: $board-width;
+  &:focus {
+    outline: none;
+  }
 }
 .board {
   background: $light;
