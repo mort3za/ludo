@@ -57,10 +57,12 @@ export function getStrategicalAction(action: MoveAction, player: Player): MoveAc
 
   upgradedAction.distanceToFinal = getDistance(action.to, finalStepPosition, player);
   upgradedAction.kickoutList = getKickoutList(player, action.to);
-  upgradedAction.isCurrentPositionSafepoint = getStepPlaceOfPosition(action.from)[StepPlaceProps.STEP_TYPE].includes(
-    StepType.SAFEZONE
-  );
-  upgradedAction.isTargetPositionSafepoint = getStepPlaceOfPosition(action.to)[StepPlaceProps.STEP_TYPE].includes(StepType.SAFEZONE);
+  upgradedAction.isCurrentPositionSafepoint = getStepPlaceOfPosition(action.from)[
+    StepPlaceProps.STEP_TYPE
+  ].includes(StepType.SAFEZONE);
+  upgradedAction.isTargetPositionSafepoint = getStepPlaceOfPosition(action.to)[
+    StepPlaceProps.STEP_TYPE
+  ].includes(StepType.SAFEZONE);
   return upgradedAction;
 }
 
@@ -132,9 +134,17 @@ function _getBenchActions(diceInfo: DiceInfo, player: Player): MoveAction[] {
   const playerMarblesInBench = store.getters["marbles/listInBenchByPlayer"](player);
   const hasAnyBenchMarbles = playerMarblesInBench.length > 0;
 
-  if (!hasAnyBenchMarbles) {
+  // prevent move to filled step
+  const startpointStep = store.getters["steps/sideStartpoint"](player);
+  const playerMarblesAtStartpoint = store.getters["marbles/listPlayerMarblesByPosition"](
+    player,
+    getPositionOfStep(startpointStep)
+  );
+  const startpointIsFilled = playerMarblesAtStartpoint.length > 0;
+  if (!hasAnyBenchMarbles || startpointIsFilled) {
     return availableActions;
   }
+
   if (diceInfo.canMoveBench) {
     const sideStartpointStep = store.getters["steps/sideStartpoint"](player);
     playerMarblesInBench.forEach((marble: Marble) => {
@@ -157,10 +167,22 @@ function _getInGameActions(diceInfo: DiceInfo, player: Player): MoveAction[] {
   playerMarblesInGame.forEach((marble: Marble) => {
     const marblePosition: PositionInBoard = getPositionOfMarble(marble);
     const finalStepPosition: PositionInBoard = getPositionOfStep(store.getters["steps/finalStep"]);
+    const toPosition = getPositionAfterMove({ from: marblePosition, player, amount: diceInfo.value });
+
+    // prevent move to filled step
+    const playerMarblesAtToPosition = store.getters["marbles/listPlayerMarblesByPosition"](
+      player,
+      toPosition
+    );
+    console.log("playerMarblesAtToPosition", playerMarblesAtToPosition);
+
+    const toPositionIsFilled = playerMarblesAtToPosition.length > 0;
+    if (toPositionIsFilled) {
+      return;
+    }
 
     const distance: number = getDistance(marblePosition, finalStepPosition, player);
     // console.log("distance", distance);
-
     if (diceInfo.value <= distance) {
       const action: MoveAction = {
         from: marblePosition,

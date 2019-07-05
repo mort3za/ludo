@@ -80,6 +80,14 @@ export default {
         (m: Marble) => m.side !== player.side && isSameStep(getPositionOfMarble(m), position)
       );
     },
+    listPlayerMarblesByPosition: (state: any, getters: any) => (
+      player: Player,
+      position: PositionInBoard
+    ) => {
+      return getters.list.filter(
+        (m: Marble) => m.side === player.side && isSameStep(getPositionOfMarble(m), position)
+      );
+    },
     listInitial(state: any): Marble[] {
       return state.listInitial;
     },

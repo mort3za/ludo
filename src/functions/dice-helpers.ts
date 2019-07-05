@@ -38,6 +38,8 @@ export async function turnDice(activePlayer: Player) {
   await store.dispatch("board/update", {
     key: "diceInfo",
     value: createDiceInfo({
+      // @ts-ignore FIXME: remove
+      // value: window.dice || result,
       value: result,
       isDone: false,
       player: activePlayer
