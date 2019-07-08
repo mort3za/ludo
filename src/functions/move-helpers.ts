@@ -167,34 +167,37 @@ function _getInGameActions(diceInfo: DiceInfo, player: Player): MoveAction[] {
   playerMarblesInGame.forEach((marble: Marble) => {
     const marblePosition: PositionInBoard = getPositionOfMarble(marble);
     const finalStepPosition: PositionInBoard = getPositionOfStep(store.getters["steps/finalStep"]);
-    const toPosition = getPositionAfterMove({ from: marblePosition, player, amount: diceInfo.value });
+    const distanceToFinal: number = getDistance(marblePosition, finalStepPosition, player);
+    const isOutOfPath: boolean = diceInfo.value <= distanceToFinal;
+
+    if (!isOutOfPath) {
+      return;
+    }
+
+    const toPosition: PositionInBoard = getPositionAfterMove({ from: marblePosition, player, amount: diceInfo.value });
 
     // prevent move to filled step
     const playerMarblesAtToPosition = store.getters["marbles/listPlayerMarblesByPosition"](
       player,
       toPosition
     );
-
     const toPositionIsFilled = playerMarblesAtToPosition.length > 0;
     if (toPositionIsFilled) {
       return;
     }
 
-    const distance: number = getDistance(marblePosition, finalStepPosition, player);
-    // console.log("distance", distance);
-    if (diceInfo.value <= distance) {
-      const action: MoveAction = {
+    const action: MoveAction = {
+      from: marblePosition,
+      to: getPositionAfterMove({
         from: marblePosition,
-        to: getPositionAfterMove({
-          from: marblePosition,
-          amount: diceInfo.value,
-          player
-        }),
-        type: MoveType.IN_GAME,
-        marble
-      };
-      availableActions.push(action);
-    }
+        amount: diceInfo.value,
+        player
+      }),
+      type: MoveType.IN_GAME,
+      marble
+    };
+    availableActions.push(action);
+    
   });
   return availableActions;
 }

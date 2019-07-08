@@ -23,7 +23,7 @@ export function getPositionAfterMove({
   const positionIndex = playerPath.findIndex((step: StepPlace) => {
     return step[StepPlaceProps.ROW] === from.row && step[StepPlaceProps.COLUMN] === from.column;
   });
-
+    
   if (playerPath.length >= positionIndex + amount) {
     const step = playerPath[positionIndex + amount];
     return getPositionOfStep(step);
