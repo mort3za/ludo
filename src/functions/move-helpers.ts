@@ -181,8 +181,9 @@ function _getInGameActions(diceInfo: DiceInfo, player: Player): MoveAction[] {
       player,
       toPosition
     );
-    const toPositionIsFilled = playerMarblesAtToPosition.length > 0;
-    if (toPositionIsFilled) {
+    const isToPositionFinal = getStepPlaceOfPosition(toPosition)[StepPlaceProps.STEP_TYPE].includes(StepType.FINAL)
+    const toPositionIsFilled =  playerMarblesAtToPosition.length > 0;
+    if (!isToPositionFinal && toPositionIsFilled) {
       return;
     }
 
