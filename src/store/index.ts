@@ -21,8 +21,8 @@ const vuexLocal = new VuexPersistence({
 const store = new Vuex.Store({
   plugins: [vuexLocal.plugin],
   state: {
-    appVersion: JSON.parse(unescape(process.env.APP_VERSION)),
-    buildDate: JSON.parse(unescape(process.env.BUILD_DATE)),
+    appVersion: JSON.parse(unescape(process.env.APP_VERSION || 0)),
+    buildDate: JSON.parse(unescape(process.env.BUILD_DATE || 0)),
     gameStatus: GameStatus.NOT_STARTED,
     lastSavedAt: null
   },
