@@ -87,6 +87,7 @@ export async function addPlayers() {
   await store.dispatch("players/add", {
     isAI: true,
     isMain: false,
+    // TODO: change to purple
     color: "yellow",
     isInGame: true
   });
