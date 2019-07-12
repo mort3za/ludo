@@ -1,0 +1,82 @@
+/*!
+ * Toastify js 1.6.1
+ * https://github.com/apvarun/toastify-js
+ * @license MIT licensed
+ *
+ * Copyright (C) 2018 Varun A P
+ */
+
+.toastify {
+  padding: rem(12px 20px);
+  color: $dark;
+  display: inline-block;
+  background: white;
+  position: fixed;
+  opacity: 0;
+  transition: all 300ms cubic-bezier(0.215, 0.61, 0.355, 1);
+  border-radius: $border-radius;
+  cursor: pointer;
+  text-decoration: none;
+  max-width: calc(50% - 20px);
+  z-index: 5000;
+}
+
+.toastify.on {
+  opacity: 1;
+}
+
+.toast-close {
+  opacity: 0.4;
+}
+
+.toastify-right {
+  right: rem(16px);
+  .toast-close {
+    padding: rem(0 0 0 16px);
+  }
+}
+
+.toastify-left {
+  left: rem(16px);
+  .toast-close {
+    padding: rem(0 16px 0 0);
+  }
+}
+
+.toastify-top {
+  top: rem(-150px);
+}
+
+.toastify-bottom {
+  bottom: rem(-150px);
+}
+
+// .toastify-rounded {
+//     border-radius: 25px;
+// }
+
+// .toastify-avatar {
+//     width: 1.5em;
+//     height: 1.5em;
+//     margin: 0 5px;
+//     border-radius: 2px;
+// }
+
+.toastify-center {
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  max-width: fit-content;
+}
+
+@media only screen and (max-width: 360px) {
+  .toastify-right,
+  .toastify-left {
+    margin-left: auto;
+    margin-right: auto;
+    left: 0;
+    right: 0;
+    max-width: fit-content;
+  }
+}

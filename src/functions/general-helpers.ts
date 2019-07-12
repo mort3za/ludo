@@ -1,3 +1,6 @@
+// @ts-ignore
+import Toastify from "toastify-js";
+
 import {
   PositionInBoard,
   Marble,
@@ -11,6 +14,27 @@ import {
 } from "@/types/types";
 import { getPositionAfterMove } from "@/functions/path-helpers.ts";
 import store from "@/store/index";
+
+export function notify(options: any = {}) {
+  if (!options.text) {
+    console.log('No text');
+    return;
+  }
+  Toastify({
+    className: "shadow",
+    text: "",
+    duration: 600000,
+    // destination: undefined,
+    // newWindow: false,
+    // onClick: () => {}
+    close: false,
+    gravity: "bottom", // `top` or `bottom`
+    position: "left", // `left`, `center` or `right`
+    backgroundColor: "white",
+    stopOnFocus: true,
+    ...options
+  }).showToast();
+}
 
 // TODO: rename to isSamePosition
 export function isSameStep(position1: PositionInBoard, position2: PositionInBoard): boolean {

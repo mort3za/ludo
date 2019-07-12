@@ -16,13 +16,13 @@ body,
 
 <template>
   <div id="app">
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
 <script>
-import Navigation from "@/components/Navigation.vue";
-export default {
-  name: "app",
-};
+import { Component, Vue } from "vue-property-decorator";
+
+@Component
+export default class App extends Vue {}
 </script>
