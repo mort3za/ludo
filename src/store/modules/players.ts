@@ -1,5 +1,5 @@
-import { Player } from "@/types/types";
-import Vue from "vue";
+import { Player } from '@/types/types';
+import Vue from 'vue';
 
 export default {
   namespaced: true,
@@ -12,7 +12,7 @@ export default {
       Vue.set(state.list, index, player);
     },
     setList(state: any, list: Player[]) {
-      Vue.set(state, "list", list);
+      Vue.set(state, 'list', list);
     },
     add(state: any, player: Player) {
       state.list.push(player);
@@ -20,10 +20,10 @@ export default {
   },
   actions: {
     remove({ commit }: { commit: any }) {
-      commit("setList", []);
+      commit('setList', []);
     },
     update({ commit }: { commit: any }, player: Player) {
-      commit("update", player);
+      commit('update', player);
     },
     add({ commit, getters }: { commit: any; getters: any }, player: Player) {
       // get length of list of players
@@ -34,7 +34,7 @@ export default {
         name: `Player ${playersCount + 1}`,
         ...player
       };
-      commit("add", newPlayer);
+      commit('add', newPlayer);
     }
   },
   getters: {

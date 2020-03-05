@@ -38,7 +38,7 @@ module.exports = {
     sourceMap: true,
     loaderOptions: {
       scss: {
-        prependData: `@import "@/styles/global-ghost.scss";`
+        prependData: '@import "@/styles/global-ghost.scss";'
       }
     }
   }

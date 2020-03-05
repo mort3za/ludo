@@ -1,5 +1,5 @@
 <style lang="scss">
-@import "@/styles/global.scss";
+@import '@/styles/global.scss';
 
 html,
 body,
@@ -8,7 +8,7 @@ body,
 }
 
 #app {
-  background: url("./assets/img/bg-mountains.png") bottom center $sky no-repeat;
+  background: url('./assets/img/bg-mountains.png') bottom center $sky no-repeat;
   background-attachment: fixed;
   background-size: auto 48vh;
 }
@@ -21,7 +21,7 @@ body,
 </template>
 
 <script>
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue } from 'vue-property-decorator';
 
 @Component
 export default class App extends Vue {}

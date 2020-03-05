@@ -176,7 +176,7 @@ export default class BoardComponent extends Vue {
     // TODO: remove if is unnecessary
     await this.sleepBetweenTurns();
 
-    let performActionsOfPlayer = this.playerActive.isAI
+    const performActionsOfPlayer = this.playerActive.isAI
       ? this.performActionsOfPlayerAI
       : this.performActionsOfPlayerNoAI;
     await performActionsOfPlayer();
