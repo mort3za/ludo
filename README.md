@@ -1,20 +1,34 @@
-# Ludo Game
+# ludo
 
-A ludo game (منچ in Persian) on web browsers.
+## Project setup
+```
+yarn install
+```
 
-## Features
+### Compiles and hot-reloads for development
+```
+yarn serve
+```
 
-- Single player
-- Mobile ready
-- PWA
+### Compiles and minifies for production
+```
+yarn build
+```
 
-## Play
+### Run your unit tests
+```
+yarn test:unit
+```
 
-![ludo-screenshot-min](https://user-images.githubusercontent.com/510242/60385990-273b7480-9aa5-11e9-877d-6503fd202d4f.png)
+### Run your end-to-end tests
+```
+yarn test:e2e
+```
 
-You can [play here](https://mort3za.github.io/ludo)
+### Lints and fixes files
+```
+yarn lint
+```
 
-## Contribution
-
-There are some tasks in issues page if you are interested or just open your own issue (in English please). Any helps is greatly appreciated.  
-Please read [Contributing Guideline](CONTRIBUTING.md).
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
