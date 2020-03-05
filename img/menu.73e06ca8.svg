@@ -1,0 +1,9 @@
+<svg version="1.1" viewBox="0 0 100 100" xml:space="preserve" 
+  xmlns="http://www.w3.org/2000/svg" 
+>
+  <g transform="matrix(1.3889 0 0 1.3889 -19.444 -19.444)" fill="#333">
+    <g fill="#333">
+      <path d="m19 33.5h62c2.761 0 5-2.239 5-5s-2.239-5-5-5h-62c-2.761 0-5 2.239-5 5s2.239 5 5 5zm62 12h-62c-2.761 0-5 2.239-5 5s2.239 5 5 5h62c2.761 0 5-2.239 5-5s-2.239-5-5-5zm0 21h-62c-2.761 0-5 2.239-5 5s2.239 5 5 5h62c2.761 0 5-2.239 5-5s-2.239-5-5-5z" clip-rule="evenodd" fill="#333" fill-rule="evenodd"/>
+    </g>
+  </g>
+</svg>
