@@ -1,11 +1,6 @@
 <template>
   <div>
-    <div
-      v-if="shouldShowResult"
-      class="dice"
-      :class="`dice-${diceInfo.value}`"
-      :style="getDiceStyle()"
-    ></div>
+    <div v-if="shouldShowResult" class="dice" :class="`dice-${diceInfo.value}`" :style="getDiceStyle()"></div>
     <a
       :style="getTurnButtonStyle()"
       v-if="shouldShowWaitingDice"
@@ -17,10 +12,10 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-import { GameStatus, BoardStatus, Player, DiceInfo } from "@/types/types";
-import { STEP_WIDTH, STEP_GUTTER } from "@/constants.ts";
-import store from "@/store/index.ts";
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { GameStatus, BoardStatus, Player, DiceInfo } from '@/types/types';
+import { STEP_WIDTH, STEP_GUTTER } from '@/constants.ts';
+import store from '@/store/index.ts';
 
 @Component
 export default class Dice extends Vue {
@@ -34,47 +29,42 @@ export default class Dice extends Vue {
   }
 
   get playerActive(): Player {
-    return store.getters["board/playerActive"];
+    return store.getters['board/playerActive'];
   }
 
   get diceInfo(): DiceInfo {
-    return store.getters["board/diceInfo"];
+    return store.getters['board/diceInfo'];
   }
 
   get boardWidth(): number {
-    return store.getters["board/boardWidth"];
+    return store.getters['board/boardWidth'];
   }
 
   get boardStatus(): number {
-    return store.getters["board/boardStatus"];
+    return store.getters['board/boardStatus'];
   }
 
   get shouldShowWaitingDice() {
-    return (
-      [BoardStatus.WAITING_TURN_DICE].includes(this.boardStatus) &&
-      this.playerActive.isMain
-    );
+    return [BoardStatus.WAITING_TURN_DICE].includes(this.boardStatus) && this.playerActive.isMain;
   }
 
   get shouldShowResult() {
-    const result = [
-      BoardStatus.TURNING_DICE,
-      BoardStatus.PLAYER_IS_THINKING,
-      BoardStatus.MOVING_MARBLES
-    ].includes(this.boardStatus);
+    const result = [BoardStatus.TURNING_DICE, BoardStatus.PLAYER_IS_THINKING, BoardStatus.MOVING_MARBLES].includes(
+      this.boardStatus
+    );
 
     return result;
   }
 
   onClickTurn() {
-    this.$emit("turn_dice");
+    this.$emit('turn_dice');
   }
 
   getDiceStyle() {
-    let result: any = {};
+    const result: any = {};
     const moveUnit = STEP_WIDTH + STEP_GUTTER;
-    let moveAmountX: number = 0;
-    let moveAmountY: number = 0;
+    let moveAmountX = 0;
+    let moveAmountY = 0;
     if (this.side === 1) {
       moveAmountX = 2.5 * moveUnit;
       moveAmountY = 7.5 * moveUnit;
@@ -96,10 +86,10 @@ export default class Dice extends Vue {
   }
 
   getTurnButtonStyle() {
-    let result: any = {};
+    const result: any = {};
     const moveUnit = STEP_WIDTH + STEP_GUTTER;
-    let moveAmountX: number = 0;
-    let moveAmountY: number = 0;
+    let moveAmountX = 0;
+    let moveAmountY = 0;
     if (this.side === 1) {
       moveAmountX = 2.5 * moveUnit;
       moveAmountY = 7.5 * moveUnit;
@@ -131,31 +121,30 @@ export default class Dice extends Vue {
   height: $step-width;
 }
 .dice-1 {
-  background-image: url("../assets/img/dice-1.svg");
+  background-image: url('../assets/img/dice-1.svg');
 }
 .dice-2 {
-  background-image: url("../assets/img/dice-2.svg");
+  background-image: url('../assets/img/dice-2.svg');
 }
 .dice-3 {
-  background-image: url("../assets/img/dice-3.svg");
+  background-image: url('../assets/img/dice-3.svg');
 }
 .dice-4 {
-  background-image: url("../assets/img/dice-4.svg");
+  background-image: url('../assets/img/dice-4.svg');
 }
 .dice-5 {
-  background-image: url("../assets/img/dice-5.svg");
+  background-image: url('../assets/img/dice-5.svg');
 }
 .dice-6 {
-  background-image: url("../assets/img/dice-6.svg");
+  background-image: url('../assets/img/dice-6.svg');
 }
 
 .turn-button {
   position: absolute;
   width: $step-width;
   height: $step-width;
-  background: url("../assets/img/turn-dice.svg") no-repeat center;
+  background: url('../assets/img/turn-dice.svg') no-repeat center;
   background-size: 100%;
   cursor: pointer;
 }
 </style>
-

@@ -1,15 +1,15 @@
 <template>
   <div class="marbles">
-    <Marble v-on:clickmarble="onClickMarble" :model="item" v-for="item in list" :key="item.id"/>
+    <Marble v-on:clickmarble="onClickMarble" :model="item" v-for="item in list" :key="item.id" />
   </div>
 </template>
 
 <script lang="ts">
-import store from "@/store/index";
-import MarbleComponent from "@/components/Marble.vue";
-import { Vue, Component } from "vue-property-decorator";
-import { Marble } from "@/types/types";
-import { getPositionOfMarble, isSameStep } from "@/functions/general-helpers.ts";
+import store from '@/store/index';
+import MarbleComponent from '@/components/Marble.vue';
+import { Vue, Component } from 'vue-property-decorator';
+import { Marble } from '@/types/types';
+import { getPositionOfMarble, isSameStep } from '@/functions/general-helpers.ts';
 
 @Component({
   components: {
@@ -18,11 +18,11 @@ import { getPositionOfMarble, isSameStep } from "@/functions/general-helpers.ts"
 })
 export default class MarblesComponent extends Vue {
   get list() {
-    return store.getters["marbles/list"];
+    return store.getters['marbles/list'];
   }
 
   onClickMarble(marble: Marble) {
-    this.$emit("clickmarble", marble);
+    this.$emit('clickmarble', marble);
   }
 }
 </script>

@@ -2,21 +2,18 @@
   <span
     @click="onClickMarble"
     class="marble"
-    :class="[{moveable: model.isMoveable, 'is-moving': model.isMoving}, `is-side-${model.side}`]"
+    :class="[{ moveable: model.isMoveable, 'is-moving': model.isMoving }, `is-side-${model.side}`]"
     :style="getWrapperStyle()"
   >
-    <span
-      class="inner d-block"
-      :class="{'is-at-final': model.isAtFinal, 'no-animation': noAnimation}"
-    ></span>
+    <span class="inner d-block" :class="{ 'is-at-final': model.isAtFinal, 'no-animation': noAnimation }"></span>
   </span>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-import { Marble, PositionInBoard } from "@/types/types";
-import { STEP_WIDTH, STEP_GUTTER } from "@/constants.ts";
-import store from "@/store/index.ts";
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { Marble, PositionInBoard } from '@/types/types';
+import { STEP_WIDTH, STEP_GUTTER } from '@/constants.ts';
+import store from '@/store/index.ts';
 
 @Component
 export default class MarbleComponent extends Vue {
@@ -33,7 +30,7 @@ export default class MarbleComponent extends Vue {
   }
 
   get boardWidth(): number {
-    return store.getters["board/boardWidth"];
+    return store.getters['board/boardWidth'];
   }
 
   getWrapperStyle() {
@@ -42,14 +39,14 @@ export default class MarbleComponent extends Vue {
     const moveUnit = (STEP_WIDTH + STEP_GUTTER) * this.boardWidth;
     return {
       transform: `
-        translateX(${(column - 1) * (moveUnit / 100) + "px"})
-        translateY(${(row - 1) * (moveUnit / 100) + "px"})
+        translateX(${(column - 1) * (moveUnit / 100) + 'px'})
+        translateY(${(row - 1) * (moveUnit / 100) + 'px'})
         `
     };
   }
 
   onClickMarble() {
-    this.$emit("clickmarble", this.model);
+    this.$emit('clickmarble', this.model);
   }
 }
 </script>
@@ -62,14 +59,13 @@ export default class MarbleComponent extends Vue {
   height: $step-width;
 }
 .inner {
-  transition: width #{$marble-animation-duration / 2}ms ease,
-    height #{$marble-animation-duration / 2}ms ease;
+  transition: width #{$marble-animation-duration / 2}ms ease, height #{$marble-animation-duration / 2}ms ease;
   width: 100%;
   height: 100%;
   border-radius: 100%;
   box-shadow: rem(2px 2px 2px) $gray-60;
   border: rem(4px) solid $light;
-  background: $light url("../assets/img/flower.svg") no-repeat center;
+  background: $light url('../assets/img/flower.svg') no-repeat center;
   background-size: 86%;
   &.is-at-final {
     // transition: transform 300ms ease-in-bounce #{$marble-animation-duration}ms;

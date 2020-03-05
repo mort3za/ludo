@@ -1,16 +1,16 @@
-import Vue from "vue";
-import Vuex from "vuex";
-import VuexPersistence from "vuex-persist";
-import steps from "@/store/modules/steps.ts";
-import players from "@/store/modules/players.ts";
-import marbles from "@/store/modules/marbles.ts";
-import settings from "@/store/modules/settings.ts";
-import board from "@/store/modules/board.ts";
-import { GameStatus } from "@/types/types.ts";
+import Vue from 'vue';
+import Vuex from 'vuex';
+import VuexPersistence from 'vuex-persist';
+import steps from '@/store/modules/steps.ts';
+import players from '@/store/modules/players.ts';
+import marbles from '@/store/modules/marbles.ts';
+import settings from '@/store/modules/settings.ts';
+import board from '@/store/modules/board.ts';
+import { GameStatus } from '@/types/types.ts';
 import { STORAGE_KEY } from '@/constants';
 
 Vue.use(Vuex);
-const persistMutations: string[] = ["saveGame"];
+const persistMutations: string[] = ['saveGame'];
 
 const vuexLocal = new VuexPersistence({
   storage: window.sessionStorage,
@@ -41,10 +41,10 @@ const store = new Vuex.Store({
   },
   actions: {
     updateGameStatus({ commit }: { commit: any }, status: GameStatus) {
-      commit("updateGameStatus", status);
+      commit('updateGameStatus', status);
     },
     saveGame({ commit }: any) {
-      commit("saveGame");
+      commit('saveGame');
     }
   },
   getters: {

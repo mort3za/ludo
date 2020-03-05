@@ -1,6 +1,6 @@
-import Vue from "vue";
-import { BoardStatus, Player } from "@/types/types.ts";
-import store from "@/store/index.ts";
+import Vue from 'vue';
+import { BoardStatus, Player } from '@/types/types.ts';
+import store from '@/store/index.ts';
 
 const initialState: any = {
   shouldShowMenu: true,
@@ -31,10 +31,10 @@ export default {
   },
   actions: {
     update({ commit }: any, data: { key: string; value: any }) {
-      commit("update", data);
+      commit('update', data);
     },
     reset({ commit }: { commit: any }) {
-      commit("reset");
+      commit('reset');
     }
   },
   getters: {
@@ -54,13 +54,13 @@ export default {
       if (!state.playerActive) {
         return null;
       }
-      return store.getters["players/itemById"](state.playerActive.id);
+      return store.getters['players/itemById'](state.playerActive.id);
     },
     playerWinner(state: any): Player | null {
       if (!state.playerWinner) {
         return null;
       }
-      return store.getters["players/itemById"](state.playerWinner.id);
+      return store.getters['players/itemById'](state.playerWinner.id);
     }
   }
 };
