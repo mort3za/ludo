@@ -8,10 +8,13 @@
       </p>
       <p>
         Made with
-        <span class="heart d-inline-block mx-2 h4">♥</span> by
-        <a href="https://github.com/mort3za">Morteza Ziyae</a> in Tehran, Iran.
+        <span class="heart d-inline-block mx-2 h4">♥</span> by <a href="https://github.com/mort3za">Morteza Ziyae</a> in
+        Tehran, Iran.
       </p>
-      <p>Contact me on <a target="_blank" rel="me noreferrer noopener" href="https://t.me/mort3za">Telegram</a> or <a rel="me noreferrer noopener" target="_blank" href="https://twitter.com/mort3za">Twitter</a>.</p>
+      <p>
+        Contact me on <a target="_blank" rel="me noreferrer noopener" href="https://t.me/mort3za">Telegram</a> or
+        <a rel="me noreferrer noopener" target="_blank" href="https://twitter.com/mort3za">Twitter</a>.
+      </p>
       <hr />
       <router-link class="btn btn-lg btn-primary px-4" to="/">Back</router-link>
     </div>

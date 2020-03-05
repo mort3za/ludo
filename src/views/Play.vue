@@ -1,13 +1,13 @@
 <template>
   <div class="page-home">
-    <Board/>
+    <Board />
   </div>
 </template>
 
 <script>
-import Board from "@/components/Board.vue";
+import Board from '@/components/Board.vue';
 export default {
-  name: "page-home",
+  name: 'page-home',
   components: { Board }
 };
 </script>

@@ -1,17 +1,7 @@
 <template>
-  <div
-    class="board-w mx-auto py-3"
-    @keyup.space="keySpacePressed()"
-    @keyup.esc="menuToggle()"
-    tabindex="0"
-  >
+  <div class="board-w mx-auto py-3" @keyup.space="keySpacePressed()" @keyup.esc="menuToggle()" tabindex="0">
     <div class="toolbar d-flex">
-      <a
-        class="menu position-relative d-block mx-3 mb-3"
-        href="#"
-        @click.prevent="menuToggle()"
-        aria-label="Main menu"
-      >
+      <a class="menu position-relative d-block mx-3 mb-3" href="#" @click.prevent="menuToggle()" aria-label="Main menu">
         <transition name="fade">
           <span v-if="!shouldShowMenu" class="menu-icon menu-open position-absolute d-block"></span>
         </transition>
@@ -30,11 +20,7 @@
               <Dice @turn_dice="_turnDice()" />
             </div>
           </section>
-          <MenuBoard
-            v-show="shouldShowMenu"
-            @start_game="_startGame()"
-            @resume_game="resumeGame()"
-          />
+          <MenuBoard v-show="shouldShowMenu" @start_game="_startGame()" @resume_game="resumeGame()" />
         </div>
       </div>
     </main>
@@ -42,11 +28,11 @@
 </template>
 
 <script lang="ts">
-import store from "@/store/index";
-import Road from "@/components/Road.vue";
-import Dice from "@/components/Dice.vue";
-import Marbles from "@/components/Marbles.vue";
-import MenuBoard from "@/components/MenuBoard.vue";
+import store from '@/store/index';
+import Road from '@/components/Road.vue';
+import Dice from '@/components/Dice.vue';
+import Marbles from '@/components/Marbles.vue';
+import MenuBoard from '@/components/MenuBoard.vue';
 import {
   getAvailableActions,
   chooseAction,
@@ -56,31 +42,14 @@ import {
   moveStepByStep,
   beforeMoveActions,
   afterFinishTurn
-} from "@/functions/move-helpers.ts";
-import { Vue, Component } from "vue-property-decorator";
-import {
-  Player,
-  MoveAction,
-  Marble,
-  BoardStatus,
-  GameStatus,
-  DiceInfo
-} from "@/types/types";
-import { createMoveAction, wait } from "@/functions/general-helpers.ts";
-import {
-  createDiceInfo,
-  getRandom,
-  turnDice
-} from "@/functions/dice-helpers.ts";
-import { SLEEP_BETWEEN_TURNS, SLEEP_AFTER_TURN_DICE } from "@/constants.ts";
-import { debounce } from "lodash-es";
-import {
-  setShowMenu,
-  startGame,
-  finishGame,
-  changeTurn,
-  boardWidthUpdater
-} from "@/functions/board-helpers";
+} from '@/functions/move-helpers.ts';
+import { Vue, Component } from 'vue-property-decorator';
+import { Player, MoveAction, Marble, BoardStatus, GameStatus, DiceInfo } from '@/types/types';
+import { createMoveAction, wait } from '@/functions/general-helpers.ts';
+import { createDiceInfo, getRandom, turnDice } from '@/functions/dice-helpers.ts';
+import { SLEEP_BETWEEN_TURNS, SLEEP_AFTER_TURN_DICE } from '@/constants.ts';
+import { debounce } from 'lodash-es';
+import { setShowMenu, startGame, finishGame, changeTurn, boardWidthUpdater } from '@/functions/board-helpers';
 
 @Component({
   components: {
@@ -99,32 +68,32 @@ export default class BoardComponent extends Vue {
   }
   destroyed() {
     this.removeResizeListener();
-    store.dispatch("updateGameStatus", GameStatus.NOT_STARTED);
+    store.dispatch('updateGameStatus', GameStatus.NOT_STARTED);
   }
 
   get shouldShowMenu(): boolean {
-    return store.getters["board/shouldShowMenu"];
+    return store.getters['board/shouldShowMenu'];
   }
   get boardStatus(): BoardStatus {
-    return store.getters["board/boardStatus"];
+    return store.getters['board/boardStatus'];
   }
   get playerActive(): Player {
-    return store.getters["board/playerActive"];
+    return store.getters['board/playerActive'];
   }
   get playerWinner(): Player {
-    return store.getters["board/playerWinner"];
+    return store.getters['board/playerWinner'];
   }
   get diceInfo(): DiceInfo {
-    return store.getters["board/diceInfo"];
+    return store.getters['board/diceInfo'];
   }
   get isGameOver(): boolean {
     if (!this.playerActive) {
       return false;
     }
-    return store.getters["marbles/isAllAtFinal"](this.playerActive);
+    return store.getters['marbles/isAllAtFinal'](this.playerActive);
   }
   get gameStatus(): GameStatus {
-    return store.getters["gameStatus"];
+    return store.getters['gameStatus'];
   }
   get isPreviousMoveCompleted(): boolean {
     return this.diceInfo.isDone;
@@ -138,7 +107,7 @@ export default class BoardComponent extends Vue {
 
   continueGame() {
     if (this.gameStatus === GameStatus.PLAYING) {
-      console.log("continue game");
+      console.log('continue game');
       this.focusBoard();
       this.playTurn();
     }
@@ -154,7 +123,7 @@ export default class BoardComponent extends Vue {
       if (this.gameStatus === GameStatus.PLAYING) {
         resolve();
       } else if (this.gameStatus === GameStatus.PAUSED) {
-        this.$once("__resume_game", () => {
+        this.$once('__resume_game', () => {
           resolve();
         });
       }
@@ -162,10 +131,10 @@ export default class BoardComponent extends Vue {
   }
 
   async resumeGame() {
-    await store.dispatch("updateGameStatus", GameStatus.PLAYING);
+    await store.dispatch('updateGameStatus', GameStatus.PLAYING);
     setShowMenu(false);
     this.focusBoard();
-    this.$emit("__resume_game");
+    this.$emit('__resume_game');
   }
 
   async _startGame() {
@@ -207,7 +176,7 @@ export default class BoardComponent extends Vue {
     // TODO: remove if is unnecessary
     await this.sleepBetweenTurns();
 
-    let performActionsOfPlayer = this.playerActive.isAI
+    const performActionsOfPlayer = this.playerActive.isAI
       ? this.performActionsOfPlayerAI
       : this.performActionsOfPlayerNoAI;
     await performActionsOfPlayer();
@@ -238,8 +207,8 @@ export default class BoardComponent extends Vue {
     // console.log("Human move (wait or skip)");
     if (availableActions.length > 0) {
       this.setMoveableMarbles(availableActions);
-      store.dispatch("board/update", {
-        key: "boardStatus",
+      store.dispatch('board/update', {
+        key: 'boardStatus',
         value: BoardStatus.PLAYER_IS_THINKING
       });
     } else {
@@ -265,13 +234,11 @@ export default class BoardComponent extends Vue {
 
   setMoveableMarbles(availableActions: MoveAction[]): void {
     const marbles: Marble[] = availableActions.map(action => action.marble);
-    store.dispatch("marbles/setMoveableItems", marbles);
+    store.dispatch('marbles/setMoveableItems', marbles);
   }
 
   shouldAutoMove(availableActions: MoveAction[]): boolean {
-    return (
-      this.playerActive.isAI || !hasMultipleAvailableActions(availableActions)
-    );
+    return this.playerActive.isAI || !hasMultipleAvailableActions(availableActions);
   }
 
   async autoMove(availableActions: MoveAction[], player: Player) {
@@ -297,13 +264,13 @@ export default class BoardComponent extends Vue {
   async turnDicePromise() {
     // don't turn (after refresh when game is running)
     if (this.isPreviousMoveCompleted === false) {
-      console.log("dont turn");
+      console.log('dont turn');
       return Promise.resolve();
     }
 
     // waiting
-    store.dispatch("board/update", {
-      key: "boardStatus",
+    store.dispatch('board/update', {
+      key: 'boardStatus',
       value: BoardStatus.WAITING_TURN_DICE
     });
 
@@ -313,21 +280,18 @@ export default class BoardComponent extends Vue {
     }
     // noAI: click on dice:
     return new Promise(resolve => {
-      this.$once("__turn_dice", resolve);
+      this.$once('__turn_dice', resolve);
     });
   }
 
   async _turnDice() {
     await turnDice(this.playerActive);
-    this.$emit("__turn_dice");
+    this.$emit('__turn_dice');
     await wait(SLEEP_AFTER_TURN_DICE);
   }
 
   keySpacePressed() {
-    if (
-      !this.playerActive.isMain ||
-      this.boardStatus != BoardStatus.WAITING_TURN_DICE
-    ) {
+    if (!this.playerActive.isMain || this.boardStatus != BoardStatus.WAITING_TURN_DICE) {
       return;
     }
     this._turnDice();
@@ -339,10 +303,10 @@ export default class BoardComponent extends Vue {
   }
 
   resizeListener() {
-    window.addEventListener("resize", this.boardWidthUpdaterDebounced);
+    window.addEventListener('resize', this.boardWidthUpdaterDebounced);
   }
   removeResizeListener() {
-    window.removeEventListener("resize", this.boardWidthUpdaterDebounced);
+    window.removeEventListener('resize', this.boardWidthUpdaterDebounced);
   }
 }
 </script>
@@ -361,7 +325,7 @@ export default class BoardComponent extends Vue {
   height: 100%;
 
   background-color: white;
-  background-image: url("../assets/img/bg-diamond.svg");
+  background-image: url('../assets/img/bg-diamond.svg');
 }
 .board-inner {
   position: relative;
@@ -410,13 +374,13 @@ export default class BoardComponent extends Vue {
 }
 
 .menu-open {
-  background: url("../assets/img/menu.svg") no-repeat center;
+  background: url('../assets/img/menu.svg') no-repeat center;
   &.fade-enter-to {
     transition-delay: 150ms;
   }
 }
 .menu-close {
-  background: url("../assets/img/close.svg") no-repeat center;
+  background: url('../assets/img/close.svg') no-repeat center;
   &.fade-enter-to {
     transition-delay: 150ms;
   }

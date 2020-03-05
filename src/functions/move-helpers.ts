@@ -1,5 +1,5 @@
 // tslint:disable: no-implicit-dependencies
-import store from "@/store/index";
+import store from '@/store/index';
 import {
   MoveAction,
   Player,
@@ -11,8 +11,8 @@ import {
   StepType,
   DiceInfo,
   StepPlaceProps
-} from "@/types/types";
-import { getDistance, getPositionAfterMove, getStepsOfMoveAction } from "@/functions/path-helpers.ts";
+} from '@/types/types';
+import { getDistance, getPositionAfterMove, getStepsOfMoveAction } from '@/functions/path-helpers.ts';
 import {
   getPositionOfMarble,
   getPositionOfStep,
@@ -25,21 +25,15 @@ import {
   getStepPlaceOfPosition,
   getInitialStateOfMarble,
   getStepPlaceOfMarble
-} from "@/functions/general-helpers.ts";
-import { MARBLE_ANIMATION_DURATION, SLEEP_BETWEEN_MOVES, PATH_STEPS_COUNT } from "@/constants.ts";
-import { cloneDeep, maxBy } from "lodash-es";
-import { setDiceAsDone } from "./dice-helpers";
+} from '@/functions/general-helpers.ts';
+import { MARBLE_ANIMATION_DURATION, SLEEP_BETWEEN_MOVES, PATH_STEPS_COUNT } from '@/constants.ts';
+import { cloneDeep, maxBy } from 'lodash-es';
+import { setDiceAsDone } from './dice-helpers';
 
 /**
  * Find all available moves
  */
-export function getAvailableActions({
-  player,
-  diceInfo
-}: {
-  player: Player;
-  diceInfo: DiceInfo;
-}): MoveAction[] {
+export function getAvailableActions({ player, diceInfo }: { player: Player; diceInfo: DiceInfo }): MoveAction[] {
   const availableActions: MoveAction[] = [];
 
   availableActions.push(..._getBenchActions(diceInfo, player));
@@ -52,17 +46,17 @@ export function getAvailableActions({
  *  Adds strategical information to a MoveAction object
  */
 export function getStrategicalAction(action: MoveAction, player: Player): MoveAction {
-  const finalStepPosition: PositionInBoard = getPositionOfStep(store.getters["steps/finalStep"]);
+  const finalStepPosition: PositionInBoard = getPositionOfStep(store.getters['steps/finalStep']);
   const upgradedAction = cloneDeep(action);
 
   upgradedAction.distanceToFinal = getDistance(action.to, finalStepPosition, player);
   upgradedAction.kickoutList = getKickoutList(player, action.to);
-  upgradedAction.isCurrentPositionSafepoint = getStepPlaceOfPosition(action.from)[
-    StepPlaceProps.STEP_TYPE
-  ].includes(StepType.SAFEZONE);
-  upgradedAction.isTargetPositionSafepoint = getStepPlaceOfPosition(action.to)[
-    StepPlaceProps.STEP_TYPE
-  ].includes(StepType.SAFEZONE);
+  upgradedAction.isCurrentPositionSafepoint = getStepPlaceOfPosition(action.from)[StepPlaceProps.STEP_TYPE].includes(
+    StepType.SAFEZONE
+  );
+  upgradedAction.isTargetPositionSafepoint = getStepPlaceOfPosition(action.to)[StepPlaceProps.STEP_TYPE].includes(
+    StepType.SAFEZONE
+  );
   return upgradedAction;
 }
 
@@ -71,11 +65,11 @@ export function getStrategicalAction(action: MoveAction, player: Player): MoveAc
  */
 const ActionQualityList = {
   currentSafepoint() {
-    const gamePlay = store.getters["settings/gamePlay"];
+    const gamePlay = store.getters['settings/gamePlay'];
     return gamePlay.isSafezonesEnabled ? -2 : 0;
   },
   targetSafepoint() {
-    const gamePlay = store.getters["settings/gamePlay"];
+    const gamePlay = store.getters['settings/gamePlay'];
     return gamePlay.isSafezonesEnabled ? 4 : 0;
   },
   benchOut: 5,
@@ -126,17 +120,17 @@ export function chooseAction(actions: MoveAction[], player: Player): MoveAction 
   // console.log("upgradedActions", upgradedActions, `player ${upgradedActions[0].marble.side}`);
 
   // @ts-ignore
-  return maxBy(upgradedActions, "quality");
+  return maxBy(upgradedActions, 'quality');
 }
 
 function _getBenchActions(diceInfo: DiceInfo, player: Player): MoveAction[] {
   const availableActions: MoveAction[] = [];
-  const playerMarblesInBench = store.getters["marbles/listInBenchByPlayer"](player);
+  const playerMarblesInBench = store.getters['marbles/listInBenchByPlayer'](player);
   const hasAnyBenchMarbles = playerMarblesInBench.length > 0;
 
   // prevent move to filled step
-  const startpointStep = store.getters["steps/sideStartpoint"](player);
-  const playerMarblesAtStartpoint = store.getters["marbles/listPlayerMarblesByPosition"](
+  const startpointStep = store.getters['steps/sideStartpoint'](player);
+  const playerMarblesAtStartpoint = store.getters['marbles/listPlayerMarblesByPosition'](
     player,
     getPositionOfStep(startpointStep)
   );
@@ -146,7 +140,7 @@ function _getBenchActions(diceInfo: DiceInfo, player: Player): MoveAction[] {
   }
 
   if (diceInfo.canMoveBench) {
-    const sideStartpointStep = store.getters["steps/sideStartpoint"](player);
+    const sideStartpointStep = store.getters['steps/sideStartpoint'](player);
     playerMarblesInBench.forEach((marble: Marble) => {
       const action: MoveAction = {
         from: getPositionOfMarble(marble),
@@ -162,11 +156,11 @@ function _getBenchActions(diceInfo: DiceInfo, player: Player): MoveAction[] {
 
 function _getInGameActions(diceInfo: DiceInfo, player: Player): MoveAction[] {
   const availableActions: MoveAction[] = [];
-  const playerMarblesInGame = store.getters["marbles/listInGameByPlayer"](player);
+  const playerMarblesInGame = store.getters['marbles/listInGameByPlayer'](player);
 
   playerMarblesInGame.forEach((marble: Marble) => {
     const marblePosition: PositionInBoard = getPositionOfMarble(marble);
-    const finalStepPosition: PositionInBoard = getPositionOfStep(store.getters["steps/finalStep"]);
+    const finalStepPosition: PositionInBoard = getPositionOfStep(store.getters['steps/finalStep']);
     const distanceToFinal: number = getDistance(marblePosition, finalStepPosition, player);
     const isOutOfPath: boolean = diceInfo.value <= distanceToFinal;
 
@@ -177,12 +171,9 @@ function _getInGameActions(diceInfo: DiceInfo, player: Player): MoveAction[] {
     const toPosition: PositionInBoard = getPositionAfterMove({ from: marblePosition, player, amount: diceInfo.value });
 
     // prevent move to filled step
-    const playerMarblesAtToPosition = store.getters["marbles/listPlayerMarblesByPosition"](
-      player,
-      toPosition
-    );
-    const isToPositionFinal = getStepPlaceOfPosition(toPosition)[StepPlaceProps.STEP_TYPE].includes(StepType.FINAL)
-    const toPositionIsFilled =  playerMarblesAtToPosition.length > 0;
+    const playerMarblesAtToPosition = store.getters['marbles/listPlayerMarblesByPosition'](player, toPosition);
+    const isToPositionFinal = getStepPlaceOfPosition(toPosition)[StepPlaceProps.STEP_TYPE].includes(StepType.FINAL);
+    const toPositionIsFilled = playerMarblesAtToPosition.length > 0;
     if (!isToPositionFinal && toPositionIsFilled) {
       return;
     }
@@ -198,7 +189,6 @@ function _getInGameActions(diceInfo: DiceInfo, player: Player): MoveAction[] {
       marble
     };
     availableActions.push(action);
-    
   });
   return availableActions;
 }
@@ -237,13 +227,13 @@ export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction
       isMoving: true,
       isMoveable: false
     };
-    await store.dispatch("marbles/update", tempMarble);
+    await store.dispatch('marbles/update', tempMarble);
     // dont run on last
     if (index <= moveSteps.length - 2) {
       await wait(SLEEP_BETWEEN_MOVES);
     }
   }
-  await store.dispatch("marbles/update", finalMarble);
+  await store.dispatch('marbles/update', finalMarble);
 
   const updatedMoveAction = {
     ...moveAction,
@@ -254,7 +244,7 @@ export async function moveStepByStep(moveAction: MoveAction): Promise<MoveAction
 
 export async function goToHeaven(marbleId: number) {
   // marble is not updated here, should get fresh one
-  const freshMarble = store.getters["marbles/itemById"](marbleId);
+  const freshMarble = store.getters['marbles/itemById'](marbleId);
   if (!freshMarble.isAtFinal) {
     return;
   }
@@ -262,25 +252,25 @@ export async function goToHeaven(marbleId: number) {
   wait(MARBLE_ANIMATION_DURATION);
   const initialMarble = getInitialStateOfMarble(freshMarble);
   const initialStepPlaceOfMarble: StepPlace = getStepPlaceOfMarble(initialMarble);
-  store.dispatch("steps/updateSomeProps", { step: initialStepPlaceOfMarble, setType: StepType.BENCH_DONE });
+  store.dispatch('steps/updateSomeProps', { step: initialStepPlaceOfMarble, setType: StepType.BENCH_DONE });
 }
 
 export async function beforeMoveActions(moveAction: MoveAction, player: Player) {
-  await store.dispatch("marbles/unsetMoveableAll");
-  store.dispatch("board/update", {
-    key: "boardStatus",
+  await store.dispatch('marbles/unsetMoveableAll');
+  store.dispatch('board/update', {
+    key: 'boardStatus',
     value: BoardStatus.MOVING_MARBLES
   });
 }
 
 function _saveGame(reason: string) {
-  store.dispatch("saveGame");
+  store.dispatch('saveGame');
   // console.log("save game...", reason);
 }
 
 export async function afterFinishTurn() {
   await setDiceAsDone();
-  _saveGame("turn finished");
+  _saveGame('turn finished');
   await wait(MARBLE_ANIMATION_DURATION);
 }
 

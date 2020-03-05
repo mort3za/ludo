@@ -1,4 +1,4 @@
-import { Marble } from "@/types/types";
+import { Marble } from '@/types/types';
 
 export const listInitial: Marble[] = [
   // side 1

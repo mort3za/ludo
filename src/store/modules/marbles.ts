@@ -1,8 +1,8 @@
-import { Player, Marble, PositionInBoard, MoveAction } from "@/types/types";
-import { isSameStep, getPositionOfMarble } from "@/functions/general-helpers.ts";
-import { listInitial } from "@/store/initials/marbles-initial.ts";
+import { Player, Marble, PositionInBoard, MoveAction } from '@/types/types';
+import { isSameStep, getPositionOfMarble } from '@/functions/general-helpers.ts';
+import { listInitial } from '@/store/initials/marbles-initial.ts';
 // import { listInitial } from "@/store/initials/marbles-initial.sample.ts";
-import Vue from "vue";
+import Vue from 'vue';
 
 function getMarbleIndexById(list: Marble[], marbleId: number) {
   return list.findIndex((m: Marble) => m.id === marbleId);
@@ -20,7 +20,7 @@ export default {
       Vue.set(state.list, index, marble);
     },
     setList(state: any, list: Marble[]) {
-      Vue.set(state, "list", list);
+      Vue.set(state, 'list', list);
     },
     setItemMoveable(state: any, marble: Marble) {
       const targetMarble = state.list.find((m: Marble) => m.id === marble.id);
@@ -29,24 +29,24 @@ export default {
   },
   actions: {
     update({ commit }: any, marble: Marble) {
-      commit("update", marble);
+      commit('update', marble);
     },
     updateSomeProps({ commit, state }: any, { marble, props }: { marble: Marble; props: object }) {
       const index = state.list.findIndex((m: Marble) => m.id === marble.id);
       const updatedMarble = { ...state.list[index], ...props };
-      commit("update", updatedMarble);
+      commit('update', updatedMarble);
     },
     reset({ commit }: any) {
-      commit("setList", [...listInitial]);
+      commit('setList', [...listInitial]);
     },
     remove({ commit }: any) {
-      commit("setList", []);
+      commit('setList', []);
     },
     setMoveableItems({ commit }: any, marbles: Marble[] = []) {
-      marbles.forEach((m: Marble) => commit("update", { ...m, isMoveable: true }));
+      marbles.forEach((m: Marble) => commit('update', { ...m, isMoveable: true }));
     },
     unsetMoveableAll({ commit, getters }: { commit: any; getters: any }) {
-      getters.list.forEach((m: Marble) => commit("update", { ...m, isMoveable: false }));
+      getters.list.forEach((m: Marble) => commit('update', { ...m, isMoveable: false }));
     }
   },
   getters: {
@@ -72,21 +72,11 @@ export default {
       return getters.list.filter((m: Marble) => m.side === player.side && m.isInGame === false);
     },
     // TODO: remove, use stored marbles inside step
-    listOtherPlayersMarblesByPosition: (state: any, getters: any) => (
-      player: Player,
-      position: PositionInBoard
-    ) => {
-      return getters.list.filter(
-        (m: Marble) => m.side !== player.side && isSameStep(getPositionOfMarble(m), position)
-      );
+    listOtherPlayersMarblesByPosition: (state: any, getters: any) => (player: Player, position: PositionInBoard) => {
+      return getters.list.filter((m: Marble) => m.side !== player.side && isSameStep(getPositionOfMarble(m), position));
     },
-    listPlayerMarblesByPosition: (state: any, getters: any) => (
-      player: Player,
-      position: PositionInBoard
-    ) => {
-      return getters.list.filter(
-        (m: Marble) => m.side === player.side && isSameStep(getPositionOfMarble(m), position)
-      );
+    listPlayerMarblesByPosition: (state: any, getters: any) => (player: Player, position: PositionInBoard) => {
+      return getters.list.filter((m: Marble) => m.side === player.side && isSameStep(getPositionOfMarble(m), position));
     },
     listInitial(state: any): Marble[] {
       return state.listInitial;

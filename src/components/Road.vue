@@ -17,20 +17,22 @@
         <p
           v-for="player in players"
           :key="`player-name-${player.id}`"
-          :class="[`player-name-${player.side}`, {'is-active font-weight-bold': isPlayerActive(player)}]"
+          :class="[`player-name-${player.side}`, { 'is-active font-weight-bold': isPlayerActive(player) }]"
           class="player-name d-block text-truncate text-center mb-2"
-        >{{player.name}}</p>
+        >
+          {{ player.name }}
+        </p>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import store from "@/store/index";
-import Step from "@/components/Step.vue";
-import { Vue, Component, Prop } from "vue-property-decorator";
-import { StepPlace, Player, StepPlaceProps } from "@/types/types";
-import { STEP_WIDTH, STEP_GUTTER } from "@/constants.ts";
+import store from '@/store/index';
+import Step from '@/components/Step.vue';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { StepPlace, Player, StepPlaceProps } from '@/types/types';
+import { STEP_WIDTH, STEP_GUTTER } from '@/constants.ts';
 
 @Component({
   components: {
@@ -40,13 +42,13 @@ import { STEP_WIDTH, STEP_GUTTER } from "@/constants.ts";
 export default class RoadComponent extends Vue {
   StepPlaceProps = StepPlaceProps;
   get playerActive(): Player {
-    return store.getters["board/playerActive"];
+    return store.getters['board/playerActive'];
   }
   get steps(): StepPlace[] {
-    return store.getters["steps/allSteps"];
+    return store.getters['steps/allSteps'];
   }
   get players(): Player[] {
-    return store.getters["players/list"];
+    return store.getters['players/list'];
   }
 
   getStepStyle(step: StepPlace) {
@@ -54,8 +56,8 @@ export default class RoadComponent extends Vue {
     const column = step[StepPlaceProps.COLUMN];
 
     return {
-      top: `${(row - 1) * (STEP_WIDTH + STEP_GUTTER) + "%"}`,
-      left: `${(column - 1) * (STEP_WIDTH + STEP_GUTTER) + "%"}`
+      top: `${(row - 1) * (STEP_WIDTH + STEP_GUTTER) + '%'}`,
+      left: `${(column - 1) * (STEP_WIDTH + STEP_GUTTER) + '%'}`
     };
   }
 

@@ -1,4 +1,4 @@
-import { StepPlace, StepType } from "@/types/types";
+import { StepPlace, StepType } from '@/types/types';
 
 export const listInitial: StepPlace[] = [
   // side 1

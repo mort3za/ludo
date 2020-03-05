@@ -5,8 +5,8 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-import { StepType } from "@/types/types";
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { StepType } from '@/types/types';
 
 @Component
 export default class StepComponent extends Vue {
@@ -23,7 +23,7 @@ export default class StepComponent extends Vue {
   public types!: StepType[];
 
   getClasses() {
-    let result = [];
+    const result = [];
 
     this.types.forEach(type => {
       result.push(`type-${type}`);
@@ -50,9 +50,9 @@ export default class StepComponent extends Vue {
 // startpoint
 .type-2 {
   &::before {
-    background: url("../assets/img/arrow.svg") no-repeat center;
+    background: url('../assets/img/arrow.svg') no-repeat center;
     background-size: 60%;
-    content: "";
+    content: '';
     width: 100%;
     height: 100%;
     @include absolute-cover;
@@ -105,7 +105,7 @@ export default class StepComponent extends Vue {
 $star-background-size: 60%;
 .type-6 {
   box-shadow: none;
-  background: url("../assets/img/star.svg") no-repeat center;
+  background: url('../assets/img/star.svg') no-repeat center;
   background-size: $star-background-size;
 }
 
@@ -120,16 +120,16 @@ $star-background-size: 60%;
 .type-4 {
   background-size: $star-background-size;
   &.side-1 {
-    background-image: url("../assets/img/star-side-1.svg");
+    background-image: url('../assets/img/star-side-1.svg');
   }
   &.side-2 {
-    background-image: url("../assets/img/star-side-2.svg");
+    background-image: url('../assets/img/star-side-2.svg');
   }
   &.side-3 {
-    background-image: url("../assets/img/star-side-3.svg");
+    background-image: url('../assets/img/star-side-3.svg');
   }
   &.side-4 {
-    background-image: url("../assets/img/star-side-4.svg");
+    background-image: url('../assets/img/star-side-4.svg');
   }
 }
 // .common

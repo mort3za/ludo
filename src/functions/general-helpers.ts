@@ -1,5 +1,5 @@
 // @ts-ignore
-import Toastify from "toastify-js";
+import Toastify from 'toastify-js';
 
 import {
   PositionInBoard,
@@ -11,9 +11,9 @@ import {
   StepType,
   DiceInfo,
   StepPlaceProps
-} from "@/types/types";
-import { getPositionAfterMove } from "@/functions/path-helpers.ts";
-import store from "@/store/index";
+} from '@/types/types';
+import { getPositionAfterMove } from '@/functions/path-helpers.ts';
+import store from '@/store/index';
 
 export function notify(options: any = {}) {
   if (!options.text) {
@@ -21,16 +21,16 @@ export function notify(options: any = {}) {
     return;
   }
   Toastify({
-    className: "shadow",
-    text: "",
+    className: 'shadow',
+    text: '',
     duration: 600000,
     // destination: undefined,
     // newWindow: false,
     // onClick: () => {}
     close: false,
-    gravity: "bottom", // `top` or `bottom`
-    position: "left", // `left`, `center` or `right`
-    backgroundColor: "white",
+    gravity: 'bottom', // `top` or `bottom`
+    position: 'left', // `left`, `center` or `right`
+    backgroundColor: 'white',
     stopOnFocus: true,
     ...options
   }).showToast();
@@ -65,7 +65,7 @@ export function getStepPlaceOfMarble(marble: Marble): StepPlace {
 }
 
 export function getStepPlaceOfPosition(position: PositionInBoard): StepPlace {
-  const stepPlace: StepPlace = store.getters["steps/getStepByPosition"](position);
+  const stepPlace: StepPlace = store.getters['steps/getStepByPosition'](position);
   return stepPlace;
 }
 
@@ -115,14 +115,14 @@ export async function wait(time: number) {
 }
 
 export function isPositionAtEnd(position: PositionInBoard, player: Player) {
-  const playerEndPoints = store.getters["steps/sideEndpoints"](player);
+  const playerEndPoints = store.getters['steps/sideEndpoints'](player);
   return playerEndPoints.some((endPointStep: StepPlace) => {
     return isSameStep(position, getPositionOfStep(endPointStep));
   });
 }
 
 export function isPositionAtFinal(position: PositionInBoard) {
-  const finishPosition = getPositionOfStep(store.getters["steps/finalStep"]);
+  const finishPosition = getPositionOfStep(store.getters['steps/finalStep']);
   return isSameStep(position, finishPosition);
 }
 
@@ -131,7 +131,7 @@ export function isPositionAtFinal(position: PositionInBoard) {
  */
 export async function updateMarbleIsAtEnd(marble: Marble, player: Player) {
   const isAtEnd = isPositionAtEnd(getPositionOfMarble(marble), player);
-  await store.dispatch("marbles/update", {
+  await store.dispatch('marbles/update', {
     ...marble,
     isAtEnd
   });
@@ -140,7 +140,7 @@ export async function updateMarbleIsAtEnd(marble: Marble, player: Player) {
 export async function updateMarbleIsAtFinal(marble: Marble) {
   const isAtFinal = isPositionAtFinal(getPositionOfMarble(marble));
   if (isAtFinal) {
-    return store.dispatch("marbles/updateSomeProps", { marble, props: { isAtFinal } });
+    return store.dispatch('marbles/updateSomeProps', { marble, props: { isAtFinal } });
   }
   return Promise.resolve();
 }
@@ -150,11 +150,8 @@ export async function performOnGameOverActions(player: Player) {
 }
 
 export function getKickoutList(player: Player, targetPosition: PositionInBoard): Marble[] {
-  const otherMarblesAtStepPlace = store.getters["marbles/listOtherPlayersMarblesByPosition"](
-    player,
-    targetPosition
-  );
-  const gamePlay = store.getters["settings/gamePlay"];
+  const otherMarblesAtStepPlace = store.getters['marbles/listOtherPlayersMarblesByPosition'](player, targetPosition);
+  const gamePlay = store.getters['settings/gamePlay'];
   return otherMarblesAtStepPlace.filter((m: Marble) => {
     const stepPlace: StepPlace = getStepPlaceOfMarble(m);
     let preventKickout = false;
@@ -172,11 +169,11 @@ export async function kickoutOtherMarbles(marble: Marble, player: Player) {
     const marbleInitial = getInitialStateOfMarble(m1);
     // FIXME: for debugging only:
     // marbleInitial.row = 1;
-    await store.dispatch("marbles/update", marbleInitial);
+    await store.dispatch('marbles/update', marbleInitial);
   }
 }
 
 export function getInitialStateOfMarble(marble: Marble): Marble {
-  const marblesListInitial = store.getters["marbles/listInitial"];
+  const marblesListInitial = store.getters['marbles/listInitial'];
   return marblesListInitial.find((m: Marble) => marble.id === m.id);
 }
