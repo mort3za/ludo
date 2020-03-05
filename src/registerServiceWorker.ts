@@ -9,7 +9,7 @@ const notifyUserAboutUpdate = (worker: any) => {
     close: false,
     onClick: () => {
       console.log('upgrade confirmed');
-      worker.postMessage({ action: 'skipWaiting' });
+      worker.postMessage({ type: 'SKIP_WAITING' });
     }
   });
 };
