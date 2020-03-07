@@ -8,8 +8,9 @@
 import store from '@/store/index';
 import MarbleComponent from '@/components/Marble.vue';
 import { Marble } from '@/types/types';
+import { defineComponent } from '@vue/composition-api';
 
-export default {
+export default defineComponent({
   name: 'marbles',
   components: {
     Marble: MarbleComponent
@@ -24,7 +25,7 @@ export default {
       this.$emit('clickmarble', marble);
     }
   }
-};
+});
 </script>
 
 <style lang="scss" scoped>

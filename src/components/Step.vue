@@ -6,8 +6,9 @@
 
 <script lang="ts">
 import { StepType } from '@/types/types';
+import { defineComponent } from '@vue/composition-api';
 
-export default {
+export default defineComponent({
   name: 'step',
   props: {
     row: {
@@ -35,7 +36,7 @@ export default {
       return result;
     }
   }
-};
+});
 </script>
 
 <style lang="scss" scoped>

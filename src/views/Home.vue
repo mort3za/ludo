@@ -34,8 +34,9 @@
 
 <script lang="ts">
 import store from '@/store/index.ts';
+import { defineComponent } from '@vue/composition-api';
 
-export default {
+export default defineComponent({
   name: 'home',
   data: () => ({
     showBuildInfo: false
@@ -52,7 +53,7 @@ export default {
       return `Build Date: ${this.buildDate}`;
     }
   }
-};
+});
 </script>
 
 <style lang="scss" scoped>

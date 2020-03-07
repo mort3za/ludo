@@ -32,8 +32,9 @@ import store from '@/store/index';
 import Step from '@/components/Step.vue';
 import { StepPlace, Player, StepPlaceProps } from '@/types/types';
 import { STEP_WIDTH, STEP_GUTTER } from '@/constants.ts';
+import { defineComponent } from '@vue/composition-api';
 
-export default {
+export default defineComponent({
   name: 'road',
   components: {
     Step
@@ -72,7 +73,7 @@ export default {
       return this.playerActive.id === player.id;
     }
   }
-};
+});
 </script>
 
 <style lang="scss" scoped>

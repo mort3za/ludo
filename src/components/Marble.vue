@@ -13,8 +13,9 @@
 import { Marble } from '@/types/types';
 import { STEP_WIDTH, STEP_GUTTER } from '@/constants.ts';
 import store from '@/store/index.ts';
+import { defineComponent } from '@vue/composition-api';
 
-export default {
+export default defineComponent({
   name: 'marble',
   data() {
     return {
@@ -54,7 +55,7 @@ export default {
       this.$emit('clickmarble', this.model);
     }
   }
-};
+});
 </script>
 
 <style lang="scss" scoped>

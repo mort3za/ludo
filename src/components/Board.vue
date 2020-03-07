@@ -54,8 +54,9 @@ import {
 } from '@/helpers';
 import { SLEEP_BETWEEN_TURNS, SLEEP_AFTER_TURN_DICE } from '@/constants.ts';
 import { debounce } from 'lodash-es';
+import { defineComponent } from '@vue/composition-api';
 
-export default {
+export default defineComponent({
   name: 'board',
   components: {
     Dice,
@@ -309,7 +310,7 @@ export default {
       window.removeEventListener('resize', this.boardWidthUpdater);
     }
   }
-};
+});
 </script>
 
 <style lang="scss">

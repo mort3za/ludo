@@ -64,8 +64,9 @@
 import store from '@/store/index.ts';
 import { GameStatus, BoardStatus, Player } from '@/types/types.ts';
 import { quitGame, pauseGame } from '@/helpers';
+import { defineComponent } from '@vue/composition-api';
 
-export default {
+export default defineComponent({
   name: 'menu-board',
   data() {
     return {
@@ -98,7 +99,7 @@ export default {
       quitGame();
     }
   }
-};
+});
 </script>
 
 <style lang="scss" scoped>

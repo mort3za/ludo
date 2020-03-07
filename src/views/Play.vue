@@ -6,8 +6,9 @@
 
 <script>
 import Board from '@/components/Board.vue';
+import { defineComponent } from '@vue/composition-api';
 
-export default {
+export default defineComponent({
   components: { Board }
-};
+});
 </script>

@@ -15,8 +15,9 @@
 import { BoardStatus, Player, DiceInfo } from '@/types/types';
 import { STEP_WIDTH, STEP_GUTTER } from '@/constants.ts';
 import store from '@/store/index.ts';
+import { defineComponent } from '@vue/composition-api';
 
-export default {
+export default defineComponent({
   name: 'dice',
   data() {
     return {
@@ -114,7 +115,7 @@ export default {
       return result;
     }
   }
-};
+});
 </script>
 
 <style lang="scss" scoped>
