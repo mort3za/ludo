@@ -33,6 +33,8 @@ import Road from '@/components/Road.vue';
 import Dice from '@/components/Dice.vue';
 import Marbles from '@/components/Marbles.vue';
 import MenuBoard from '@/components/MenuBoard.vue';
+import { Vue, Component } from 'vue-property-decorator';
+import { Player, MoveAction, Marble, BoardStatus, GameStatus, DiceInfo } from '@/types/types';
 import {
   getAvailableActions,
   chooseAction,
@@ -41,15 +43,18 @@ import {
   afterMoveActions,
   moveStepByStep,
   beforeMoveActions,
-  afterFinishTurn
-} from '@/functions/move-helpers.ts';
-import { Vue, Component } from 'vue-property-decorator';
-import { Player, MoveAction, Marble, BoardStatus, GameStatus, DiceInfo } from '@/types/types';
-import { createMoveAction, wait } from '@/functions/general-helpers.ts';
-import { createDiceInfo, getRandom, turnDice } from '@/functions/dice-helpers.ts';
+  afterFinishTurn,
+  createMoveAction,
+  wait,
+  turnDice,
+  setShowMenu,
+  startGame,
+  finishGame,
+  changeTurn,
+  boardWidthUpdater
+} from '@/helpers';
 import { SLEEP_BETWEEN_TURNS, SLEEP_AFTER_TURN_DICE } from '@/constants.ts';
 import { debounce } from 'lodash-es';
-import { setShowMenu, startGame, finishGame, changeTurn, boardWidthUpdater } from '@/functions/board-helpers';
 
 @Component({
   components: {

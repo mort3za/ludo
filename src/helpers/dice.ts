@@ -2,7 +2,7 @@ import { DiceInfo, BoardStatus, Player } from '@/types/types';
 // @ts-ignore
 import MersenneTwister from 'mersenne-twister';
 import store from '@/store/index.ts';
-import { saveGame } from '@/functions/board-helpers.ts';
+import { saveGame } from '@/helpers';
 
 export function createDiceInfo({ value, isDone = false, player }: DiceInfo): DiceInfo {
   const isSix = value === 6;

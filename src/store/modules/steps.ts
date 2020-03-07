@@ -17,7 +17,7 @@ Every step is in [row, column, side, step type] format
 import Vue from 'vue';
 import { StepType, Player, StepPlace, PositionInBoard, StepPlaceProps } from '@/types/types';
 import { listInitial } from '@/store/initials/steps-initial.ts';
-import { isSameStep, getPositionOfStep, isSameStepPlace } from '@/functions/general-helpers';
+import { isSameStep, getPositionOfStep, isSameStepPlace } from '@/helpers';
 
 export default {
   namespaced: true,

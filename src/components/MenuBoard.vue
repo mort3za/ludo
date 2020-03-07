@@ -64,7 +64,7 @@
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import store from '@/store/index.ts';
 import { GameStatus, BoardStatus, Player } from '@/types/types.ts';
-import { quitGame, pauseGame } from '@/functions/board-helpers';
+import { quitGame, pauseGame } from '@/helpers';
 
 @Component
 export default class BoardComponent extends Vue {

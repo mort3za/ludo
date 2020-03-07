@@ -12,7 +12,7 @@ import {
   DiceInfo,
   StepPlaceProps
 } from '@/types/types';
-import { getDistance, getPositionAfterMove, getStepsOfMoveAction } from '@/functions/path-helpers.ts';
+import { getDistance, getPositionAfterMove, getStepsOfMoveAction } from '@/helpers';
 import {
   getPositionOfMarble,
   getPositionOfStep,
@@ -25,10 +25,10 @@ import {
   getStepPlaceOfPosition,
   getInitialStateOfMarble,
   getStepPlaceOfMarble
-} from '@/functions/general-helpers.ts';
+} from '@/helpers';
 import { MARBLE_ANIMATION_DURATION, SLEEP_BETWEEN_MOVES, PATH_STEPS_COUNT } from '@/constants.ts';
 import { cloneDeep, maxBy } from 'lodash-es';
-import { setDiceAsDone } from './dice-helpers';
+import { setDiceAsDone } from './dice';
 
 /**
  * Find all available moves

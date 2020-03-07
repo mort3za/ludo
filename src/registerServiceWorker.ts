@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { register } from 'register-service-worker';
-import { notify } from './functions/general-helpers';
+import { notify } from './helpers';
 
 const notifyUserAboutUpdate = (worker: any) => {
   notify({
