@@ -7,23 +7,24 @@
 <script lang="ts">
 import store from '@/store/index';
 import MarbleComponent from '@/components/Marble.vue';
-import { Vue, Component } from 'vue-property-decorator';
 import { Marble } from '@/types/types';
 
-@Component({
+export default {
+  name: 'marbles',
   components: {
     Marble: MarbleComponent
+  },
+  computed: {
+    list() {
+      return store.getters['marbles/list'];
+    }
+  },
+  methods: {
+    onClickMarble(marble: Marble) {
+      this.$emit('clickmarble', marble);
+    }
   }
-})
-export default class MarblesComponent extends Vue {
-  get list() {
-    return store.getters['marbles/list'];
-  }
-
-  onClickMarble(marble: Marble) {
-    this.$emit('clickmarble', marble);
-  }
-}
+};
 </script>
 
 <style lang="scss" scoped>

@@ -33,25 +33,26 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator';
 import store from '@/store/index.ts';
-import Board from '@/components/Board.vue';
 
-@Component
-export default class HomeComponent extends Vue {
-  showBuildInfo = false;
-
-  get appVersion() {
-    return store.getters['appVersion'];
+export default {
+  name: 'home',
+  data: () => ({
+    showBuildInfo: false
+  }),
+  computed: {
+    appVersion() {
+      return store.getters['appVersion'];
+    },
+    buildDate() {
+      const date = new Date(store.getters['buildDate']);
+      return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+    },
+    appVersionTitle() {
+      return `Build Date: ${this.buildDate}`;
+    }
   }
-  get buildDate() {
-    const date = new Date(store.getters['buildDate']);
-    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
-  }
-  get appVersionTitle() {
-    return `Build Date: ${this.buildDate}`;
-  }
-}
+};
 </script>
 
 <style lang="scss" scoped>

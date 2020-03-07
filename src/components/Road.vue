@@ -30,44 +30,49 @@
 <script lang="ts">
 import store from '@/store/index';
 import Step from '@/components/Step.vue';
-import { Vue, Component, Prop } from 'vue-property-decorator';
 import { StepPlace, Player, StepPlaceProps } from '@/types/types';
 import { STEP_WIDTH, STEP_GUTTER } from '@/constants.ts';
 
-@Component({
+export default {
+  name: 'road',
   components: {
     Step
-  }
-})
-export default class RoadComponent extends Vue {
-  StepPlaceProps = StepPlaceProps;
-  get playerActive(): Player {
-    return store.getters['board/playerActive'];
-  }
-  get steps(): StepPlace[] {
-    return store.getters['steps/allSteps'];
-  }
-  get players(): Player[] {
-    return store.getters['players/list'];
-  }
-
-  getStepStyle(step: StepPlace) {
-    const row = step[StepPlaceProps.ROW];
-    const column = step[StepPlaceProps.COLUMN];
-
+  },
+  data() {
     return {
-      top: `${(row - 1) * (STEP_WIDTH + STEP_GUTTER) + '%'}`,
-      left: `${(column - 1) * (STEP_WIDTH + STEP_GUTTER) + '%'}`
+      StepPlaceProps
     };
-  }
-
-  isPlayerActive(player: Player): boolean {
-    if (!this.playerActive) {
-      return false;
+  },
+  computed: {
+    playerActive(): Player {
+      return store.getters['board/playerActive'];
+    },
+    steps(): StepPlace[] {
+      return store.getters['steps/allSteps'];
+    },
+    players(): Player[] {
+      return store.getters['players/list'];
     }
-    return this.playerActive.id === player.id;
+  },
+  methods: {
+    getStepStyle(step: StepPlace) {
+      const row = step[StepPlaceProps.ROW];
+      const column = step[StepPlaceProps.COLUMN];
+
+      return {
+        top: `${(row - 1) * (STEP_WIDTH + STEP_GUTTER) + '%'}`,
+        left: `${(column - 1) * (STEP_WIDTH + STEP_GUTTER) + '%'}`
+      };
+    },
+
+    isPlayerActive(player: Player): boolean {
+      if (!this.playerActive) {
+        return false;
+      }
+      return this.playerActive.id === player.id;
+    }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

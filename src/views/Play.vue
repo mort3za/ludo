@@ -6,8 +6,8 @@
 
 <script>
 import Board from '@/components/Board.vue';
+
 export default {
-  name: 'page-home',
   components: { Board }
 };
 </script>

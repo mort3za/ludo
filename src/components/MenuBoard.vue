@@ -61,40 +61,44 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
 import store from '@/store/index.ts';
 import { GameStatus, BoardStatus, Player } from '@/types/types.ts';
 import { quitGame, pauseGame } from '@/helpers';
 
-@Component
-export default class BoardComponent extends Vue {
-  BoardStatus = BoardStatus;
-  GameStatus = GameStatus;
-
-  get playerWinner(): Player {
-    return store.getters['board/playerWinner'];
+export default {
+  name: 'menu-board',
+  data() {
+    return {
+      BoardStatus,
+      GameStatus
+    };
+  },
+  computed: {
+    playerWinner(): Player {
+      return store.getters['board/playerWinner'];
+    },
+    boardStatus(): BoardStatus {
+      return store.getters['board/boardStatus'];
+    },
+    gameStatus(): GameStatus {
+      return store.getters['gameStatus'];
+    }
+  },
+  methods: {
+    onClickStart() {
+      this.$emit('start_game');
+    },
+    onClickPause() {
+      pauseGame();
+    },
+    async onClickResume() {
+      this.$emit('resume_game');
+    },
+    onClickQuit() {
+      quitGame();
+    }
   }
-
-  get boardStatus(): BoardStatus {
-    return store.getters['board/boardStatus'];
-  }
-  get gameStatus(): GameStatus {
-    return store.getters['gameStatus'];
-  }
-
-  onClickStart() {
-    this.$emit('start_game');
-  }
-  onClickPause() {
-    pauseGame();
-  }
-  async onClickResume() {
-    this.$emit('resume_game');
-  }
-  onClickQuit() {
-    quitGame();
-  }
-}
+};
 </script>
 
 <style lang="scss" scoped>

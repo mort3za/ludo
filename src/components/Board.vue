@@ -33,7 +33,6 @@ import Road from '@/components/Road.vue';
 import Dice from '@/components/Dice.vue';
 import Marbles from '@/components/Marbles.vue';
 import MenuBoard from '@/components/MenuBoard.vue';
-import { Vue, Component } from 'vue-property-decorator';
 import { Player, MoveAction, Marble, BoardStatus, GameStatus, DiceInfo } from '@/types/types';
 import {
   getAvailableActions,
@@ -56,264 +55,261 @@ import {
 import { SLEEP_BETWEEN_TURNS, SLEEP_AFTER_TURN_DICE } from '@/constants.ts';
 import { debounce } from 'lodash-es';
 
-@Component({
+export default {
+  name: 'board',
   components: {
     Dice,
     Road,
     Marbles,
     MenuBoard
-  }
-})
-export default class BoardComponent extends Vue {
-  boardWidthUpdaterDebounced = debounce(this.boardWidthUpdater, 150);
-
+  },
   mounted() {
     this.init();
     this.continueGame();
-  }
+  },
   destroyed() {
     this.removeResizeListener();
     store.dispatch('updateGameStatus', GameStatus.NOT_STARTED);
-  }
-
-  get shouldShowMenu(): boolean {
-    return store.getters['board/shouldShowMenu'];
-  }
-  get boardStatus(): BoardStatus {
-    return store.getters['board/boardStatus'];
-  }
-  get playerActive(): Player {
-    return store.getters['board/playerActive'];
-  }
-  get playerWinner(): Player {
-    return store.getters['board/playerWinner'];
-  }
-  get diceInfo(): DiceInfo {
-    return store.getters['board/diceInfo'];
-  }
-  get isGameOver(): boolean {
-    if (!this.playerActive) {
-      return false;
+  },
+  computed: {
+    shouldShowMenu(): boolean {
+      return store.getters['board/shouldShowMenu'];
+    },
+    boardStatus(): BoardStatus {
+      return store.getters['board/boardStatus'];
+    },
+    playerActive(): Player {
+      return store.getters['board/playerActive'];
+    },
+    playerWinner(): Player {
+      return store.getters['board/playerWinner'];
+    },
+    diceInfo(): DiceInfo {
+      return store.getters['board/diceInfo'];
+    },
+    isGameOver(): boolean {
+      if (!this.playerActive) {
+        return false;
+      }
+      return store.getters['marbles/isAllAtFinal'](this.playerActive);
+    },
+    gameStatus(): GameStatus {
+      return store.getters['gameStatus'];
+    },
+    isPreviousMoveCompleted(): boolean {
+      return this.diceInfo.isDone;
     }
-    return store.getters['marbles/isAllAtFinal'](this.playerActive);
-  }
-  get gameStatus(): GameStatus {
-    return store.getters['gameStatus'];
-  }
-  get isPreviousMoveCompleted(): boolean {
-    return this.diceInfo.isDone;
-  }
+  },
+  methods: {
+    init() {
+      this.boardWidthUpdater();
+      this.resizeListener();
+      this.focusBoard();
+    },
 
-  init() {
-    this.boardWidthUpdater();
-    this.resizeListener();
-    this.focusBoard();
-  }
+    continueGame() {
+      if (this.gameStatus === GameStatus.PLAYING) {
+        console.log('continue game');
+        this.focusBoard();
+        this.playTurn();
+      }
+    },
 
-  continueGame() {
-    if (this.gameStatus === GameStatus.PLAYING) {
-      console.log('continue game');
+    focusBoard() {
+      this.$el.focus();
+    },
+
+    resumePromise() {
+      return new Promise((resolve, reject) => {
+        if (this.gameStatus === GameStatus.PLAYING) {
+          resolve();
+        } else if (this.gameStatus === GameStatus.PAUSED) {
+          this.$once('__resume_game', () => {
+            resolve();
+          });
+        }
+      });
+    },
+
+    async resumeGame() {
+      await store.dispatch('updateGameStatus', GameStatus.PLAYING);
+      setShowMenu(false);
+      this.focusBoard();
+      this.$emit('__resume_game');
+    },
+
+    async _startGame() {
+      await startGame();
       this.focusBoard();
       this.playTurn();
-    }
-  }
+    },
 
-  focusBoard() {
-    // @ts-ignore
-    this.$el.focus();
-  }
-
-  resumePromise() {
-    return new Promise((resolve, reject) => {
-      if (this.gameStatus === GameStatus.PLAYING) {
-        resolve();
-      } else if (this.gameStatus === GameStatus.PAUSED) {
-        this.$once('__resume_game', () => {
-          resolve();
-        });
+    shouldChangeTurn(): boolean {
+      if (!this.diceInfo.value) {
+        return true;
       }
-    });
-  }
+      if (this.isPreviousMoveCompleted === false) {
+        return false;
+      }
 
-  async resumeGame() {
-    await store.dispatch('updateGameStatus', GameStatus.PLAYING);
-    setShowMenu(false);
-    this.focusBoard();
-    this.$emit('__resume_game');
-  }
-
-  async _startGame() {
-    await startGame();
-    this.focusBoard();
-    this.playTurn();
-  }
-
-  shouldChangeTurn(): boolean {
-    if (!this.diceInfo.value) {
+      if (this.diceInfo.hasReward) {
+        return false;
+      }
       return true;
-    }
-    if (this.isPreviousMoveCompleted === false) {
-      return false;
-    }
+    },
 
-    if (this.diceInfo.hasReward) {
-      return false;
-    }
-    return true;
-  }
+    menuToggle() {
+      setShowMenu(!this.shouldShowMenu);
+    },
 
-  menuToggle() {
-    setShowMenu(!this.shouldShowMenu);
-  }
+    async playTurn() {
+      // console.log("------------------------------------ play turn");
+      if (this.isGameOver) {
+        finishGame();
+        return;
+      }
+      await this.resumePromise();
+      if (this.shouldChangeTurn()) {
+        changeTurn();
+      }
+      await this.turnDicePromise();
 
-  async playTurn() {
-    // console.log("------------------------------------ play turn");
-    if (this.isGameOver) {
-      finishGame();
-      return;
-    }
-    await this.resumePromise();
-    if (this.shouldChangeTurn()) {
-      changeTurn();
-    }
-    await this.turnDicePromise();
+      // TODO: remove if is unnecessary
+      await this.sleepBetweenTurns();
 
-    // TODO: remove if is unnecessary
-    await this.sleepBetweenTurns();
+      const performActionsOfPlayer = this.playerActive.isAI
+        ? this.performActionsOfPlayerAI
+        : this.performActionsOfPlayerNoAI;
+      await performActionsOfPlayer();
+    },
 
-    const performActionsOfPlayer = this.playerActive.isAI
-      ? this.performActionsOfPlayerAI
-      : this.performActionsOfPlayerNoAI;
-    await performActionsOfPlayer();
-  }
+    async sleepBetweenTurns() {
+      await wait(SLEEP_BETWEEN_TURNS);
+    },
 
-  async sleepBetweenTurns() {
-    await wait(SLEEP_BETWEEN_TURNS);
-  }
+    async performActionsOfPlayerAI() {
+      const availableActions = this.getAvailableActions();
 
-  async performActionsOfPlayerAI() {
-    const availableActions = this.getAvailableActions();
+      if (availableActions.length === 0) {
+        // console.log("---- no action ----");
+        await afterFinishTurn();
+        this.playTurn();
+      } else if (this.shouldAutoMove(availableActions)) {
+        // console.log("auto move");
+        await this.autoMove(availableActions, this.playerActive);
+        await afterFinishTurn();
+        this.playTurn();
+      }
+    },
 
-    if (availableActions.length === 0) {
-      // console.log("---- no action ----");
+    async performActionsOfPlayerNoAI() {
+      const availableActions = this.getAvailableActions();
+
+      // console.log("Human move (wait or skip)");
+      if (availableActions.length > 0) {
+        this.setMoveableMarbles(availableActions);
+        store.dispatch('board/update', {
+          key: 'boardStatus',
+          value: BoardStatus.PLAYER_IS_THINKING
+        });
+      } else {
+        await afterFinishTurn();
+        this.playTurn();
+      }
+    },
+
+    async onClickMarble(marble: Marble) {
+      if (!canMove(marble, this.playerActive)) return;
+      const moveAction = createMoveAction({
+        player: this.playerActive,
+        marble,
+        diceInfo: this.diceInfo
+      });
+
+      beforeMoveActions(moveAction, this.playerActive);
+      const updatedMoveAction = await this.move(moveAction);
+      await afterMoveActions(updatedMoveAction, this.playerActive);
       await afterFinishTurn();
       this.playTurn();
-    } else if (this.shouldAutoMove(availableActions)) {
-      // console.log("auto move");
-      await this.autoMove(availableActions, this.playerActive);
-      await afterFinishTurn();
-      this.playTurn();
-    }
-  }
+    },
 
-  async performActionsOfPlayerNoAI() {
-    const availableActions = this.getAvailableActions();
+    setMoveableMarbles(availableActions: MoveAction[]): void {
+      const marbles: Marble[] = availableActions.map(action => action.marble);
+      store.dispatch('marbles/setMoveableItems', marbles);
+    },
 
-    // console.log("Human move (wait or skip)");
-    if (availableActions.length > 0) {
-      this.setMoveableMarbles(availableActions);
+    shouldAutoMove(availableActions: MoveAction[]): boolean {
+      return this.playerActive.isAI || !hasMultipleAvailableActions(availableActions);
+    },
+
+    async autoMove(availableActions: MoveAction[], player: Player) {
+      const moveAction = chooseAction(availableActions, player);
+      beforeMoveActions(moveAction, this.playerActive);
+      const updatedMoveAction = await this.move(moveAction);
+      await afterMoveActions(updatedMoveAction, this.playerActive);
+    },
+
+    async move(moveAction: MoveAction): Promise<MoveAction> {
+      const updatedMoveAction = await moveStepByStep(moveAction);
+      // console.log("* move done *", moveAction);
+      return updatedMoveAction;
+    },
+
+    getAvailableActions(): MoveAction[] {
+      return getAvailableActions({
+        player: this.playerActive,
+        diceInfo: this.diceInfo
+      });
+    },
+
+    async turnDicePromise() {
+      // don't turn (after refresh when game is running)
+      if (this.isPreviousMoveCompleted === false) {
+        console.log('dont turn');
+        return Promise.resolve();
+      }
+
+      // waiting
       store.dispatch('board/update', {
         key: 'boardStatus',
-        value: BoardStatus.PLAYER_IS_THINKING
+        value: BoardStatus.WAITING_TURN_DICE
       });
-    } else {
-      await afterFinishTurn();
-      this.playTurn();
+
+      // AI: auto turn
+      if (this.playerActive.isAI) {
+        return await this._turnDice();
+      }
+      // noAI: click on dice:
+      return new Promise(resolve => {
+        this.$once('__turn_dice', resolve);
+      });
+    },
+
+    async _turnDice() {
+      await turnDice(this.playerActive);
+      this.$emit('__turn_dice');
+      await wait(SLEEP_AFTER_TURN_DICE);
+    },
+
+    keySpacePressed() {
+      if (!this.playerActive.isMain || this.boardStatus != BoardStatus.WAITING_TURN_DICE) {
+        return;
+      }
+      this._turnDice();
+    },
+
+    boardWidthUpdater: debounce(function() {
+      boardWidthUpdater({ boardElement: this.$refs.boardInner });
+    }, 150),
+
+    resizeListener() {
+      window.addEventListener('resize', this.boardWidthUpdater);
+    },
+    removeResizeListener() {
+      window.removeEventListener('resize', this.boardWidthUpdater);
     }
   }
-
-  async onClickMarble(marble: Marble) {
-    if (!canMove(marble, this.playerActive)) return;
-    const moveAction = createMoveAction({
-      player: this.playerActive,
-      marble,
-      diceInfo: this.diceInfo
-    });
-
-    beforeMoveActions(moveAction, this.playerActive);
-    const updatedMoveAction = await this.move(moveAction);
-    await afterMoveActions(updatedMoveAction, this.playerActive);
-    await afterFinishTurn();
-    this.playTurn();
-  }
-
-  setMoveableMarbles(availableActions: MoveAction[]): void {
-    const marbles: Marble[] = availableActions.map(action => action.marble);
-    store.dispatch('marbles/setMoveableItems', marbles);
-  }
-
-  shouldAutoMove(availableActions: MoveAction[]): boolean {
-    return this.playerActive.isAI || !hasMultipleAvailableActions(availableActions);
-  }
-
-  async autoMove(availableActions: MoveAction[], player: Player) {
-    const moveAction = chooseAction(availableActions, player);
-    beforeMoveActions(moveAction, this.playerActive);
-    const updatedMoveAction = await this.move(moveAction);
-    await afterMoveActions(updatedMoveAction, this.playerActive);
-  }
-
-  async move(moveAction: MoveAction): Promise<MoveAction> {
-    const updatedMoveAction = await moveStepByStep(moveAction);
-    // console.log("* move done *", moveAction);
-    return updatedMoveAction;
-  }
-
-  getAvailableActions(): MoveAction[] {
-    return getAvailableActions({
-      player: this.playerActive,
-      diceInfo: this.diceInfo
-    });
-  }
-
-  async turnDicePromise() {
-    // don't turn (after refresh when game is running)
-    if (this.isPreviousMoveCompleted === false) {
-      console.log('dont turn');
-      return Promise.resolve();
-    }
-
-    // waiting
-    store.dispatch('board/update', {
-      key: 'boardStatus',
-      value: BoardStatus.WAITING_TURN_DICE
-    });
-
-    // AI: auto turn
-    if (this.playerActive.isAI) {
-      return await this._turnDice();
-    }
-    // noAI: click on dice:
-    return new Promise(resolve => {
-      this.$once('__turn_dice', resolve);
-    });
-  }
-
-  async _turnDice() {
-    await turnDice(this.playerActive);
-    this.$emit('__turn_dice');
-    await wait(SLEEP_AFTER_TURN_DICE);
-  }
-
-  keySpacePressed() {
-    if (!this.playerActive.isMain || this.boardStatus != BoardStatus.WAITING_TURN_DICE) {
-      return;
-    }
-    this._turnDice();
-  }
-
-  boardWidthUpdater() {
-    // @ts-ignore
-    boardWidthUpdater({ boardElement: this.$refs.boardInner });
-  }
-
-  resizeListener() {
-    window.addEventListener('resize', this.boardWidthUpdaterDebounced);
-  }
-  removeResizeListener() {
-    window.removeEventListener('resize', this.boardWidthUpdaterDebounced);
-  }
-}
+};
 </script>
 
 <style lang="scss">

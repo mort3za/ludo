@@ -5,33 +5,37 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
 import { StepType } from '@/types/types';
 
-@Component
-export default class StepComponent extends Vue {
-  @Prop({ type: Number, required: true })
-  public row!: number;
+export default {
+  name: 'step',
+  props: {
+    row: {
+      required: true,
+      type: Number
+    },
+    column: {
+      required: true,
+      type: Number
+    },
+    side: {
+      required: true,
+      type: Number
+    },
+    types: Array as () => StepType[]
+  },
+  methods: {
+    getClasses() {
+      const result = [];
 
-  @Prop({ type: Number, required: true })
-  public column!: number;
-
-  @Prop({ type: Number, required: true })
-  public side!: number;
-
-  @Prop({ type: Array as () => StepType[], required: true })
-  public types!: StepType[];
-
-  getClasses() {
-    const result = [];
-
-    this.types.forEach(type => {
-      result.push(`type-${type}`);
-    });
-    result.push(`side-${this.side}`);
-    return result;
+      this.types.forEach(type => {
+        result.push(`type-${type}`);
+      });
+      result.push(`side-${this.side}`);
+      return result;
+    }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>

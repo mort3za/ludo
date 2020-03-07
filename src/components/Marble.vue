@@ -10,45 +10,51 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
-import { Marble, PositionInBoard } from '@/types/types';
+import { Marble } from '@/types/types';
 import { STEP_WIDTH, STEP_GUTTER } from '@/constants.ts';
 import store from '@/store/index.ts';
 
-@Component
-export default class MarbleComponent extends Vue {
-  noAnimation = false;
-
-  @Prop({ type: Object as () => Marble })
-  public model!: Marble;
-
+export default {
+  name: 'marble',
+  data() {
+    return {
+      noAnimation: false
+    };
+  },
+  props: {
+    model: {
+      type: Object as () => Marble
+    }
+  },
   mounted() {
     // no animation on refresh page
     if (this.model.isAtFinal) {
       this.noAnimation = true;
     }
-  }
-
-  get boardWidth(): number {
-    return store.getters['board/boardWidth'];
-  }
-
-  getWrapperStyle() {
-    const column = this.model.column;
-    const row = this.model.row;
-    const moveUnit = (STEP_WIDTH + STEP_GUTTER) * this.boardWidth;
-    return {
-      transform: `
+  },
+  computed: {
+    boardWidth(): number {
+      return store.getters['board/boardWidth'];
+    }
+  },
+  methods: {
+    getWrapperStyle() {
+      const column = this.model.column;
+      const row = this.model.row;
+      const moveUnit = (STEP_WIDTH + STEP_GUTTER) * this.boardWidth;
+      return {
+        transform: `
         translateX(${(column - 1) * (moveUnit / 100) + 'px'})
         translateY(${(row - 1) * (moveUnit / 100) + 'px'})
         `
-    };
-  }
+      };
+    },
 
-  onClickMarble() {
-    this.$emit('clickmarble', this.model);
+    onClickMarble() {
+      this.$emit('clickmarble', this.model);
+    }
   }
-}
+};
 </script>
 
 <style lang="scss" scoped>
