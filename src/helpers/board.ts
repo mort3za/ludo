@@ -1,9 +1,8 @@
 import store from '@/store/index.ts';
 import { BoardStatus, GameStatus, Player } from '@/types/types';
-import { getRandom } from './dice-helpers';
+import { getRandom, wait } from '.';
 import router from '@/router';
 import { STORAGE_KEY, SLEEP_BEFORE_START_GAME } from '@/constants';
-import { wait } from './general-helpers';
 
 export function finishGame() {
   store.dispatch('board/update', {

@@ -1,6 +1,6 @@
 import store from '@/store/index';
 import { StepPlace, PositionInBoard, Player, MoveAction, StepPlaceProps } from '@/types/types';
-import { isSameStep, getPositionOfStep } from '@/functions/general-helpers.ts';
+import { isSameStep, getPositionOfStep } from '@/helpers';
 
 export function getDistance(position1: PositionInBoard, position2: PositionInBoard, player: Player): number {
   const playerPath = store.getters['steps/allPaths'](player);

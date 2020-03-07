@@ -12,7 +12,7 @@ import {
   DiceInfo,
   StepPlaceProps
 } from '@/types/types';
-import { getPositionAfterMove } from '@/functions/path-helpers.ts';
+import { getPositionAfterMove } from '@/helpers';
 import store from '@/store/index';
 
 export function notify(options: any = {}) {
