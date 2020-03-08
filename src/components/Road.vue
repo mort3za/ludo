@@ -28,11 +28,11 @@
 </template>
 
 <script lang="ts">
-import store from '@/store/index';
 import Step from '@/components/Step.vue';
 import { StepPlace, Player, StepPlaceProps } from '@/types/types';
 import { STEP_WIDTH, STEP_GUTTER } from '@/constants.ts';
 import { defineComponent } from '@vue/composition-api';
+import { useGetters } from '@u3u/vue-hooks';
 
 export default defineComponent({
   name: 'road',
@@ -44,19 +44,15 @@ export default defineComponent({
       StepPlaceProps
     };
   },
-  computed: {
-    playerActive(): Player {
-      return store.getters['board/playerActive'];
-    },
-    steps(): StepPlace[] {
-      return store.getters['steps/allSteps'];
-    },
-    players(): Player[] {
-      return store.getters['players/list'];
-    }
-  },
-  methods: {
-    getStepStyle(step: StepPlace) {
+  setup() {
+    const getters = {
+      ...useGetters('board', ['playerActive']),
+      ...useGetters(['steps/allSteps']),
+      ...useGetters(['players/list'])
+    };
+    const playerActive = (getters.playerActive as unknown) as Player;
+
+    function getStepStyle(step: StepPlace) {
       const row = step[StepPlaceProps.ROW];
       const column = step[StepPlaceProps.COLUMN];
 
@@ -64,14 +60,21 @@ export default defineComponent({
         top: `${(row - 1) * (STEP_WIDTH + STEP_GUTTER) + '%'}`,
         left: `${(column - 1) * (STEP_WIDTH + STEP_GUTTER) + '%'}`
       };
-    },
+    }
 
-    isPlayerActive(player: Player): boolean {
-      if (!this.playerActive) {
+    function isPlayerActive(player: Player) {
+      if (!playerActive) {
         return false;
       }
-      return this.playerActive.id === player.id;
+      return playerActive.id === player.id;
     }
+
+    return {
+      isPlayerActive,
+      getStepStyle,
+      players: getters['players/list'],
+      steps: getters['steps/allSteps']
+    };
   }
 });
 </script>

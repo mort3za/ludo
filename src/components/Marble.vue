@@ -13,7 +13,7 @@
 import { Marble } from '@/types/types';
 import { STEP_WIDTH, STEP_GUTTER } from '@/constants.ts';
 import { defineComponent, onMounted, ref, computed } from '@vue/composition-api';
-import { useStore } from '@u3u/vue-hooks';
+import { useStore, useGetters } from '@u3u/vue-hooks';
 
 export default defineComponent({
   name: 'marble',
@@ -22,10 +22,11 @@ export default defineComponent({
       type: Object as () => Marble
     }
   },
-  setup(props, context) {
-    const store = useStore();
+  setup(props: { model: Marble }, context) {
+    const getters = {
+      ...useGetters('board', ['boardWidth'])
+    };
     const noAnimation = ref(false);
-    const boardWidth = computed(() => store.value.getters['board/boardWidth']) as unknown;
 
     onMounted(() => {
       // no animation on refresh page
@@ -37,7 +38,7 @@ export default defineComponent({
     const getWrapperStyle = () => {
       const column = props.model.column;
       const row = props.model.row;
-      const moveUnit = (STEP_WIDTH + STEP_GUTTER) * boardWidth.value;
+      const moveUnit = (STEP_WIDTH + STEP_GUTTER) * getters.boardWidth.value;
       return {
         transform: `
         translateX(${(column - 1) * (moveUnit / 100) + 'px'})
