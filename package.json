@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@types/lodash-es": "^4.17.3",
+    "@u3u/vue-hooks": "^2.0.1",
     "@vue/composition-api": "^0.4.0",
     "bootstrap": "4.3.1",
     "core-js": "^3.6.4",

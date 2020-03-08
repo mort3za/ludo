@@ -11,30 +11,29 @@ import { defineComponent } from '@vue/composition-api';
 export default defineComponent({
   name: 'step',
   props: {
-    row: {
-      required: true,
-      type: Number
-    },
-    column: {
-      required: true,
-      type: Number
-    },
     side: {
       required: true,
       type: Number
     },
-    types: Array as () => StepType[]
+    types: {
+      type: Array as () => StepType[],
+      default: []
+    }
   },
-  methods: {
-    getClasses() {
-      const result = [];
+  setup(props) {
+    const getClasses = function() {
+      const result: string[] = [];
 
-      this.types.forEach(type => {
+      props.types.forEach(type => {
         result.push(`type-${type}`);
       });
-      result.push(`side-${this.side}`);
+      result.push(`side-${props.side}`);
       return result;
-    }
+    };
+
+    return {
+      getClasses
+    };
   }
 });
 </script>

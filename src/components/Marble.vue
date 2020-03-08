@@ -12,48 +12,49 @@
 <script lang="ts">
 import { Marble } from '@/types/types';
 import { STEP_WIDTH, STEP_GUTTER } from '@/constants.ts';
-import store from '@/store/index.ts';
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, onMounted, ref, computed } from '@vue/composition-api';
+import { useStore } from '@u3u/vue-hooks';
 
 export default defineComponent({
   name: 'marble',
-  data() {
-    return {
-      noAnimation: false
-    };
-  },
   props: {
     model: {
       type: Object as () => Marble
     }
   },
-  mounted() {
-    // no animation on refresh page
-    if (this.model.isAtFinal) {
-      this.noAnimation = true;
-    }
-  },
-  computed: {
-    boardWidth(): number {
-      return store.getters['board/boardWidth'];
-    }
-  },
-  methods: {
-    getWrapperStyle() {
-      const column = this.model.column;
-      const row = this.model.row;
-      const moveUnit = (STEP_WIDTH + STEP_GUTTER) * this.boardWidth;
+  setup(props, context) {
+    const store = useStore();
+    const noAnimation = ref(false);
+    const boardWidth = computed(() => store.value.getters['board/boardWidth']) as unknown;
+
+    onMounted(() => {
+      // no animation on refresh page
+      if (props.model.isAtFinal) {
+        noAnimation.value = true;
+      }
+    });
+
+    const getWrapperStyle = () => {
+      const column = props.model.column;
+      const row = props.model.row;
+      const moveUnit = (STEP_WIDTH + STEP_GUTTER) * boardWidth.value;
       return {
         transform: `
         translateX(${(column - 1) * (moveUnit / 100) + 'px'})
         translateY(${(row - 1) * (moveUnit / 100) + 'px'})
         `
       };
-    },
+    };
 
-    onClickMarble() {
-      this.$emit('clickmarble', this.model);
-    }
+    const onClickMarble = () => {
+      context.emit('clickmarble', props.model);
+    };
+
+    return {
+      noAnimation,
+      onClickMarble,
+      getWrapperStyle
+    };
   }
 });
 </script>
