@@ -12,108 +12,103 @@
 </template>
 
 <script lang="ts">
-import { BoardStatus, Player, DiceInfo } from '@/types/types';
+import { BoardStatus, Player } from '@/types/types';
 import { STEP_WIDTH, STEP_GUTTER } from '@/constants.ts';
-import store from '@/store/index.ts';
-import { defineComponent } from '@vue/composition-api';
+import { defineComponent, computed, Ref } from '@vue/composition-api';
+import { useGetters } from '@u3u/vue-hooks';
 
 export default defineComponent({
   name: 'dice',
-  data() {
-    return {
-      BoardStatus
+  setup(props, context) {
+    const getters = {
+      ...useGetters('board', ['playerActive', 'diceInfo', 'boardWidth', 'boardStatus'])
     };
-  },
-  computed: {
-    side(): number {
-      if (!this.playerActive) {
+    const playerActive = (getters.playerActive as unknown) as Ref<Player>;
+    const boardWidth = (getters.boardWidth as unknown) as Ref<number>;
+    const boardStatus = (getters.boardStatus as unknown) as Ref<number>;
+    const side = (computed(() => {
+      if (!playerActive.value) {
         return 0;
       }
-      return this.playerActive.side;
-    },
+      return playerActive.value.side;
+    }) as unknown) as Ref<number>;
 
-    playerActive(): Player {
-      return store.getters['board/playerActive'];
-    },
+    const shouldShowWaitingDice = computed(() => {
+      return [BoardStatus.WAITING_TURN_DICE].includes(boardStatus.value) && playerActive.value.isMain;
+    });
 
-    diceInfo(): DiceInfo {
-      return store.getters['board/diceInfo'];
-    },
-
-    boardWidth(): number {
-      return store.getters['board/boardWidth'];
-    },
-
-    boardStatus(): number {
-      return store.getters['board/boardStatus'];
-    },
-
-    shouldShowWaitingDice() {
-      return [BoardStatus.WAITING_TURN_DICE].includes(this.boardStatus) && this.playerActive.isMain;
-    },
-
-    shouldShowResult() {
+    const shouldShowResult = computed(() => {
       const result = [BoardStatus.TURNING_DICE, BoardStatus.PLAYER_IS_THINKING, BoardStatus.MOVING_MARBLES].includes(
-        this.boardStatus
+        boardStatus.value
       );
 
       return result;
-    }
-  },
-  methods: {
-    onClickTurn() {
-      this.$emit('turn_dice');
-    },
+    });
 
-    getDiceStyle() {
-      const result: any = {};
+    function onClickTurn() {
+      context.emit('turn_dice');
+    }
+
+    function getDiceStyle() {
+      const result: Record<string, any> = {};
       const moveUnit = STEP_WIDTH + STEP_GUTTER;
       let moveAmountX = 0;
       let moveAmountY = 0;
-      if (this.side === 1) {
+      if (side.value === 1) {
         moveAmountX = 2.5 * moveUnit;
         moveAmountY = 7.5 * moveUnit;
-      } else if (this.side === 2) {
+      } else if (side.value === 2) {
         moveAmountX = 2.5 * moveUnit;
         moveAmountY = 2.5 * moveUnit;
-      } else if (this.side === 3) {
+      } else if (side.value === 3) {
         moveAmountX = 7.5 * moveUnit;
         moveAmountY = 2.5 * moveUnit;
-      } else if (this.side === 4) {
+      } else if (side.value === 4) {
         moveAmountX = 7.5 * moveUnit;
         moveAmountY = 7.5 * moveUnit;
       }
       result.transform = `
-        translateX(${(moveAmountX / 100) * this.boardWidth}px)
-        translateY(${(moveAmountY / 100) * this.boardWidth}px)
+        translateX(${(moveAmountX / 100) * boardWidth.value}px)
+        translateY(${(moveAmountY / 100) * boardWidth.value}px)
         `;
       return result;
-    },
+    }
 
-    getTurnButtonStyle() {
-      const result: any = {};
+    function getTurnButtonStyle() {
+      const result: Record<string, any> = {};
       const moveUnit = STEP_WIDTH + STEP_GUTTER;
       let moveAmountX = 0;
       let moveAmountY = 0;
-      if (this.side === 1) {
+      if (side.value === 1) {
         moveAmountX = 2.5 * moveUnit;
         moveAmountY = 7.5 * moveUnit;
-      } else if (this.side === 2) {
+      } else if (side.value === 2) {
         moveAmountX = 2.5 * moveUnit;
         moveAmountY = 2.5 * moveUnit;
-      } else if (this.side === 3) {
+      } else if (side.value === 3) {
         moveAmountX = 7.5 * moveUnit;
         moveAmountY = 2.5 * moveUnit;
-      } else if (this.side === 4) {
+      } else if (side.value === 4) {
         moveAmountX = 7.5 * moveUnit;
         moveAmountY = 7.5 * moveUnit;
       }
       result.transform = `
-        translateX(${(moveAmountX / 100) * this.boardWidth}px)
-        translateY(${(moveAmountY / 100) * this.boardWidth}px)
+        translateX(${(moveAmountX / 100) * boardWidth.value}px)
+        translateY(${(moveAmountY / 100) * boardWidth.value}px)
         `;
       return result;
     }
+
+    return {
+      ...getters,
+      side,
+      shouldShowWaitingDice,
+      shouldShowResult,
+      BoardStatus,
+      onClickTurn,
+      getDiceStyle,
+      getTurnButtonStyle
+    };
   }
 });
 </script>
